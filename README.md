@@ -19,11 +19,11 @@ Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien dém
 
 ## Table des matières
 
-- Dépendances
-- Installation
-- Documentation
-- Contribuer
-- À propos d'OSER
+- [Dépendances](#dépendences)
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Contribuer](#contribuer)
+- [À propos d'OSER](#a-propos-doser)
 
 ## Dépendances
 
@@ -52,8 +52,6 @@ Ceci créera un dossier `oser-website` dans le dossier courant.
 ## Contribuer
 
 :construction_worker_man: Section en construction.
-
-> Indiquer ici les bonnes pratiques pour contribuer au projet. On préfèrera les *guidelines* aux règles strictes, toute amélioration étant toujours bonne à prendre en compte.
 
 ## À propos d'OSER
 
