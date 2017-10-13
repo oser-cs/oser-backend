@@ -1,6 +1,6 @@
 # Site internet d'OSER
 
-<p align="center"><img width=12.5% src="https://github.com/oser-cs/oser-website/blob/master/media/logo.png"></p>
+<p align="center"><img width=40% src="media/logo.png"></p>
 
 <!-- Badges issus de Shields.io.
 
