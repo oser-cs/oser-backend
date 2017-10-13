@@ -23,7 +23,7 @@ Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien dém
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Contribuer](#contribuer)
-- [À propos d'OSER](#a-propos-doser)
+- [À propos d'OSER](#À-propos-doser)
 
 ## Dépendances
 
