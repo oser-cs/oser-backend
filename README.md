@@ -1,6 +1,6 @@
 # Site internet d'OSER
 
-<p align="center"><img width=12.5% src="https://github.com/oser-cs/website/master/media/logo.png"></p>
+<p align="center"><img width=40% src="media/logo.png"></p>
 
 <!-- Badges issus de Shields.io.
 
@@ -15,15 +15,19 @@ Plus d'informations sur leur site : http://shields.io
 
 Bienvenue ! Ce dépôt est le lieu de développement du site internet de l'association OSER. Ce site a pour objectif de soutenir l'association dans son action quotidienne.
 
-Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien démarrer. *Happy coding* !
+Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien démarrer.
+
+De nombreuses informations sont également disponibles sur le [Wiki](https://github.com/oser-cs/oser-website/wiki). Il est écrit avec amour, allez y faire un tour à l'occasion. :wink:
+
+*Happy coding* !
 
 ## Table des matières
 
-- Dépendances
-- Installation
-- Documentation
-- Contribuer
-- À propos d'OSER
+- [Dépendances](#dépendances)
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Contribuer](#contribuer)
+- [À propos d'OSER](#À-propos-doser)
 
 ## Dépendances
 
@@ -52,8 +56,6 @@ Ceci créera un dossier `oser-website` dans le dossier courant.
 ## Contribuer
 
 :construction_worker_man: Section en construction.
-
-> Indiquer ici les bonnes pratiques pour contribuer au projet. On préfèrera les *guidelines* aux règles strictes, toute amélioration étant toujours bonne à prendre en compte.
 
 ## À propos d'OSER
 
