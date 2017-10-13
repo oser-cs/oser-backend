@@ -19,7 +19,7 @@ Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien dém
 
 ## Table des matières
 
-- [Dépendances](#dépendences)
+- [Dépendances](#dépendances)
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Contribuer](#contribuer)
