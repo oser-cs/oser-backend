@@ -31,13 +31,13 @@ De nombreuses informations sont également disponibles sur le [Wiki](https://git
 
 ## Dépendances
 
-:construction_worker_man: Section en construction.
+:construction: Section en construction.
 
 > Lister ici les frameworks, packages et autres technos sur lesquelles le projet s'appuie. Pour chaque dépendance, indiquer comment l'installer (instructions ou lien vers une ressource externe).
 
 ## Installation
 
-:construction_worker_man: Section en construction.
+:construction: Section en construction.
 
 > Expliquer ici comment installer l'environnement de développement du site, du clonage du dépôt au démarrage du site en local.
 
@@ -55,7 +55,9 @@ Ceci créera un dossier `oser-website` dans le dossier courant.
 
 ## Contribuer
 
-:construction_worker_man: Section en construction.
+Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/site-internet-backlog).
+
+:construction: Section en construction.
 
 ## À propos d'OSER
 
