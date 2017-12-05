@@ -10,7 +10,7 @@ https://img.shields.io/badge/<label>-<status>-couleur>.svg
 Plus d'informations sur leur site : http://shields.io
 -->
 [![Python](https://img.shields.io/badge/python-3.6-blue.svg)](https://docs.python.org/3/)
-[![Django](https://img.shields.io/badge/django-1.11-blue.svg)](https://www.djangoproject.com)
+[![Django](https://img.shields.io/badge/django-2.0-blue.svg)](https://www.djangoproject.com)
 ![Dependencies](https://img.shields.io/badge/dependencies-wip-yellow.svg)
 
 Bienvenue ! Ce dépôt est le lieu de développement du site internet de l'association OSER. Ce site a pour objectif de soutenir l'association dans son action quotidienne.
