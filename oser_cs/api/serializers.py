@@ -10,8 +10,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
-        user = User(
-            username=validated_data.get('username'),
+        user = User.objects.create(
+            email=validated_data.get('email'),
             # TODO add User custom fields
         )
         user.set_password(validated_data.get('password'))
@@ -29,8 +29,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = User
-        fields = ('url', 'id', 'username', 'password',
-                  'first_name', 'last_name', 'email',)
+        fields = ('url', 'id', 'email', 'password',
+                  'first_name', 'last_name',
+                  'phone_number', 'date_of_birth',)
         extra_kwargs = {
             'url': {
                 'view_name': 'api:user-detail',

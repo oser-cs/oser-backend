@@ -60,7 +60,8 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     objects = UserManager()
 
-    date_of_birth = models.DateField('date de naissance', null=True)
+    date_of_birth = models.DateField('date de naissance',
+                                     blank=True, null=True)
 
     MALE = 'M'
     FEMALE = 'F'
@@ -74,7 +75,7 @@ class User(AbstractUser):
 
     # TODO add a proper phone number validator
     phone_number = models.CharField('téléphone',
-                                    max_length=12, blank=True)
+                                    max_length=12, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('api:user-detail', args=[str(self.id)])
