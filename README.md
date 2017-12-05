@@ -46,11 +46,9 @@ Django est un framework de développement web pour Python.
 
 Le site d'OSER utilise Django en version 2.0.
 
-À l'heure actuelle (05/12/2017), peu de tutoriels Django sont passés à la version 2.0, mais il y a en fait très peu de modifications non-rétro-compatibles par rapport à la version 1.11, et aucune modification n'est réellement critique. Les améliorations apportées par la version 2.0 sont intéressantes, on peut notamment citer le système d'écriture des URLs qui est grandement simplifié.
-
-Pour plus d'infos, lire la [release news](https://www.djangoproject.com/weblog/2017/dec/02/django-20-released/) de Django 2.0.
-
 Django est installé lors de l'installation des `requirements.txt`.
+
+> À l'heure actuelle, peu de tutoriels Django se basent sur la version 2.0, mais il y a en fait très peu de changements non-rétro-compatibles par rapport à la version 1.11, et aucun changement n'est réellement critique. Les améliorations apportées par la version 2.0 sont intéressantes, on peut notamment citer le système d'écriture des URLs qui est grandement simplifié. Pour plus d'infos, lire la [release news](https://www.djangoproject.com/weblog/2017/dec/02/django-20-released/) associée.
 
 #### [Django REST Framework](http://www.django-rest-framework.org)
 
@@ -85,6 +83,26 @@ oser-website $ source env/bin/activate
 ```bash
 (env) oser-website $ pip install -r requirements.txt
 ```
+
+4. Lancez les tests :
+
+```bash
+(env) oser-website $ cd oser_cs
+(env) oser_cs $ python manage.py test
+```
+
+5. Démarrez le serveur local :
+
+```bash
+(env) oser-website $ cd oser_cs
+(env) oser_cs $ python manage.py runserver
+```
+
+Rendez-vous sur [`http://localhost:8000/api/`](http://localhost:8000/api/) et vous obtiendrez quelque chose comme :
+
+![Accueil de l'API](media/api_home.png)
+
+:tada:
 
 ## Documentation
 
