@@ -5,7 +5,10 @@ from django.contrib.auth.backends import ModelBackend
 
 
 class EmailBackend(ModelBackend):
-    """Authenticate a user with its email and password."""
+    """Authenticate a user with its email and password.
+
+    Source: https://stackoverflow.com/a/37332393
+    """
 
     def authenticate(self, username=None, password=None, **kwargs):
         UserModel = get_user_model()
