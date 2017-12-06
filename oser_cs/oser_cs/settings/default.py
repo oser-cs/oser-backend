@@ -32,12 +32,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
-    'api.apps.ApiConfig',
     # Django REST Framework (DRF)
     'rest_framework',
     # DRF Swagger (API documentation generator)
     'rest_framework_swagger',
+    # Site apps
+    'users.apps.UsersConfig',
+    'persons.apps.PersonsConfig',
+    'tutoring.apps.TutoringConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
