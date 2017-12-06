@@ -13,13 +13,13 @@ from utils import modify_fields
 class UserManager(_UserManager):
     """Custom user manager.
 
-    Makes email mendatory instead of username.
+    Makes email mandatory instead of username.
     """
 
-    def create_user(self, email, password, **extra_fields):
+    def _create_user(self, email, password, **extra_fields):
         """Create and save a User with email and password."""
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError('The given email must be set')
 
         user = self.model(
             email=self.normalize_email(email),
@@ -28,6 +28,11 @@ class UserManager(_UserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
         """Create and save a superuser with email and password."""
@@ -39,12 +44,12 @@ class UserManager(_UserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, password, **extra_fields)
+        return self._create_user(email, password, **extra_fields)
 
 
 @modify_fields(
-    username={'blank': True, '_unique': False},
-    email={'_unique': True, 'blank': False},
+    username={'blank': True, '_unique': False, 'null': True},
+    email={'_unique': True, 'blank': False, 'null': False},
     first_name={'blank': False},
     last_name={'blank': False},
 )
@@ -57,17 +62,17 @@ class User(AbstractUser):
     """
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
     objects = UserManager()
 
     date_of_birth = models.DateField('date de naissance',
-                                     blank=True, null=True)
+                                     blank=False, null=True)
 
     MALE = 'M'
     FEMALE = 'F'
     GENDER_CHOICES = (
-        (MALE, 'masculin'),
-        (FEMALE, 'féminin'),
+        (MALE, 'Homme'),
+        (FEMALE, 'Femme'),
     )
     gender = models.CharField('sexe',
                               max_length=1, choices=GENDER_CHOICES,
