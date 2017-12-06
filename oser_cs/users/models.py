@@ -1,10 +1,12 @@
 """Users models."""
 
+
 from django.db import models
 from django.shortcuts import reverse
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as _UserManager
 
+from users.utils import get_promotion_range
 from utils import modify_fields
 
 # Create your models here.
@@ -58,7 +60,9 @@ class User(AbstractUser):
 
     Fields
     ----------
-    phone_number : char field
+    date_of_birth : date
+    gender : char (choices: 'M' or 'F')
+    phone_number : char
     """
 
     USERNAME_FIELD = 'email'
@@ -84,3 +88,26 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse('api:user-detail', args=[str(self.id)])
+
+
+class Tutor(models.Model):
+    """Represents a tutor.
+
+    Fields
+    ------
+    user : 1-1 with User
+    promotion : int
+    """
+
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    PROMOTION_CHOICES = tuple(
+        (year, str(year)) for year in get_promotion_range()
+    )
+    promotion = models.IntegerField(choices=PROMOTION_CHOICES,
+                                    default=PROMOTION_CHOICES[0][0])
+
+    class Meta:  # noqa
+        verbose_name = 'tuteur'
+
+    def __str__(self):
+        return str(self.user)

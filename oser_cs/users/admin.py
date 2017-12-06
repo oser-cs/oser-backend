@@ -4,7 +4,9 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from .models import (
+    User, Tutor
+)
 
 # Register your models here.
 
@@ -42,3 +44,11 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'password1', 'password2')}
          ),
     )
+
+
+@admin.register(Tutor)
+class TutorAdmin(admin.ModelAdmin):
+    """Tutor admin panel."""
+
+    class Meta:  # noqa
+        model = Tutor
