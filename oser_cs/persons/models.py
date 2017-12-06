@@ -1,6 +1,7 @@
 """Persons models."""
 
 from django.db import models
+from django.shortcuts import reverse
 from django.contrib.auth import get_user_model
 from persons.utils import get_promotion_range
 
@@ -32,6 +33,9 @@ class Tutor(models.Model):
 
     class Meta:  # noqa
         verbose_name = 'tuteur'
+
+    def get_absolute_url(self):
+        return reverse('api:tutor-detail', args=[str(self.id)])
 
     def __str__(self):
         return str(self.user)

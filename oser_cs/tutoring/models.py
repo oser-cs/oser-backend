@@ -40,7 +40,9 @@ class TutoringGroup(models.Model):
 
     name = models.CharField('nom', max_length=200)
     tutors = models.ManyToManyField('persons.Tutor',
-                                    verbose_name='tuteurs', blank=True)
+                                    related_name='tutoring_groups',
+                                    verbose_name='tuteurs',
+                                    blank=True)
 
     class Meta:  # noqa
         ordering = ('name',)

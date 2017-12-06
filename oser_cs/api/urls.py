@@ -21,6 +21,8 @@ urlpatterns = [
 # Create your routes here
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+router.register('users', views.UserViewSet)
+router.register('tutors', views.TutorViewSet)
+router.register('tutoringgroups', views.TutoringGroupViewSet)
 
 urlpatterns += router.urls
