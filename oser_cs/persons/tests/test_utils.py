@@ -2,7 +2,7 @@
 import datetime
 from django.test import TestCase
 from django.conf import settings
-from .utils import get_promotion_range
+from persons.utils import get_promotion_range
 
 
 class TestUtils(TestCase):
