@@ -45,13 +45,15 @@ Pour plus d'infos sur `USERNAME_FIELD`, voir la [documentation](https://docs.dja
 
 Enfin, l'attribut `REQUIRED_FIELDS` est utilisé par Django lors de la création de super-utilisateurs via `manage.py createsuperuser`. Il définit les champs qui sont demandés en plus des champs d'authentification. On le redéfinit car il vaut par défaut `['email', 'first_name', 'last_name']` : on retire le champ `email` de la liste car il est de toute façon demandé en tant que champ d'authentification.
 
+![createsuperuser](../media/createsuperuser.png)
+
 ### Champs supplémentaires
 
-Les champs supplémentaires sont définis sur le modèle `User` personnalisé : date de naissance, sexe et numéro de téléphone.
+Des champs supplémentaires sont définis sur le modèle `User` personnalisé : date de naissance, sexe et numéro de téléphone.
 
 ### URL absolu
 
-On définit également l'URL absolu d'un utilisateur par un appel à l'endpoint `GET /api/users/<user_id>/` de l'API.
+On définit également l'URL absolu d'un utilisateur par une redirection à l'endpoint `GET /api/users/<user_id>/` de l'API.
 
 ## Personnalisation du gestionnaire d'utilisateurs
 
