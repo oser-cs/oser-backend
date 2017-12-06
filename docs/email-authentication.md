@@ -1,8 +1,10 @@
-# Authentification par email
+# Utilisateur personnalisé
 
-Le système d'authentification par défaut de Django identifie les utilisateurs par leur nom d'utilisateur, `username`, et leur mot de passe, `password`.
+Le système d'authentification par défaut de Django identifie les utilisateurs par leur nom d'utilisateur, `username`, et leur mot de passe, `password`. On souhaite que les utilisateurs s'identifient par leur adresse mail.
 
-On souhaite que les utilisateurs s'identifient par leur adresse mail. On souhaite également ajouter quelques autres informations comme le sexe ou le numéro de téléphone. Il a donc fallu procéder à quelques ajustements du système d'authentification fourni par Django :
+On souhaite également ajouter quelques autres informations à l'utilisateur, comme le sexe ou le numéro de téléphone.
+
+Il a donc fallu procéder à quelques ajustements du système d'authentification fourni par Django :
 
 - Personnalisation du modèle d'utilisateur
 - Personnalisation du gestionnaire d'utilisateurs
