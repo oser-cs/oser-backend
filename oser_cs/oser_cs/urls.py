@@ -13,10 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.urls import path, include
+from django.urls import include
+from django.conf.urls import url
 from django.contrib import admin
+from django.views.generic import TemplateView
+from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/', include('api.urls')),
+    url('docs/', include_docs_urls(title='My API title')),
+    url(r'^$', TemplateView.as_view(template_name='index.html')),
 ]

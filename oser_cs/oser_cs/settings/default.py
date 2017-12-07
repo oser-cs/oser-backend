@@ -59,7 +59,7 @@ ROOT_URLCONF = 'oser_cs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['./oser_cs/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,6 +72,8 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'oser_cs.wsgi.application'
+
 # Flash messages classes
 MESSAGE_TAGS = {
     messages.INFO: 'alert alert-info alert-dismissible fade show',
@@ -80,8 +82,12 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert alert-danger alert-dismissible fade show',
 }
 
-WSGI_APPLICATION = 'oser_cs.wsgi.application'
-
+# Django rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
