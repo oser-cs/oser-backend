@@ -35,7 +35,8 @@ class Student(models.Model):
 
     tutoring_group = models.ForeignKey('tutoring.TutoringGroup',
                                        on_delete=models.SET_NULL,
-                                       null=True)
+                                       null=True,
+                                       related_name='students')
 
     def get_absolute_url(self):
         return reverse('api:student-detail', args=[str(self.id)])

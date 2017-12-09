@@ -5,8 +5,8 @@ from rest_framework.mixins import (
     ListModelMixin, RetrieveModelMixin, CreateModelMixin,
 )
 
-from persons.models import Tutor
-from api.serializers.persons import TutorSerializer
+from persons.models import Tutor, Student
+from api.serializers.persons import TutorSerializer, StudentSerializer
 
 # Create your views here.
 
@@ -29,3 +29,23 @@ class TutorViewSet(ListModelMixin,
 
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
+
+
+class StudentViewSet(ListModelMixin,
+                     RetrieveModelMixin,
+                     CreateModelMixin,
+                     viewsets.GenericViewSet):
+    """API endpoint that allows students to be viewed or edited.
+
+    retrieve:
+    Return a student instance.
+
+    list:
+    Return all students.
+
+    create:
+    Create a student instance.
+    """
+
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer

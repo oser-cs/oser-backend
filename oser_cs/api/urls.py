@@ -16,6 +16,7 @@ urlpatterns = [
 router = routers.DefaultRouter()
 router.register(r'users', users.UserViewSet)
 router.register(r'tutors', persons.TutorViewSet)
+router.register(r'students', persons.StudentViewSet)
 router.register(r'tutoringgroups', tutoring.TutoringGroupViewSet)
 
 urlpatterns += router.urls

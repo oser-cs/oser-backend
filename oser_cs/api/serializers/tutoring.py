@@ -12,10 +12,15 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True,
         view_name='api:tutor-detail',
     )
+    students = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='api:student-detail',
+    )
 
     class Meta:  # noqa
         model = TutoringGroup
-        fields = ('name', 'tutors',)
+        fields = ('name', 'tutors', 'students')
         extra_kwargs = {
             'url': {
                 'view_name': 'api:tutoringgroup-detail',

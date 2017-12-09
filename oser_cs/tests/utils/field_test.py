@@ -1,27 +1,17 @@
-"""Definition of FieldTestCase.
+"""Definition of field tests.
 
-Usage
------
-class PhoneFieldTestCase(FieldTestCase):
-    '''Test phone_number field of User.'''
-    model = User
-    field_name = 'phone_number'
-    tests = {
-        'verbose_name': 'numéro de téléphone',
-        'blank': True,
-        'unique': False,
-    }
-
-
-Supported attribute tests
--------------------------
-Boolean value test:
-    'unique': True
-String equality test:
-    'verbose_name': 'my-field-verbose-name'
+See FieldTestMeta docstring for available field tests.
 """
 
-from django.test import TestCase
+from numbers import Number
+
+
+# Toggle to True to print a message when a field test method is called.
+PRINT_FIELD_TEST_CALLS = False
+
+
+class UnsupportedFieldTest(ValueError):
+    """Raised when trying to use an unsupported field test."""
 
 
 class FieldTestMethodMeta(type):
@@ -35,6 +25,15 @@ class FieldTestMethodMeta(type):
             type(cls).CLASSES.append(cls)
 
 
+def print_called(f):
+    """Decorator, prints a message when a function is called."""
+    def decorated(*args, **kwargs):
+        print(f'\nCalled: {f.__name__}')
+        return f(*args, **kwargs)
+    decorated.__name__ = f.__name__
+    return decorated
+
+
 class FieldTestMethod(metaclass=FieldTestMethodMeta):
     """Field test method factory.
 
@@ -45,16 +44,20 @@ class FieldTestMethod(metaclass=FieldTestMethodMeta):
     name_formatter = None
 
     @classmethod
-    def create(cls, attr, value):
+    def create(cls, field, attr, value):
         if not cls.name_formatter:
             raise ValueError(f'Name formatter not defined for {cls.__name__}')
-        test_method = cls.get_test_method(attr, value)
+        test_method = cls.get_test_method(field, attr, value)
         test_method.__name__ = cls.name_formatter.format(
             attr=attr, value=value)
+
+        if PRINT_FIELD_TEST_CALLS:
+            test_method = print_called(test_method)
+
         return test_method
 
     @classmethod
-    def get_test_method(cls, attr, value):
+    def get_test_method(cls, field, attr, value):
         raise NotImplementedError
 
     @classmethod
@@ -87,14 +90,18 @@ def field_test_method(name_formatter=None, accept=None):
             name_formatter = formatter
 
             @classmethod
-            def get_test_method(cls, attr, value):
+            def get_test_method(cls, field_name, attr, value):
                 def test_method(self):
-                    f(self, attr, value)
+                    field = self.model._meta.get_field(field_name)
+                    f(self, field, attr, value)
                 return test_method
 
             @classmethod
             def accepts(cls, attr, value):
-                return accept(attr, value)
+                acc = accept(attr, value)
+                # status = 'accepted' if acc else 'rejected'
+                # print(f'{cls.__name__} {status} {attr}')
+                return acc
 
         MyFieldTestMethod.__name__ = FieldTestMethod.name_from_func(f)
 
@@ -103,70 +110,87 @@ def field_test_method(name_formatter=None, accept=None):
 
 @field_test_method(name_formatter='test_{attr}_is_{value}',
                    accept=lambda attr, value: isinstance(value, bool))
-def test_bool(self, attr, value):
+def test_bool(self, field, attr, value):
     """Test that a field attribute is True or False according to value."""
     if value is True:
-        self.assertTrue(getattr(self.field, attr))
+        self.assertTrue(getattr(field, attr))
     else:
-        self.assertFalse(getattr(self.field, attr))
+        self.assertFalse(getattr(field, attr))
 
 
 @field_test_method(name_formatter='test_{attr}_value',
                    accept=lambda attr, value: isinstance(value, str))
-def test_string_equals(self, attr, value):
+def test_string_equals(self, field, attr, value):
     """Test that a field attribute is the given string value."""
-    self.assertEqual(getattr(self.field, attr), value)
+    self.assertEqual(getattr(field, attr), value)
 
 
-class FieldTestCaseMeta(type):
-    """Metaclass for FieldTestCase.
+@field_test_method(name_formatter='test_{attr}_value',
+                   accept=lambda attr, value: isinstance(value, Number))
+def test_number_equals(self, field, attr, value):
+    """Test that a field attribute is the given number value."""
+    self.assertEqual(getattr(field, attr), value)
 
-    Dynamically creates tests based on the class' tests dictionary.
+
+@field_test_method(name_formatter='test_{attr}_choices',
+                   accept=lambda attr, value: attr == 'choices')
+def test_choices_equals(self, field, attr, value):
+    """Test that a field choices are the given choice tuple."""
+    self.assertEqual(getattr(field, 'choices'), value)
+
+
+class FieldTestMeta(type):
+    """Abstract field test meta.
+
+    Manages the creation of field test methods.
     """
+
+    SUPPORTED_TESTS_DOCSTRING = """\n
+    Supported tests
+    ---------------
+    Boolean value test:
+        'unique': True
+    String equality test:
+        'verbose_name': 'my-field-verbose-name'
+    Number equality test:
+        'max_length': 200
+    Field choices equality test:
+        'choices': (('C1', 'option 1'), ('C2', 'option 2'))
+    """
+
+    def __new__(metacls, name, bases, namespace):
+        cls = super().__new__(metacls, name, bases, namespace)
+        cls.__doc__ += FieldTestMeta.SUPPORTED_TESTS_DOCSTRING
+        return cls
 
     def __init__(cls, name, bases, namespace):
         super().__init__(name, bases, namespace)
-        for attr, value in cls.tests.items():
-            added = type(cls).add_test_method(cls, attr, value)
-            if not added:
-                raise ValueError(f'Unsupported test: {attr}')
+        type(cls).before_dispatch(cls, name, bases, namespace)
+        type(cls).dispatch(cls)
+
+    def before_dispatch(cls, name, bases, namespace):
+        """Callback called before the field test methods are created."""
+        pass
 
     @classmethod
-    def add_test_method(metacls, cls, attr, value):
+    def dispatch_field(metacls, cls, tests, field_name):
+        """Create test methods for a single field."""
+        for attr, value in tests.items():
+            type(cls).add_test_method(cls, field_name, attr, value)
+
+    @classmethod
+    def dispatch(metacls, cls):
+        raise NotImplementedError('Subclasses must implement dispatch()')
+
+    @classmethod
+    def add_test_method(metacls, cls, field, attr, value):
+        test_method_cls = metacls.find_test_method(cls, attr, value)
+        test_method = test_method_cls.create(field, attr, value)
+        setattr(cls, test_method.__name__, test_method)
+
+    @classmethod
+    def find_test_method(metacls, cls, attr, value):
         for test_method_cls in FieldTestMethod.all():
             if test_method_cls.accepts(attr, value):
-                test_method = test_method_cls.create(attr, value)
-                setattr(cls, test_method.__name__, test_method)
-                return True
-        return False
-
-
-class FieldTestCase(TestCase, metaclass=FieldTestCaseMeta):
-    """Specialized test case for testing model fields.
-
-    Example
-    -------
-    class PhoneFieldTestCase(FieldTestCase):
-        model = PhoneNumber
-        field_name = 'phone_number'
-        tests = {
-            'verbose_name': 'numéro de téléphone',
-            'blank': True,
-            'unique': False,
-        }
-    """
-
-    model = None
-    field_name = None
-    tests = {}
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        if not cls.model:
-            raise TypeError(f'Model not declared in {cls.__name__}')
-        if not cls.field_name:
-            raise TypeError(f'Field name not declared in {cls.__name__}')
-
-    def setUp(self):
-        self.field = self.model._meta.get_field(self.field_name)
+                return test_method_cls
+        raise ValueError(f'Unsupported field test: {attr}')
