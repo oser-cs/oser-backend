@@ -13,15 +13,43 @@ class Person:
     """Represents a person who can use the website."""
 
 
+class Student(models.Model):
+    """Represents a student.
+
+    Fields
+    ------
+    user : 1-1 with User
+        Deletion rule: CASCADE
+    address : char  # TODO update when validated address field implemented
+    tutoring_group : 1-n with TutoringGroup
+        Deletion rule: SET_NULL
+    """
+
+    user = models.OneToOneField(get_user_model(),
+                                on_delete=models.CASCADE,
+                                verbose_name='utilisateur',
+                                null=True)
+
+    # TODO convert to validated address field
+    address = models.CharField('adresse', max_length=200)
+
+    tutoring_group = models.ForeignKey('tutoring.TutoringGroup',
+                                       on_delete=models.SET_NULL,
+                                       null=True)
+
+    def get_absolute_url(self):
+        return reverse('api:student-detail', args=[str(self.id)])
+
+
 class Tutor(models.Model):
     """Represents a tutor.
 
     Fields
     ------
     user : 1-1 with User
-        Deleting the user will delete the tutor too (delete cascade).
+        Deletion rule: CASCADE
     promotion : int
-    tutoring_groups : 1-n with TutoringGroup
+    tutoring_groups : n-n with TutoringGroup
     """
 
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
