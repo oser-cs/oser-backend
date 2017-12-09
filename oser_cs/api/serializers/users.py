@@ -7,14 +7,13 @@ from users.models import User
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for User."""
 
+    date_of_birth = serializers.DateField()
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
-        user = User.objects.create(
-            email=validated_data.get('email'),
-            # TODO add User custom fields
-        )
-        user.set_password(validated_data.get('password'))
+        password = validated_data.pop('password')
+        user = User.objects.create(**validated_data)
+        user.set_password(password)
         user.save()
         return user
 
