@@ -43,6 +43,7 @@ class TutoringGroup(models.Model):
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
                                     blank=True)
+    # TODO add SchoolYear 1-n field
 
     class Meta:  # noqa
         ordering = ('name',)
@@ -51,3 +52,29 @@ class TutoringGroup(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+class School(models.Model):
+    """Represents a (high) school.
+
+    Fields
+    ------
+    """
+
+    # TODO add UAI code validation
+    uai_code = models.CharField(
+        'code UAI', max_length=8, primary_key=True,
+        help_text=(
+            "Code UAI (ex-RNE) de l'établissement. "
+            "Celui-ci est composé de 7 chiffres et une lettre. "
+            "Si vous ne le connaissez pas, consultez "
+            "l'annuaire des établissements sur le site du "
+            "ministère de l'Éducation Nationale."))
+    name = models.CharField('nom', max_length=200)
+
+    # TODO convert to validated address field
+    address = models.CharField('adresse', max_length=200)
+
+    class Meta:  # noqa
+        ordering = ('name',)
+        verbose_name = 'lycée'

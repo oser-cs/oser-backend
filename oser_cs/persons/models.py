@@ -38,6 +38,9 @@ class Student(models.Model):
                                        null=True,
                                        related_name='students')
 
+    class Meta:  # noqa
+        verbose_name = 'lycéen'
+
     def get_absolute_url(self):
         return reverse('api:student-detail', args=[str(self.id)])
 
