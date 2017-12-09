@@ -1,17 +1,27 @@
 """Persons utilities tests."""
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from persons.models import Student
 
-from tests.utils import random_email, FieldTestCase
+from tests.utils import random_email, ModelTestCase
 
 
 User = get_user_model()
 
 
-class StudentTestCase(TestCase):
+class StudentTestCase(ModelTestCase):
     """Test case for Student model."""
+
+    model = Student
+    field_tests = {
+        'user': {
+            'verbose_name': 'utilisateur',
+        },
+        'address': {
+            'verbose_name': 'adresse',
+            'blank': False,
+        }
+    }
 
     @classmethod
     def setUpTestData(self):
@@ -22,33 +32,9 @@ class StudentTestCase(TestCase):
             tutoring_group=None,
         )
 
-
-class StudentURLTest(StudentTestCase):
-    """Test the Student absolute URL."""
-
     def test_get_absolute_url(self):
         response = self.client.get(f'/api/students/{self.obj.id}', follow=True)
         self.assertEqual(200, response.status_code)
 
-
-class UserFieldTest(StudentTestCase, FieldTestCase):
-    """Test the Student.user field."""
-
-    model = Student
-    field_name = 'user'
-    tests = {
-        'verbose_name': 'utilisateur',
-    }
-
     def test_user_one_to_one_relationship(self):
         self.assertEqual(User.objects.get(), self.obj.user)
-
-
-class AddressFieldTest(FieldTestCase):
-    """Test the Student.address field."""
-
-    model = Student
-    field_name = 'address'
-    tests = {
-        'verbose_name': 'adresse',
-    }
