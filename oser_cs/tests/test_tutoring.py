@@ -13,15 +13,18 @@ class SchoolTest(ModelTestCase):
             'unique': True,
             'primary_key': True,
             'max_length': 8,
-            'verbose_name': 'code RNE',
+            'verbose_name': 'code UAI',
         },
         'name': {
             'verbose_name': 'nom',
         },
         'address': {
             'verbose_name': 'adresse',
-            'ordering': ('name',),
         }
+    }
+    # TODO implement dict-based model test generation
+    model_tests = {
+        'ordering': ('name',),
     }
 
     def test_uai_code_help_text_indicates_format(self):
@@ -34,4 +37,4 @@ class SchoolTest(ModelTestCase):
 
     def test_uai_code_help_text_indicates_where_to_find_it(self):
         help_text = self.model._meta.get_field('uai_code').help_text
-        self.assertIn("site du ministère de l'Éducation nationale", help_text)
+        self.assertIn("site du ministère de l'Éducation Nationale", help_text)
