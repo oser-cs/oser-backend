@@ -44,12 +44,12 @@ class FieldTestMethod(metaclass=FieldTestMethodMeta):
     name_formatter = None
 
     @classmethod
-    def create(cls, field, attr, value):
+    def create(cls, field_name, attr, value):
         if not cls.name_formatter:
             raise ValueError(f'Name formatter not defined for {cls.__name__}')
-        test_method = cls.get_test_method(field, attr, value)
+        test_method = cls.get_test_method(field_name, attr, value)
         test_method.__name__ = cls.name_formatter.format(
-            attr=attr, value=value)
+            field=field_name, attr=attr, value=value).lower()
 
         if PRINT_FIELD_TEST_CALLS:
             test_method = print_called(test_method)
@@ -57,7 +57,7 @@ class FieldTestMethod(metaclass=FieldTestMethodMeta):
         return test_method
 
     @classmethod
-    def get_test_method(cls, field, attr, value):
+    def get_test_method(cls, field_name, attr, value):
         raise NotImplementedError
 
     @classmethod
@@ -98,17 +98,14 @@ def field_test_method(name_formatter=None, accept=None):
 
             @classmethod
             def accepts(cls, attr, value):
-                acc = accept(attr, value)
-                # status = 'accepted' if acc else 'rejected'
-                # print(f'{cls.__name__} {status} {attr}')
-                return acc
+                return accept(attr, value)
 
         MyFieldTestMethod.__name__ = FieldTestMethod.name_from_func(f)
 
     return create_test_method
 
 
-@field_test_method(name_formatter='test_{attr}_is_{value}',
+@field_test_method(name_formatter='test_{field}_{attr}_is_{value}',
                    accept=lambda attr, value: isinstance(value, bool))
 def test_bool(self, field, attr, value):
     """Test that a field attribute is True or False according to value."""
@@ -118,21 +115,28 @@ def test_bool(self, field, attr, value):
         self.assertFalse(getattr(field, attr))
 
 
-@field_test_method(name_formatter='test_{attr}_value',
+@field_test_method(name_formatter='test_{field}_verbose_name',
+                   accept=lambda attr, value: attr == 'verbose_name')
+def test_verbose_name(self, field, attr, value):
+    """Test that a field verbose name is given value."""
+    self.assertEqual(field.verbose_name, value)
+
+
+@field_test_method(name_formatter='test_{field}_{attr}_value',
                    accept=lambda attr, value: isinstance(value, str))
 def test_string_equals(self, field, attr, value):
     """Test that a field attribute is the given string value."""
     self.assertEqual(getattr(field, attr), value)
 
 
-@field_test_method(name_formatter='test_{attr}_value',
+@field_test_method(name_formatter='test_{field}_{attr}_value',
                    accept=lambda attr, value: isinstance(value, Number))
 def test_number_equals(self, field, attr, value):
     """Test that a field attribute is the given number value."""
     self.assertEqual(getattr(field, attr), value)
 
 
-@field_test_method(name_formatter='test_{attr}_choices',
+@field_test_method(name_formatter='test_{field}_choices',
                    accept=lambda attr, value: attr == 'choices')
 def test_choices_equals(self, field, attr, value):
     """Test that a field choices are the given choice tuple."""
@@ -150,8 +154,10 @@ class FieldTestMeta(type):
     ---------------
     Boolean value test:
         'unique': True
-    String equality test:
+    Verbose name equality test:
         'verbose_name': 'my-field-verbose-name'
+    String equality test:
+        'my_attr': 'my_string_value'
     Number equality test:
         'max_length': 200
     Field choices equality test:
@@ -160,7 +166,10 @@ class FieldTestMeta(type):
 
     def __new__(metacls, name, bases, namespace):
         cls = super().__new__(metacls, name, bases, namespace)
+        if not cls.__doc__:
+            cls.__doc__ = ""
         cls.__doc__ += FieldTestMeta.SUPPORTED_TESTS_DOCSTRING
+        cls._generated_tests = []
         return cls
 
     def __init__(cls, name, bases, namespace):
@@ -183,10 +192,12 @@ class FieldTestMeta(type):
         raise NotImplementedError('Subclasses must implement dispatch()')
 
     @classmethod
-    def add_test_method(metacls, cls, field, attr, value):
+    def add_test_method(metacls, cls, field_name, attr, value):
         test_method_cls = metacls.find_test_method(cls, attr, value)
-        test_method = test_method_cls.create(field, attr, value)
-        setattr(cls, test_method.__name__, test_method)
+        test_method = test_method_cls.create(field_name, attr, value)
+        test_name = test_method.__name__
+        cls._generated_tests.append(test_name)
+        setattr(cls, test_name, test_method)
 
     @classmethod
     def find_test_method(metacls, cls, attr, value):

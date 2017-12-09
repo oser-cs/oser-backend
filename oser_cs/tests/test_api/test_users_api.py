@@ -1,4 +1,4 @@
-"""API tests."""
+"""Users API tests."""
 
 from datetime import date
 

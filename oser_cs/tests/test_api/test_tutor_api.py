@@ -1,4 +1,4 @@
-"""Persons API tests."""
+"""Tutor API tests."""
 
 from django.shortcuts import reverse
 from rest_framework.test import APITestCase

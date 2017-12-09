@@ -1,4 +1,4 @@
-"""Persons utilities tests."""
+"""Student model tests."""
 
 from django.contrib.auth import get_user_model
 from persons.models import Student
