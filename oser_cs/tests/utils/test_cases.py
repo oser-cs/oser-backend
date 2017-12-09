@@ -47,9 +47,9 @@ class FieldTestCase(TestCase, metaclass=FieldTestCaseMeta):
     def setUpClass(cls):
         super().setUpClass()
         if not cls.model:
-            raise TypeError(f'Model not declared in {cls.__name__}')
+            raise TypeError(f'Model not defined in {cls.__name__}')
         if not cls.field_name:
-            raise TypeError(f'Field name not declared in {cls.__name__}')
+            raise TypeError(f'Field name not defined in {cls.__name__}')
 
 
 class ModelTestCaseMeta(FieldTestMeta):
@@ -104,4 +104,4 @@ class ModelTestCase(TestCase, metaclass=ModelTestCaseMeta):
     def setUpClass(cls):
         super().setUpClass()
         if not cls.model:
-            raise TypeError(f'Model not declared in {cls.__name__}')
+            raise TypeError(f'Model not defined in {cls.__name__}')
