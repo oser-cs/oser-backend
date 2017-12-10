@@ -8,27 +8,54 @@ from persons.utils import get_promotion_range
 # Create your models here.
 
 
-# TODO define the abstract Person model
-class Person:
-    """Represents a person who can use the website."""
+class Person(models.Model):
+    """Represents a person who can use the website.
 
-
-class Student(models.Model):
-    """Represents a student.
+    Abstract model.
 
     Fields
     ------
     user : 1-1 with User
         Deletion rule: CASCADE
-    address : char  # TODO update when validated address field implemented
-    tutoring_group : 1-n with TutoringGroup
-        Deletion rule: SET_NULL
+
+    Properties
+    ----------
+    full_name : str
+        Alias to user.get_full_name()
+
+    Meta
+    ----
+    ordering : by last name, by first name
     """
 
     user = models.OneToOneField(get_user_model(),
                                 on_delete=models.CASCADE,
                                 verbose_name='utilisateur',
                                 null=True)
+
+    @property
+    def full_name(self):
+        return self.user.get_full_name()
+
+    class Meta:  # noqa
+        abstract = True
+        ordering = ['user__last_name', 'user__first_name']
+
+    def __str__(self):
+        return str(self.full_name)
+
+
+class Student(Person):
+    """Represents a student.
+
+    Inherits from the Person abstract model.
+
+    Fields
+    ------
+    address : char  # TODO update when validated address field implemented
+    tutoring_group : 1-n with TutoringGroup
+        Deletion rule: SET_NULL
+    """
 
     # TODO convert to validated address field
     address = models.CharField('adresse', max_length=200)
@@ -45,18 +72,17 @@ class Student(models.Model):
         return reverse('api:student-detail', args=[str(self.id)])
 
 
-class Tutor(models.Model):
+class Tutor(Person):
     """Represents a tutor.
+
+    Inherits from the Person abstract model.
 
     Fields
     ------
-    user : 1-1 with User
-        Deletion rule: CASCADE
     promotion : int
     tutoring_groups : n-n with TutoringGroup
     """
 
-    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     PROMOTION_CHOICES = tuple(
         (year, str(year)) for year in get_promotion_range()
     )
@@ -68,6 +94,3 @@ class Tutor(models.Model):
 
     def get_absolute_url(self):
         return reverse('api:tutor-detail', args=[str(self.id)])
-
-    def __str__(self):
-        return str(self.user)

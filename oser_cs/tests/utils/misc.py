@@ -4,6 +4,9 @@ import random
 from string import ascii_lowercase
 
 
+__all__ = ('random_username', 'random_email',)
+
+
 def random_username():
     """Return a random username with 12 lowercase letters."""
     return ''.join(random.choices(ascii_lowercase, k=12))
