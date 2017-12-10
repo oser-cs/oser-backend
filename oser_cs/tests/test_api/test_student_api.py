@@ -1,11 +1,10 @@
 """Student API tests."""
 
 from django.shortcuts import reverse
-from rest_framework.test import APITestCase
 from rest_framework import status
 from django.contrib.auth import get_user_model
 
-from tests.utils import random_email
+from tests.utils import random_email, random_uai_code, ModelAPITestCase
 from persons.models import Student
 from tutoring.models import School, TutoringGroup
 
@@ -13,29 +12,42 @@ from tutoring.models import School, TutoringGroup
 User = get_user_model()
 
 
-class StudentAPITest(APITestCase):
+class StudentAPITest(ModelAPITestCase):
     """Test the student API."""
 
-    def _create_student(self, **kwargs):
+    model = Student
+
+    def create_data(self):
         user = User.objects.create(email=random_email())
-        kwargs.setdefault('user', user)
-        return Student.objects.create(**kwargs)
+        school = School.objects.create(uai_code=random_uai_code())
+        tutoring_group = TutoringGroup.objects.create()
+        data = {
+            'user': user,
+            'address': '3 Place de la Barre, 59000 LILLE',
+            'school': school,
+            'tutoring_group': tutoring_group,
+        }
+        return data
 
     def test_list(self):
-        for _ in range(5):
-            self._create_student()
-        response = self.client.get('/api/students/')
+        n_items = 5
+        for _ in range(n_items):
+            self.create_obj()
+        url = reverse('api:student-list')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 5)
+        self.assertEqual(len(response.data), n_items)
 
     def test_retrieve(self):
-        student = self._create_student()
-        response = self.client.get(f'/api/students/{student.pk}/')
+        student = self.create_obj()
+        url = reverse('api:student-detail', args=[str(student.pk)])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_data_has_expected_values(self):
-        student = self._create_student()
-        response = self.client.get(f'/api/students/{student.pk}/')
+        student = self.create_obj()
+        url = reverse('api:student-detail', args=[str(student.pk)])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('user', response.data)
         self.assertIn('address', response.data)
@@ -44,20 +56,19 @@ class StudentAPITest(APITestCase):
 
     def test_create(self):
         """Ensure we can create a new student object through the API."""
-        user = User.objects.create(email=random_email())
-        school = School.objects.create(uai_code='1234567A')
-        tutoring_group = TutoringGroup.objects.create()
-
-        url = reverse('api:student-list')
-        data = {
-            'user': user.get_absolute_url(),
-            'address': '3 rue des Acacias, 75000 PARIS',
-            'school': school.get_absolute_url(),
-            'tutoring_group': tutoring_group.get_absolute_url(),
+        data = self.create_data()
+        hyperlinked = 'user school tutoring_group'.split()
+        data_serialized = {
+            key: key in hyperlinked and value.get_absolute_url() or value
+            for key, value in data.items()
         }
-        response = self.client.post(url, data, format='json')
+        url = reverse('api:student-list')
+
+        response = self.client.post(url, data_serialized, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Student.objects.count(), 1)
-        self.assertEqual(Student.objects.get().user, user)
-        self.assertEqual(Student.objects.get().school, school)
+        self.assertEqual(Student.objects.get().user, data.get('user'))
+        self.assertEqual(Student.objects.get().school, data.get('school'))
+        self.assertEqual(Student.objects.get().tutoring_group,
+                         data.get('tutoring_group'))

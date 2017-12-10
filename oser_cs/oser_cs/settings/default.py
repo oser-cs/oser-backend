@@ -101,13 +101,13 @@ DATABASES = {
 
 # Date and time formats
 
-SHORT_DATE_FORMAT = '%d/%m/%Y'
+SHORT_DATE_FORMAT = 'd/m/Y'
 DATE_INPUT_FORMATS = [
-    '%d/%m/%Y',  # 24/05/2006
+    'd/m/Y',  # 24/05/2006
 ]
 REST_FRAMEWORK = {
-    'DATE_FORMAT': SHORT_DATE_FORMAT,
-    'DATE_INPUT_FORMATS': DATE_INPUT_FORMATS,
+    'DATE_FORMAT': '%d/%m/%Y',
+    'DATE_INPUT_FORMATS': ['%d/%m/%Y'],
 }
 
 # Authentication

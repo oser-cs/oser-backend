@@ -4,51 +4,49 @@ from datetime import date
 
 from django.utils.formats import date_format
 from django.shortcuts import reverse
-from rest_framework.test import APITestCase
 from rest_framework import status
 from django.contrib.auth import get_user_model
 
 from tests.utils import random_email
+from tests.utils import ModelAPITestCase
 
 
 User = get_user_model()
 
 
-class UserAPITest(APITestCase):
+class UserAPITest(ModelAPITestCase):
     """Test the users API."""
 
-    def test_list(self):
-        for _ in range(5):
-            User.objects.create(email=random_email())
-        response = self.client.get('/api/users/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 5)
+    model = User
 
-    def test_retrieve(self):
-        user = User.objects.create(email=random_email())
-        response = self.client.get(f'/api/users/{user.id}/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def create_data(self):
+        data = {
+            'email': random_email(),
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'phone_number': '0601020304',
+            'date_of_birth': date(2000, 1, 1),
+        }
+        return data
 
     def test_data_has_expected_values(self):
-        user = User.objects.create(
-            email='john.doe@example.net',
-            first_name='John',
-            last_name='Doe',
-            phone_number='0601020304',
-            date_of_birth=date(2000, 1, 1),
-        )
-        response = self.client.get(f'/api/users/{user.id}/')
+        obj = self.create_obj()
+        url = reverse('api:user-detail', args=[str(obj.pk)])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         data = response.data
 
-        self.assertEqual(user.email, data['email'])
-        self.assertEqual(user.first_name, data['first_name'])
-        self.assertEqual(user.last_name, data['last_name'])
-        self.assertEqual(user.phone_number, data['phone_number'])
-        date_of_birth = date_format(user.date_of_birth, 'd/m/Y')
+        self.assertEqual(obj.email, data['email'])
+        self.assertEqual(obj.first_name, data['first_name'])
+        self.assertEqual(obj.last_name, data['last_name'])
+        self.assertEqual(obj.phone_number, data['phone_number'])
+        date_of_birth = date_format(obj.date_of_birth, 'd/m/Y')
         self.assertEqual(date_of_birth, data['date_of_birth'])
 
     def test_create(self):
+        # data = self.create_data()
+        # data['password'] = 'hello25'
         url = reverse('api:user-list')
         data = {
             'email': 'john.doe@example.net',
