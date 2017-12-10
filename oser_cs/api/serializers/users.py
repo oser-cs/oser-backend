@@ -4,7 +4,7 @@ from rest_framework import serializers
 from users.models import User
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Serializer for User."""
 
     date_of_birth = serializers.DateField()
@@ -28,11 +28,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = User
-        fields = ('url', 'id', 'email', 'password',
+        fields = ('id', 'email', 'password',
                   'first_name', 'last_name',
                   'phone_number', 'date_of_birth',)
-        extra_kwargs = {
-            'url': {
-                'view_name': 'api:user-detail',
-            }
-        }

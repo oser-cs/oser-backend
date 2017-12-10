@@ -4,7 +4,10 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from persons.models import Tutor, Student, SchoolStaffMember
-from tutoring.models import TutoringGroup, School
+from tutoring.models import School, TutoringGroup
+
+
+User = get_user_model()
 
 
 class PersonSerializer(serializers.Serializer):
@@ -28,11 +31,9 @@ class TutorSerializer(PersonSerializer,
 
     class Meta:  # noqa
         model = Tutor
-        fields = ('user', 'promotion', 'tutoring_groups',)
+        fields = ('id', 'url', 'user', 'promotion', 'tutoring_groups',)
         extra_kwargs = {
-            'url': {
-                'view_name': 'api:tutor-detail',
-            }
+            'url': {'view_name': 'api:tutor-detail'},
         }
 
 
@@ -40,22 +41,20 @@ class StudentSerializer(PersonSerializer,
                         serializers.HyperlinkedModelSerializer):
     """Serializer for Student."""
 
-    school = serializers.HyperlinkedRelatedField(
-        queryset=School.objects.all(),
-        view_name='api:school-detail',
-    )
     tutoring_group = serializers.HyperlinkedRelatedField(
         queryset=TutoringGroup.objects.all(),
         view_name='api:tutoring_group-detail',
     )
+    school = serializers.HyperlinkedRelatedField(
+        queryset=School.objects.all(),
+        view_name='api:school-detail',
+    )
 
     class Meta:  # noqa
         model = Student
-        fields = ('user', 'address', 'tutoring_group', 'school',)
+        fields = ('id', 'url', 'user', 'address', 'tutoring_group', 'school',)
         extra_kwargs = {
-            'url': {
-                'view_name': 'api:student-detail',
-            }
+            'url': {'view_name': 'api:student-detail'},
         }
 
 
@@ -70,9 +69,7 @@ class SchoolStaffMembersSerializer(PersonSerializer,
 
     class Meta:  # noqa
         model = SchoolStaffMember
-        fields = ('user', 'role', 'school',)
+        fields = ('id', 'url', 'user', 'role', 'school',)
         extra_kwargs = {
-            'url': {
-                'view_name': 'api:schoolstaffmember-detail',
-            }
+            'url': {'view_name': 'api:schoolstaffmember-detail'},
         }

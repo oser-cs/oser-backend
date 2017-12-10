@@ -13,8 +13,21 @@ from api.serializers.tutoring import (
 # Create your views here.
 
 
-class TutoringGroupViewSet(viewsets.ReadOnlyModelViewSet):
-    """List and detail views for tutoring groups."""
+class TutoringGroupViewSet(ListModelMixin,
+                           RetrieveModelMixin,
+                           CreateModelMixin,
+                           viewsets.GenericViewSet):
+    """API endpoint that allows tutoring groups to be viewed or edited.
+
+    retrieve:
+    Return a tutoring group instance.
+
+    list:
+    Return all tutoring groups.
+
+    create:
+    Create a tutoring group instance.
+    """
 
     queryset = TutoringGroup.objects.all()
     serializer_class = TutoringGroupSerializer
