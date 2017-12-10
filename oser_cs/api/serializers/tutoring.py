@@ -1,7 +1,8 @@
 """Tutoring API serializers."""
 
 from rest_framework import serializers
-from tutoring.models import TutoringGroup, School
+from tutoring.models import TutoringGroup, School, TutoringSession
+from persons.models import Student
 
 
 class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,7 +24,7 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', 'tutors', 'students')
         extra_kwargs = {
             'url': {
-                'view_name': 'api:tutoringgroup-detail',
+                'view_name': 'api:tutoring_group-detail',
             }
         }
 
@@ -33,7 +34,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
     students = serializers.HyperlinkedRelatedField(
         many=True,
-        read_only=True,
+        queryset=Student.objects.all(),
         view_name='api:student-detail',
     )
 
@@ -43,5 +44,23 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {
                 'view_name': 'api:school-detail',
+            }
+        }
+
+
+class TutoringSessionSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for TutoringSession."""
+
+    tutoring_group = serializers.HyperlinkedRelatedField(
+        queryset=TutoringGroup.objects.all(),
+        view_name='api:tutoring_group-detail',
+    )
+
+    class Meta:  # noqa
+        model = TutoringSession
+        fields = ('id', 'date', 'start_time', 'end_time', 'tutoring_group',)
+        extra_kwargs = {
+            'url': {
+                'view_name': 'api:tutoring_session-detail',
             }
         }

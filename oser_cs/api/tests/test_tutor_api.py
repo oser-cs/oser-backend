@@ -1,8 +1,7 @@
 """Tutor API tests."""
 
-from django.shortcuts import reverse
-from rest_framework import status
 from django.contrib.auth import get_user_model
+from rest_framework import status
 
 from persons.models import Tutor
 from tutoring.models import TutoringGroup
@@ -36,19 +35,20 @@ class TutorAPITest(ModelAPITestCase):
         n_items = 5
         for _ in range(n_items):
             self.create_obj()
-        response = self.client.get(reverse('api:tutor-list'))
+        url = '/api/tutors/'
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), n_items)
 
     def test_retrieve(self):
         obj = self.create_obj()
-        url = reverse('api:tutor-detail', args=[str(obj.pk)])
+        url = f'/api/tutors/{obj.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_data_has_expected_values(self):
         obj = self.create_obj()
-        url = reverse('api:tutor-detail', args=[str(obj.pk)])
+        url = f'/api/tutors/{obj.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('user', response.data)
@@ -64,7 +64,7 @@ class TutorAPITest(ModelAPITestCase):
             for key, value in data.items()
         }
 
-        url = reverse('api:tutor-list')
+        url = '/api/tutors/'
         response = self.client.post(url, data_serialized, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

@@ -1,12 +1,12 @@
 """Student API tests."""
 
-from django.shortcuts import reverse
-from rest_framework import status
 from django.contrib.auth import get_user_model
+from rest_framework import status
 
-from tests.utils import random_email, random_uai_code, ModelAPITestCase
 from persons.models import Student
 from tutoring.models import School, TutoringGroup
+
+from tests.utils import random_email, random_uai_code, ModelAPITestCase
 
 
 User = get_user_model()
@@ -33,20 +33,20 @@ class StudentAPITest(ModelAPITestCase):
         n_items = 5
         for _ in range(n_items):
             self.create_obj()
-        url = reverse('api:student-list')
+        url = '/api/students/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), n_items)
 
     def test_retrieve(self):
         student = self.create_obj()
-        url = reverse('api:student-detail', args=[str(student.pk)])
+        url = f'/api/students/{student.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_data_has_expected_values(self):
         student = self.create_obj()
-        url = reverse('api:student-detail', args=[str(student.pk)])
+        url = f'/api/students/{student.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('user', response.data)
@@ -62,7 +62,7 @@ class StudentAPITest(ModelAPITestCase):
             key: key in hyperlinked and value.get_absolute_url() or value
             for key, value in data.items()
         }
-        url = reverse('api:student-list')
+        url = '/api/students/'
 
         response = self.client.post(url, data_serialized, format='json')
 

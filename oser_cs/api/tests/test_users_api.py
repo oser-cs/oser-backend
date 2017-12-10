@@ -3,9 +3,8 @@
 from datetime import date
 
 from django.utils.formats import date_format
-from django.shortcuts import reverse
-from rest_framework import status
 from django.contrib.auth import get_user_model
+from rest_framework import status
 
 from tests.utils import random_email
 from tests.utils import ModelAPITestCase
@@ -29,9 +28,24 @@ class UserAPITest(ModelAPITestCase):
         }
         return data
 
+    def test_list(self):
+        n_items = 5
+        for _ in range(n_items):
+            self.create_obj()
+        url = '/api/users/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), n_items)
+
+    def test_retrieve(self):
+        obj = self.create_obj()
+        url = f'/api/users/{obj.pk}/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_data_has_expected_values(self):
         obj = self.create_obj()
-        url = reverse('api:user-detail', args=[str(obj.pk)])
+        url = f'/api/users/{obj.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -47,7 +61,7 @@ class UserAPITest(ModelAPITestCase):
     def test_create(self):
         # data = self.create_data()
         # data['password'] = 'hello25'
-        url = reverse('api:user-list')
+        url = '/api/users/'
         data = {
             'email': 'john.doe@example.net',
             'password': 'hello25',

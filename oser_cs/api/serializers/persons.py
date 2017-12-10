@@ -23,7 +23,7 @@ class TutorSerializer(PersonSerializer,
     tutoring_groups = serializers.HyperlinkedRelatedField(
         many=True,
         read_only=True,
-        view_name='api:tutoringgroup-detail',
+        view_name='api:tutoring_group-detail',
     )
 
     class Meta:  # noqa
@@ -46,7 +46,7 @@ class StudentSerializer(PersonSerializer,
     )
     tutoring_group = serializers.HyperlinkedRelatedField(
         queryset=TutoringGroup.objects.all(),
-        view_name='api:tutoringgroup-detail',
+        view_name='api:tutoring_group-detail',
     )
 
     class Meta:  # noqa

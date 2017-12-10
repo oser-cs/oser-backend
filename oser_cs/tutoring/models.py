@@ -1,7 +1,9 @@
 """Tutoring models."""
 
+from datetime import datetime, timedelta
 from django.db import models
 from django.shortcuts import reverse
+from django.template.defaulttags import date as date_tag
 from .validators import uai_code_validator
 
 # Create your models here.
@@ -37,8 +39,13 @@ class TutoringGroup(models.Model):
     Fields
     ------
     name : char
-    students : n-1 with persons.Student
     tutors : n-n with persons.Tutor
+    school : 1-n with tutoring.School
+        Deletion rule: SET_NULL
+
+    Relationships
+    -------------
+    students : n-1 with persons.Student
     """
 
     name = models.CharField('nom', max_length=200)
@@ -57,7 +64,7 @@ class TutoringGroup(models.Model):
         verbose_name_plural = 'groupes de tutorat'
 
     def get_absolute_url(self):
-        return reverse('api:tutoringgroup-detail', args=[str(self.id)])
+        return reverse('api:tutoring_group-detail', args=[str(self.id)])
 
     def __str__(self):
         return str(self.name)
@@ -72,6 +79,9 @@ class School(models.Model):
         UAI code of the school.
     name : char
     address : char
+
+    Relationships
+    -------------
     students : n-1 with persons.Student
     staffmembers : n-1 with persons.SchoolStaffMember
 
@@ -113,3 +123,58 @@ class School(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+def default_start_time():
+    now = datetime.now()
+    start = now.replace(hour=17, minute=0, second=0, microsecond=0)
+    return (start if start > now else start + timedelta(days=1)).time()
+
+
+def default_end_time():
+    now = datetime.now()
+    end = now.replace(hour=19, minute=0, second=0, microsecond=0)
+    return (end if end > now else end + timedelta(days=1)).time()
+
+
+class TutoringSession(models.Model):
+    """Represents a tutoring session event.
+
+    Fields
+    ------
+    date : date
+    start_time : time
+    end_time : time
+    tutoring_group : 1-n with tutoring.TutoringGroup
+        Deletion rule: CASCADE
+    report : 1-1 with tutoring.TutoringReport
+
+    Meta
+    ----
+    ordering : by date (upcoming sessions first)
+    """
+
+    date = models.DateField(default=datetime.now)
+    start_time = models.TimeField('heure de début',
+                                  default=default_start_time)
+    end_time = models.TimeField('heure de fin',
+                                default=default_end_time)
+    tutoring_group = models.ForeignKey('TutoringGroup',
+                                       on_delete=models.CASCADE,
+                                       verbose_name='groupe de tutorat',
+                                       related_name='tutoring_sessions')
+    # TODO add report 1-1
+
+    class Meta:  # noqa
+        verbose_name = 'séance de tutorat'
+        verbose_name_plural = 'séances de tutorat'
+        ordering = ('date', 'start_time',)
+
+    @property
+    def school(self):
+        return self.tutoring_group.school
+    school.fget.short_description = 'lycée'
+
+    def __str__(self):
+        date = date_tag(self.date, 'SHORT_DATE_FORMAT')
+        return f'{self.tutoring_group} ({date})'

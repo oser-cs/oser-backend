@@ -24,7 +24,10 @@ router.register(r'students', persons.StudentViewSet)
 router.register(r'schoolstaffmembers', persons.SchoolStaffMemberViewSet)
 
 # tutoring
-router.register(r'tutoringgroups', tutoring.TutoringGroupViewSet)
 router.register(r'schools', tutoring.SchoolViewSet)
+router.register(r'tutoring/groups', tutoring.TutoringGroupViewSet,
+                base_name='tutoring_group')
+router.register(r'tutoring/sessions', tutoring.TutoringSessionViewSet,
+                base_name='tutoring_session')
 
 urlpatterns += router.urls

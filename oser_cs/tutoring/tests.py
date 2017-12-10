@@ -1,7 +1,7 @@
 """Tutoring tests."""
 
 from django.contrib.auth import get_user_model
-from tutoring.models import TutoringGroup, School
+from tutoring.models import TutoringGroup, School, TutoringSession
 from persons.models import Tutor
 from tests.utils import ModelTestCase, random_uai_code, random_email
 
@@ -35,7 +35,7 @@ class TutoringGroupTest(ModelTestCase):
         self.obj = TutoringGroup.objects.create()
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/tutoringgroups/{self.obj.pk}',
+        response = self.client.get(f'/api/tutoring/groups/{self.obj.pk}',
                                    follow=True)
         self.assertEqual(200, response.status_code)
 
@@ -91,3 +91,45 @@ class SchoolTest(ModelTestCase):
         response = self.client.get(f'/api/schools/{self.obj.pk}',
                                    follow=True)
         self.assertEqual(200, response.status_code)
+
+
+class TutoringSessionTest(ModelTestCase):
+    """Test the TutoringSession model."""
+
+    model = TutoringSession
+    field_tests = {
+        'date': {
+            'verbose_name': 'date',
+        },
+        'start_time': {
+            'verbose_name': 'heure de début',
+        },
+        'end_time': {
+            'verbose_name': 'heure de fin',
+        },
+        'tutoring_group': {
+            'verbose_name': 'groupe de tutorat',
+        },
+    }
+    # TODO implement
+    model_tests = {
+        'verbose_name': 'séance de tutorat',
+        'verbose_name_plural': 'séances de tutorat',
+        'ordering': ('date',),
+    }
+
+    @classmethod
+    def setUpTestData(self):
+        tutoring_group = TutoringGroup.objects.create()
+        self.obj = TutoringSession.objects.create(
+            tutoring_group=tutoring_group)
+
+    def test_get_absolute_url(self):
+        url = f'/api/tutoring/sessions/{self.obj.pk}'
+        response = self.client.get(url, follow=True)
+        self.assertEqual(200, response.status_code)
+
+    def test_tutoring_group_one_to_many_relationship(self):
+        self.assertEqual(TutoringGroup.objects.get(), self.obj.tutoring_group)
+        self.assertIn(self.obj,
+                      TutoringGroup.objects.get().tutoring_sessions.all())
