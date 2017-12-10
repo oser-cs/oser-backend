@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.shortcuts import reverse
+from .validators import uai_code_validator
 
 # Create your models here.
 
@@ -45,7 +46,10 @@ class TutoringGroup(models.Model):
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
                                     blank=True)
-    # TODO add SchoolYear foreign key
+    school = models.ForeignKey('School', on_delete=models.SET_NULL,
+                               null=True,
+                               related_name='tutoring_groups',
+                               verbose_name='lycée')
 
     class Meta:  # noqa
         ordering = ('name',)
@@ -81,10 +85,11 @@ class School(models.Model):
     # TODO add UAI code validation
     uai_code = models.CharField(
         'code UAI', max_length=8, primary_key=True,
+        validators=[uai_code_validator],
         help_text=(
             "Code UAI (ex-RNE) de l'établissement. "
             "Celui-ci est composé de 7 chiffres et une lettre. "
-            "Si vous ne le connaissez pas, consultez "
+            "Ce code est répertorié dans "
             "l'annuaire des établissements sur le site du "
             "ministère de l'Éducation Nationale."))
 
@@ -95,5 +100,16 @@ class School(models.Model):
         ordering = ('name',)
         verbose_name = 'lycée'
 
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            # ensure the letter in UAI code is always uppercase.
+            # do only at object creation to prevent PK from changing while
+            # object is alive.
+            self.uai_code = self.uai_code.upper()
+        super().save(*args, **kwargs)
+
     def get_absolute_url(self):
         return reverse('api:school-detail', args=[str(self.uai_code)])
+
+    def __str__(self):
+        return str(self.name)
