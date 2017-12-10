@@ -5,6 +5,9 @@ from tests.utils import FieldTestCase, ModelTestCase, MixinModelTestCase
 from tests.utils import MetaTestCase
 
 
+# TODO test misc.random_uai_code
+
+
 class FieldTestCaseTest(MetaTestCase):
     """Test the usage of FieldTestCase."""
 

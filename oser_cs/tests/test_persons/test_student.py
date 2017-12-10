@@ -33,7 +33,7 @@ class StudentTestCase(ModelTestCase):
         )
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/students/{self.obj.id}', follow=True)
+        response = self.client.get(f'/api/students/{self.obj.pk}', follow=True)
         self.assertEqual(200, response.status_code)
 
     def test_user_one_to_one_relationship(self):

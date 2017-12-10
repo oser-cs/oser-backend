@@ -1,7 +1,7 @@
 """Persons admin panel configuration."""
 
 from django.contrib import admin
-from persons.models import Tutor, Student
+from persons.models import Tutor, Student, SchoolStaffMember
 from tutoring.admin import TutoringGroupMembershipInline
 
 # Register your models here.
@@ -25,3 +25,11 @@ class StudentAdmin(admin.ModelAdmin):
 
     class Meta:  # noqa
         model = Student
+
+
+@admin.register(SchoolStaffMember)
+class SchoolStaffMemberAdmin(admin.ModelAdmin):
+    """School staff member admin panel."""
+
+    class Meta:  # noqa
+        model = SchoolStaffMember

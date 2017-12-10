@@ -39,6 +39,7 @@ class Person(models.Model):
 
     class Meta:  # noqa
         abstract = True
+        verbose_name = 'personne'
         ordering = ['user__last_name', 'user__first_name']
 
     def __str__(self):
@@ -53,7 +54,7 @@ class Student(Person):
     Fields
     ------
     address : char  # TODO update when validated address field implemented
-    tutoring_group : 1-n with TutoringGroup
+    tutoring_group : 1-n with tutoring.TutoringGroup
         Deletion rule: SET_NULL
     """
 
@@ -64,6 +65,10 @@ class Student(Person):
                                        on_delete=models.SET_NULL,
                                        null=True,
                                        related_name='students')
+    school = models.ForeignKey('tutoring.School',
+                               on_delete=models.SET_NULL,
+                               null=True,
+                               related_name='students')
 
     class Meta:  # noqa
         verbose_name = 'lycéen'
@@ -94,3 +99,29 @@ class Tutor(Person):
 
     def get_absolute_url(self):
         return reverse('api:tutor-detail', args=[str(self.id)])
+
+
+class SchoolStaffMember(Person):
+    """Represents a member of a school's staff.
+
+    Inherits from the Person abstract model.
+
+    Fields
+    ------
+    school : 1-n with tutoring.School
+        Deletion rule: CASCADE
+    role : char
+        The person's role in the school.
+    """
+
+    school = models.ForeignKey('tutoring.School', on_delete=models.CASCADE,
+                               verbose_name='lycée',
+                               related_name='staffmembers')
+    role = models.CharField('rôle', max_length=100)
+
+    class Meta:  # noqa
+        verbose_name = 'personnel de lycée'
+        verbose_name_plural = 'personnels de lycée'
+
+    def get_absolute_url(self):
+        return reverse('api:schoolstaffmember-detail', args=[str(self.id)])

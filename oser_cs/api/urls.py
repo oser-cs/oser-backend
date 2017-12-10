@@ -14,9 +14,17 @@ urlpatterns = [
 # Create your routes here
 
 router = routers.DefaultRouter()
+
+# users
 router.register(r'users', users.UserViewSet)
+
+# persons
 router.register(r'tutors', persons.TutorViewSet)
 router.register(r'students', persons.StudentViewSet)
+router.register(r'schoolstaffmembers', persons.SchoolStaffMemberViewSet)
+
+# tutoring
 router.register(r'tutoringgroups', tutoring.TutoringGroupViewSet)
+router.register(r'schools', tutoring.SchoolViewSet)
 
 urlpatterns += router.urls

@@ -2,7 +2,7 @@
 
 
 from django.contrib import admin
-from .models import TutoringGroup
+from .models import TutoringGroup, School
 
 # Register your models here.
 
@@ -24,3 +24,11 @@ class TutoringGroupAdmin(admin.ModelAdmin):
 
     class Meta:  # noqa
         model = TutoringGroup
+
+
+@admin.register(School)
+class SchoolAdmin(admin.ModelAdmin):
+    """School admin panel."""
+
+    class Meta:  # noqa
+        model = School

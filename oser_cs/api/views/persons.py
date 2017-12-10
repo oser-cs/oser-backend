@@ -5,8 +5,10 @@ from rest_framework.mixins import (
     ListModelMixin, RetrieveModelMixin, CreateModelMixin,
 )
 
-from persons.models import Tutor, Student
-from api.serializers.persons import TutorSerializer, StudentSerializer
+from persons.models import Tutor, Student, SchoolStaffMember
+from api.serializers.persons import (
+    TutorSerializer, StudentSerializer, SchoolStaffMembersSerializer,
+)
 
 # Create your views here.
 
@@ -49,3 +51,23 @@ class StudentViewSet(ListModelMixin,
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+
+
+class SchoolStaffMemberViewSet(ListModelMixin,
+                               RetrieveModelMixin,
+                               CreateModelMixin,
+                               viewsets.GenericViewSet):
+    """API endpoint that allows school staff members to be viewed or edited.
+
+    retrieve:
+    Return a school staff member instance.
+
+    list:
+    Return all school staff members.
+
+    create:
+    Create a school staff member instance.
+    """
+
+    queryset = SchoolStaffMember.objects.all()
+    serializer_class = SchoolStaffMembersSerializer

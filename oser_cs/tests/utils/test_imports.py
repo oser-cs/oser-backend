@@ -20,3 +20,6 @@ class UtilsImportsTest(TestCase):
 
     def test_import_random_email(self):
         from tests.utils import random_email
+
+    def test_import_random_uai_code(self):
+        from tests.utils import random_uai_code

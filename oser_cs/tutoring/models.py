@@ -1,6 +1,7 @@
 """Tutoring models."""
 
 from django.db import models
+from django.shortcuts import reverse
 
 # Create your models here.
 
@@ -35,7 +36,8 @@ class TutoringGroup(models.Model):
     Fields
     ------
     name : char
-    tutors : 1-n with Tutor
+    students : n-1 with persons.Student
+    tutors : n-n with persons.Tutor
     """
 
     name = models.CharField('nom', max_length=200)
@@ -43,12 +45,15 @@ class TutoringGroup(models.Model):
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
                                     blank=True)
-    # TODO add SchoolYear 1-n field
+    # TODO add SchoolYear foreign key
 
     class Meta:  # noqa
         ordering = ('name',)
         verbose_name = 'groupe de tutorat'
         verbose_name_plural = 'groupes de tutorat'
+
+    def get_absolute_url(self):
+        return reverse('api:tutoringgroup-detail', args=[str(self.id)])
 
     def __str__(self):
         return str(self.name)
@@ -59,7 +64,19 @@ class School(models.Model):
 
     Fields
     ------
+    uai_code : char, primary key
+        UAI code of the school.
+    name : char
+    address : char
+    students : n-1 with persons.Student
+    staffmembers : n-1 with persons.SchoolStaffMember
+
+    Meta
+    ----
+    ordering : by name
     """
+
+    name = models.CharField('nom', max_length=200)
 
     # TODO add UAI code validation
     uai_code = models.CharField(
@@ -70,7 +87,6 @@ class School(models.Model):
             "Si vous ne le connaissez pas, consultez "
             "l'annuaire des établissements sur le site du "
             "ministère de l'Éducation Nationale."))
-    name = models.CharField('nom', max_length=200)
 
     # TODO convert to validated address field
     address = models.CharField('adresse', max_length=200)
@@ -78,3 +94,6 @@ class School(models.Model):
     class Meta:  # noqa
         ordering = ('name',)
         verbose_name = 'lycée'
+
+    def get_absolute_url(self):
+        return reverse('api:school-detail', args=[str(self.uai_code)])
