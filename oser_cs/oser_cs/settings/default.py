@@ -127,11 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # LOGIN_REDIRECT_URL = '/'
 # LOGOUT_REDIRECT_URL = '/'
 
-# Promotion settings
-NUMBER_OF_PROMOTIONS = 10
-NEW_PROMOTION_ARRIVAL_MONTH = 9
-NEW_PROMOTION_ARRIVAL_DAY = 1
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 

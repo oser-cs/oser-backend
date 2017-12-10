@@ -1,7 +1,7 @@
 """Users utilities."""
 
 import datetime
-from django.conf import settings
+from .conf import settings
 
 
 def get_promotion_range(date=None):

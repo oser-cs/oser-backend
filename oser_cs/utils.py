@@ -22,3 +22,14 @@ def modify_fields(**kwargs):
                 setattr(cls._meta.get_field(field), prop, val)
         return cls
     return wrap
+
+
+def setdefault(d, attr, default):
+    """Set an attribute of an object if not present.
+
+    Equivalent of dict's setdefault() but for objects.
+    Typically used for configuring app settings.
+    """
+    if not hasattr(d, attr):
+        setattr(d, attr, default)
+    return d

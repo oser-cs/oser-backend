@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.shortcuts import reverse
 from django.template.defaulttags import date as date_tag
+
+from .conf import settings
 from .validators import uai_code_validator
 
 # Create your models here.
@@ -126,14 +128,18 @@ class School(models.Model):
 
 
 def default_start_time():
+    """Return the default tutoring session start time."""
+    h, m = settings.DEFAULT_SESSION_START_TIME
     now = datetime.now()
-    start = now.replace(hour=17, minute=0, second=0, microsecond=0)
+    start = now.replace(hour=h, minute=m, second=0, microsecond=0)
     return (start if start > now else start + timedelta(days=1)).time()
 
 
 def default_end_time():
+    """Return the default tutoring session end time."""
+    h, m = settings.DEFAULT_SESSION_END_TIME
     now = datetime.now()
-    end = now.replace(hour=19, minute=0, second=0, microsecond=0)
+    end = now.replace(hour=h, minute=m, second=0, microsecond=0)
     return (end if end > now else end + timedelta(days=1)).time()
 
 
