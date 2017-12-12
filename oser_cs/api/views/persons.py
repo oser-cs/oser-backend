@@ -13,10 +13,7 @@ from api.serializers.persons import (
 # Create your views here.
 
 
-class TutorViewSet(ListModelMixin,
-                   RetrieveModelMixin,
-                   CreateModelMixin,
-                   viewsets.GenericViewSet):
+class TutorViewSet(viewsets.ModelViewSet):
     """API endpoint that allows tutors to be viewed or edited.
 
     retrieve:

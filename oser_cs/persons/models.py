@@ -33,14 +33,14 @@ class Person(models.Model):
                                 verbose_name='utilisateur',
                                 null=True)
 
-    @property
-    def full_name(self):
-        return self.user.get_full_name()
-
     class Meta:  # noqa
         abstract = True
         verbose_name = 'personne'
         ordering = ['user__last_name', 'user__first_name']
+
+    @property
+    def full_name(self):
+        return self.user.get_full_name()
 
     def __str__(self):
         return str(self.full_name)

@@ -4,6 +4,8 @@ from rest_framework import serializers
 from users.models import User
 
 
+# TODO find a way to indicate in the user instance what type of person it is
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for User.
 
@@ -21,10 +23,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         instance.save()
         return instance
 
+
     class Meta:  # noqa
         model = User
         fields = ('id', 'url', 'email',
-                  'first_name', 'last_name',
+                  'first_name', 'last_name', 'gender',
                   'phone_number', 'date_of_birth',)
         extra_kwargs = {
             'url': {'view_name': 'api:user-detail'},

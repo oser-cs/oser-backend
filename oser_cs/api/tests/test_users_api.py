@@ -56,6 +56,7 @@ class UserAPITest(ModelAPITestCase):
             'last_name',
             'phone_number',
             'date_of_birth',
+            'gender',
         )
         for key in keys:
             self.assertIn(key, response.data)
@@ -67,6 +68,7 @@ class UserAPITest(ModelAPITestCase):
             'password': 'hello25',
             'first_name': 'john',
             'last_name': 'doe',
+            'gender': User.MALE,
             'phone_number': '0601020304',
             'date_of_birth': '01/01/2000',
         }
