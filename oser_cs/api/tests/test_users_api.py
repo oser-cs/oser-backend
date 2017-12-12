@@ -48,19 +48,19 @@ class UserAPITest(ModelAPITestCase):
         url = f'/api/users/{obj.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        data = response.data
-
-        self.assertEqual(obj.email, data['email'])
-        self.assertEqual(obj.first_name, data['first_name'])
-        self.assertEqual(obj.last_name, data['last_name'])
-        self.assertEqual(obj.phone_number, data['phone_number'])
-        date_of_birth = date_format(obj.date_of_birth, 'd/m/Y')
-        self.assertEqual(date_of_birth, data['date_of_birth'])
+        keys = (
+            'id',
+            'url',
+            'email',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'date_of_birth',
+        )
+        for key in keys:
+            self.assertIn(key, response.data)
 
     def test_create(self):
-        # data = self.create_data()
-        # data['password'] = 'hello25'
         url = '/api/users/'
         data = {
             'email': 'john.doe@example.net',
@@ -75,8 +75,11 @@ class UserAPITest(ModelAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
         user = User.objects.get()
-        special_fields = ('password', 'date_of_birth')
-        for field in filter(lambda f: f not in special_fields, data):
-            self.assertEqual(getattr(user, field), data[field])
-        date_of_birth = date_format(user.date_of_birth, 'd/m/Y')
-        self.assertEqual(date_of_birth, data['date_of_birth'])
+        for key in data:
+            if key == 'password':
+                continue
+            elif key == 'date_of_birth':
+                date_of_birth = date_format(user.date_of_birth, 'd/m/Y')
+                self.assertEqual(date_of_birth, data['date_of_birth'])
+                continue
+            self.assertEqual(getattr(user, key), data[key])

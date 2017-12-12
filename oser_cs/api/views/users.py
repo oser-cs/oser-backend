@@ -2,20 +2,14 @@
 
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
-from rest_framework.mixins import (
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin,
-)
-from api.serializers.users import UserSerializer
+from api.serializers.users import UserSerializer, UserCreateSerializer
 
 # Create your views here.
 
 User = get_user_model()
 
 
-class UserViewSet(ListModelMixin,
-                  RetrieveModelMixin,
-                  CreateModelMixin,
-                  viewsets.GenericViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """API endpoint that allows users to be viewed or edited.
 
     retrieve:
@@ -29,4 +23,8 @@ class UserViewSet(ListModelMixin,
     """
 
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserCreateSerializer
+        return UserSerializer
