@@ -9,7 +9,7 @@ from tutoring.models import TutoringGroup, School, TutoringSession
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for School.
 
-    Suited for: list, retrieve, update, delete
+    Suited for: list, retrieve, update, partial_update, delete
     """
 
     students = serializers.HyperlinkedRelatedField(
@@ -18,10 +18,13 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
         view_name='api:student-detail',
         help_text='Lycéens inscrits à ce lycée',
     )
+    students_count = serializers.IntegerField(source='students.count',
+                                              read_only=True)
 
     class Meta:  # noqa
         model = School
-        fields = ('uai_code', 'url', 'name', 'students',)
+        fields = ('uai_code', 'url', 'name', 'students',
+                  'students_count',)
         extra_kwargs = {
             'url': {'view_name': 'api:school-detail'},
             'uai_code': {'read_only': True},
@@ -31,7 +34,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
     def setup_eager_loading(queryset):
         """Setup eager loading in advance.
 
-        Prevents from the N+1 query problem by pre-fetching the students.
+        Prevents the N+1 query problem by pre-fetching the students.
 
         Source: http://ses4j.github.io/2015/11/23/
                 optimizing-slow-django-rest-framework-performance
@@ -53,15 +56,6 @@ class SchoolCreateSerializer(SchoolSerializer):
         view_name='api:student-detail',
         help_text='Lycéens inscrits à ce lycée',
     )
-
-    def create(self, validated_data):
-        students = validated_data.pop('students', [])
-        school = School.objects.create(**validated_data)
-        for student in students:
-            student.school = school
-            student.save()
-        school.save()
-        return school
 
     class Meta(SchoolSerializer.Meta):  # noqa
         extra_kwargs = {
@@ -87,13 +81,25 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
         queryset=School.objects.all(),
         view_name='api:school-detail',
     )
+    students_count = serializers.IntegerField(source='students.count',
+                                              read_only=True)
+    tutors_count = serializers.IntegerField(source='tutors.count',
+                                            read_only=True)
 
     class Meta:  # noqa
         model = TutoringGroup
-        fields = ('id', 'url', 'name', 'tutors', 'students', 'school',)
+        fields = ('id', 'url', 'name', 'tutors', 'students', 'school',
+                  'students_count', 'tutors_count',)
         extra_kwargs = {
             'url': {'view_name': 'api:tutoring_group-detail'},
         }
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related('school')
+        queryset = queryset.prefetch_related('tutors')
+        queryset = queryset.prefetch_related('students')
+        return queryset
 
 
 class TutoringSessionSerializer(serializers.HyperlinkedModelSerializer):

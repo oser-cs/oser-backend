@@ -49,11 +49,11 @@ class StudentAPITest(ModelAPITestCase):
         url = f'/api/students/{student.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('user', response.data)
-        self.assertIn('address', response.data)
-        self.assertIn('tutoring_group', response.data)
-        self.assertIn('school', response.data)
-        self.assertIn('url', response.data)
+        keys = (
+            'user', 'address', 'tutoring_group', 'school', 'url',
+        )
+        for key in keys:
+            self.assertIn(key, response.data)
 
     def test_create(self):
         """Ensure we can create a new student object through the API."""

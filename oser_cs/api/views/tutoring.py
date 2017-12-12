@@ -1,10 +1,6 @@
 """Tutoring API views."""
 
-from rest_framework import viewsets
-from rest_framework.mixins import (
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin,
-)
-from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.viewsets import ModelViewSet
 
 from tutoring.models import TutoringGroup, School, TutoringSession
 from api.serializers.tutoring import (
@@ -16,46 +12,25 @@ from api.serializers.tutoring import (
 # Create your views here.
 
 
-class TutoringGroupViewSet(ListModelMixin,
-                           RetrieveModelMixin,
-                           CreateModelMixin,
-                           viewsets.GenericViewSet):
+class TutoringGroupViewSet(ModelViewSet):
     """API endpoint that allows tutoring groups to be viewed or edited.
 
-    retrieve:
-    Return a tutoring group instance.
-
-    list:
-    Return all tutoring groups.
-
-    create:
-    Create a tutoring group instance.
+    Actions: list, retrieve, create, update, partial_update, destroy
     """
 
     queryset = TutoringGroup.objects.all()
     serializer_class = TutoringGroupSerializer
 
+    def get_queryset(self):
+        queryset = self.queryset
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
-class SchoolViewSet(ListModelMixin,
-                    RetrieveUpdateDestroyAPIView,
-                    CreateModelMixin,
-                    viewsets.GenericViewSet):
+
+class SchoolViewSet(ModelViewSet):
     """API endpoint that allows schools to be viewed, edited or destroyed.
 
-    list:
-    Return all schools.
-
-    retrieve:
-    Return a school instance.
-
-    create:
-    Create a school instance.
-
-    update:
-    Update a school instance.
-
-    destroy:
-    Delete a school instance.
+    Actions: list, retrieve, create, update, partial_update, destroy
     """
 
     queryset = School.objects.all()
@@ -71,20 +46,10 @@ class SchoolViewSet(ListModelMixin,
         return SchoolSerializer
 
 
-class TutoringSessionViewSet(ListModelMixin,
-                             RetrieveModelMixin,
-                             CreateModelMixin,
-                             viewsets.GenericViewSet):
+class TutoringSessionViewSet(ModelViewSet):
     """API endpoint that allows tutoring sessions to be viewed or edited.
 
-    retrieve:
-    Return a tutoring session instance.
-
-    list:
-    Return all tutoring sessions.
-
-    create:
-    Create a tutoring session instance.
+    Actions: list, retrieve, create, update, partial_update, destroy
     """
 
     queryset = TutoringSession.objects.all()
