@@ -7,12 +7,16 @@ from tutoring.models import TutoringGroup, School, TutoringSession
 
 
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer for School."""
+    """Serializer for School.
+
+    Suited for: list, retrieve, update, delete
+    """
 
     students = serializers.HyperlinkedRelatedField(
         many=True,
         queryset=Student.objects.all(),
         view_name='api:student-detail',
+        help_text='Lycéens inscrits à ce lycée',
     )
 
     class Meta:  # noqa
@@ -20,6 +24,49 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('uai_code', 'url', 'name', 'students',)
         extra_kwargs = {
             'url': {'view_name': 'api:school-detail'},
+            'uai_code': {'read_only': True},
+        }
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        """Setup eager loading in advance.
+
+        Prevents from the N+1 query problem by pre-fetching the students.
+
+        Source: http://ses4j.github.io/2015/11/23/
+                optimizing-slow-django-rest-framework-performance
+        """
+        queryset = queryset.prefetch_related('students')
+        return queryset
+
+
+class SchoolCreateSerializer(SchoolSerializer):
+    """Serializer for creating new school instances.
+
+    Suited for: create
+    """
+
+    students = serializers.HyperlinkedRelatedField(
+        many=True,
+        required=False,
+        queryset=Student.objects.all(),
+        view_name='api:student-detail',
+        help_text='Lycéens inscrits à ce lycée',
+    )
+
+    def create(self, validated_data):
+        students = validated_data.pop('students', [])
+        school = School.objects.create(**validated_data)
+        for student in students:
+            student.school = school
+            student.save()
+        school.save()
+        return school
+
+    class Meta(SchoolSerializer.Meta):  # noqa
+        extra_kwargs = {
+            **SchoolSerializer.Meta.extra_kwargs,
+            'uai_code': {'read_only': False},
         }
 
 

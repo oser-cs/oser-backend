@@ -72,8 +72,9 @@ class SchoolTest(ModelTestCase):
     }
 
     @classmethod
-    def setUpTestData(self):
-        self.obj = School.objects.create(uai_code=random_uai_code())
+    def setUpTestData(cls):
+        cls.obj = School.objects.create(uai_code=random_uai_code(),
+                                        name='Lycée Michelin')
 
     def test_uai_code_help_text_indicates_format(self):
         help_text = self.model._meta.get_field('uai_code').help_text
@@ -88,7 +89,9 @@ class SchoolTest(ModelTestCase):
         self.assertIn("site du ministère de l'Éducation Nationale", help_text)
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/schools/{self.obj.pk}',
+        url = self.obj.get_absolute_url()
+        self.assertEqual(url, f'/api/schools/{self.obj.uai_code}/')
+        response = self.client.get(f'/api/schools/{self.obj.uai_code}/',
                                    follow=True)
         self.assertEqual(200, response.status_code)
 

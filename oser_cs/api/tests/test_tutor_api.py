@@ -54,6 +54,7 @@ class TutorAPITest(ModelAPITestCase):
         self.assertIn('user', response.data)
         self.assertIn('promotion', response.data)
         self.assertIn('tutoring_groups', response.data)
+        self.assertIn('url', response.data)
 
     def test_create(self):
         """Ensure we can create a new tutor object through the API."""

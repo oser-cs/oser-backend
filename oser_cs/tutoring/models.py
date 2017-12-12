@@ -92,7 +92,7 @@ class School(models.Model):
     ordering : by name
     """
 
-    name = models.CharField('nom', max_length=200)
+    name = models.CharField('nom', max_length=200, help_text='Nom du lycée')
 
     # TODO add UAI code validation
     uai_code = models.CharField(
@@ -106,7 +106,8 @@ class School(models.Model):
             "ministère de l'Éducation Nationale."))
 
     # TODO convert to validated address field
-    address = models.CharField('adresse', max_length=200)
+    address = models.CharField('adresse', max_length=200,
+                               help_text='Adresse complète du lycée')
 
     class Meta:  # noqa
         ordering = ('name',)

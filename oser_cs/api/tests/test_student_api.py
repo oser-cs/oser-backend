@@ -53,6 +53,7 @@ class StudentAPITest(ModelAPITestCase):
         self.assertIn('address', response.data)
         self.assertIn('tutoring_group', response.data)
         self.assertIn('school', response.data)
+        self.assertIn('url', response.data)
 
     def test_create(self):
         """Ensure we can create a new student object through the API."""
