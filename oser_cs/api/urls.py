@@ -2,7 +2,7 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from .views import users, persons, tutoring
+from .views import users, tutoring
 
 app_name = 'api'
 
@@ -17,11 +17,9 @@ router = routers.DefaultRouter()
 
 # users
 router.register(r'users', users.UserViewSet)
-
-# persons
-router.register(r'tutors', persons.TutorViewSet)
-router.register(r'students', persons.StudentViewSet)
-router.register(r'schoolstaffmembers', persons.SchoolStaffMemberViewSet)
+router.register(r'tutors', users.TutorViewSet)
+router.register(r'students', users.StudentViewSet)
+router.register(r'schoolstaffmembers', users.SchoolStaffMemberViewSet)
 
 # tutoring
 router.register(r'schools', tutoring.SchoolViewSet)

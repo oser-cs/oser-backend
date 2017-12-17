@@ -1,12 +1,12 @@
 """Users models."""
 from django.db import models
 from django.shortcuts import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as _UserManager
 
 from utils import modify_fields
-
-# Create your models here.
+from .profiles import Profile
 
 
 class UserManager(_UserManager):
@@ -53,7 +53,9 @@ class UserManager(_UserManager):
     last_name={'blank': False},
 )
 class User(AbstractUser):
-    """Django Contrib user. For possible future refinements only.
+    """Custom user.
+
+    User identification happens by email and password.
 
     Fields
     ----------
@@ -66,8 +68,8 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name']
     objects = UserManager()
 
-    date_of_birth = models.DateField('date de naissance',
-                                     blank=False, null=True)
+    date_of_birth = models.DateField(blank=False, null=True,
+                                     verbose_name='date de naissance')
 
     MALE = 'M'
     FEMALE = 'F'
@@ -82,6 +84,21 @@ class User(AbstractUser):
     # TODO add a proper phone number validator
     phone_number = models.CharField('téléphone',
                                     max_length=12, null=True, blank=True)
+
+    profile_type = models.CharField(max_length=20,
+                                    choices=Profile.get_profile_types(),
+                                    verbose_name='type de profil')
+
+    @property
+    def profile(self):
+        if not self.profile_type:
+            raise AttributeError('User has no profile')
+        model = Profile.get_model(self.profile_type)
+        try:
+            return model.objects.get(user=self)
+        except ObjectDoesNotExist:
+            raise AttributeError('User has no profile')
+    profile.fget.short_description = 'profil'
 
     def get_absolute_url(self):
         return reverse('api:user-detail', args=[str(self.id)])

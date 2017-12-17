@@ -2,7 +2,7 @@
 
 from django.contrib.auth import get_user_model
 from tutoring.models import TutoringGroup, School, TutoringSession
-from persons.models import Tutor
+from users.models import Tutor
 from tests.utils import ModelTestCase, random_uai_code, random_email
 
 

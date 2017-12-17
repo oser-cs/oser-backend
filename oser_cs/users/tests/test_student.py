@@ -1,7 +1,7 @@
 """Student model tests."""
 
 from django.contrib.auth import get_user_model
-from persons.models import Student
+from users.models import Student
 
 from tests.utils import random_email, ModelTestCase
 

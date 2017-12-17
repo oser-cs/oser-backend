@@ -4,7 +4,8 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from .models import User, Tutor, Student, SchoolStaffMember
+from tutoring.admin import TutoringGroupMembershipInline
 
 # Register your models here.
 
@@ -42,3 +43,31 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'password1', 'password2')}
          ),
     )
+
+
+@admin.register(Tutor)
+class TutorAdmin(admin.ModelAdmin):
+    """Tutor admin panel."""
+
+    inlines = [
+        TutoringGroupMembershipInline
+    ]
+
+    class Meta:  # noqa
+        model = Tutor
+
+
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    """Student admin panel."""
+
+    class Meta:  # noqa
+        model = Student
+
+
+@admin.register(SchoolStaffMember)
+class SchoolStaffMemberAdmin(admin.ModelAdmin):
+    """School staff member admin panel."""
+
+    class Meta:  # noqa
+        model = SchoolStaffMember

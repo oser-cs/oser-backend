@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
 
-from persons.models import Student
+from users.models import Student
 from tutoring.models import School, TutoringGroup
 
 from tests.utils import random_email, random_uai_code, ModelAPITestCase

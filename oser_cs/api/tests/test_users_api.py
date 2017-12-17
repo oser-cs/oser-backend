@@ -6,6 +6,8 @@ from django.utils.formats import date_format
 from django.contrib.auth import get_user_model
 from rest_framework import status
 
+from users.models import Student
+
 from tests.utils import random_email
 from tests.utils import ModelAPITestCase
 
@@ -25,6 +27,7 @@ class UserAPITest(ModelAPITestCase):
             'last_name': 'Doe',
             'phone_number': '0601020304',
             'date_of_birth': date(2000, 1, 1),
+            'profile_type': 'student',
         }
         return data
 
@@ -57,6 +60,7 @@ class UserAPITest(ModelAPITestCase):
             'phone_number',
             'date_of_birth',
             'gender',
+            'profile',
         )
         for key in keys:
             self.assertIn(key, response.data)
@@ -71,17 +75,21 @@ class UserAPITest(ModelAPITestCase):
             'gender': User.MALE,
             'phone_number': '0601020304',
             'date_of_birth': '01/01/2000',
+            'profile_type': 'student',
         }
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
         user = User.objects.get()
+        self.assertIsInstance(user.profile, Student)
         for key in data:
             if key == 'password':
                 continue
             elif key == 'date_of_birth':
                 date_of_birth = date_format(user.date_of_birth, 'd/m/Y')
                 self.assertEqual(date_of_birth, data['date_of_birth'])
+                continue
+            if key == 'profile_type':
                 continue
             self.assertEqual(getattr(user, key), data[key])

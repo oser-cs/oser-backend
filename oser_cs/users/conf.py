@@ -1,4 +1,4 @@
-"""Persons settings."""
+"""Uses settings."""
 
 from django.conf import settings
 from utils import setdefault

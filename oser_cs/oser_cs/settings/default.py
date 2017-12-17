@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     # Site apps
     'users.apps.UsersConfig',
-    'persons.apps.PersonsConfig',
     'tutoring.apps.TutoringConfig',
     'api.apps.ApiConfig',
 ]

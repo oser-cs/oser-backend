@@ -1,12 +1,12 @@
-"""Persons utilities tests."""
+"""Users utilities tests."""
 import datetime
 from django.test import TestCase
 from django.conf import settings
-from persons.utils import get_promotion_range
+from users.utils import get_promotion_range
 
 
-class TestUtils(TestCase):
-    """Test the persons utilities."""
+class TestGetPromotionRange(TestCase):
+    """Test the get_promotion_range utility."""
 
     def make_date(self, year, months_after_arrival, days_after_arrival):
         return datetime.date(

@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from persons.models import Student, Tutor
+from users.models import Student, Tutor
 from tutoring.models import TutoringGroup, School, TutoringSession
 
 

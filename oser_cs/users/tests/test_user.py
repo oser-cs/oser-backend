@@ -3,6 +3,8 @@ from django.test import TestCase
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 
+from users.models import Profile
+
 from tests.utils import random_email, ModelTestCase
 
 
@@ -62,6 +64,12 @@ class UserModelTest(ModelTestCase):
             'blank': True,
             'null': True,
         },
+        'profile_type': {
+            'verbose_name': 'type de profil',
+            'blank': False,
+            'null': False,
+            'choices': Profile.get_profile_types(),
+        }
     }
 
     @classmethod

@@ -41,17 +41,17 @@ class TutoringGroup(models.Model):
     Fields
     ------
     name : char
-    tutors : n-n with persons.Tutor
+    tutors : n-n with users.Tutor
     school : 1-n with tutoring.School
         Deletion rule: SET_NULL
 
     Relationships
     -------------
-    students : n-1 with persons.Student
+    students : n-1 with users.Student
     """
 
     name = models.CharField('nom', max_length=200)
-    tutors = models.ManyToManyField('persons.Tutor',
+    tutors = models.ManyToManyField('users.Tutor',
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
                                     blank=True)
@@ -84,8 +84,8 @@ class School(models.Model):
 
     Relationships
     -------------
-    students : n-1 with persons.Student
-    staffmembers : n-1 with persons.SchoolStaffMember
+    students : n-1 with users.Student
+    staffmembers : n-1 with users.SchoolStaffMember
 
     Meta
     ----

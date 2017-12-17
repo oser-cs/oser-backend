@@ -1,42 +1,89 @@
-"""Persons models."""
+"""User profiles models."""
 
 from django.db import models
+from django.apps import apps
 from django.shortcuts import reverse
-from django.contrib.auth import get_user_model
-from persons.utils import get_promotion_range
-
-# Create your models here.
+from ..utils import get_promotion_range
+from ..apps import UsersConfig
 
 
-class Person(models.Model):
-    """Represents a person who can use the website.
+# Generic profile
 
-    Abstract model.
+class ProfileMeta(models.base.ModelBase):
+    """Extended metaclass for the Profile model.
 
-    Fields
-    ------
-    user : 1-1 with User
-        Deletion rule: CASCADE
-
-    Properties
-    ----------
-    full_name : str
-        Alias to user.get_full_name()
-
-    Meta
-    ----
-    ordering : by last name, by first name
+    Allows to dynamically create the choices for the UserAccount.profile_type
+    field.
     """
 
-    user = models.OneToOneField(get_user_model(),
+    PROFILE_TYPES = []
+
+    def __new__(metacls, name, bases, namespace):
+        cls = super().__new__(metacls, name, bases, namespace)
+        if name != 'Profile':
+            metacls.PROFILE_TYPES.append((
+                name.lower(),
+                cls._meta.verbose_name.capitalize()
+            ))
+        return cls
+
+
+class Profile(models.Model, metaclass=ProfileMeta):
+    """Generic profile model.
+
+    In 1-1 relationship with User:
+        profile = user.profile  # profile from user
+        user = profile.user  # user from profile
+
+    Generic fields defined here
+    ---------------------------
+    phone_number : char
+    date_of_birth : date
+
+    Define a specific profile by subclassing this model and defining more
+    model fields.
+    """
+
+    user = models.OneToOneField('users.User',
                                 on_delete=models.CASCADE,
                                 verbose_name='utilisateur',
-                                null=True)
+                                primary_key=True,
+                                related_name='profile_object')
+    phone_number = models.CharField(max_length=12, null=True, blank=True,
+                                    verbose_name='téléphone')
+    date_of_birth = models.DateField(null=True,
+                                     verbose_name='date de naissance')
 
     class Meta:  # noqa
-        abstract = True
-        verbose_name = 'personne'
+        verbose_name = 'profil'
         ordering = ['user__last_name', 'user__first_name']
+
+    @property
+    def id(self):
+        return self.user_id
+
+    @classmethod
+    def get_profile_types(cls):
+        """Return the available profile types.
+
+        Returns
+        -------
+        profile_types : tuple of 2-tuples
+            Directly usable by a choices field option.
+        """
+        return tuple(type(cls).PROFILE_TYPES)
+
+    @classmethod
+    def get_model(cls, profile_type):
+        """Return the Django model associated with a profile type.
+
+        Raises
+        ------
+        ValueError :
+            If profile_type is not associated with a profile model.
+        """
+        model = apps.get_model(UsersConfig.name, profile_type)
+        return model
 
     @property
     def full_name(self):
@@ -46,15 +93,17 @@ class Person(models.Model):
         return str(self.full_name)
 
 
-class Student(Person):
-    """Represents a student.
+# Define user profiles here.
 
-    Inherits from the Person abstract model.
+class Student(Profile):
+    """Represents a student profile.
 
     Fields
     ------
     address : char  # TODO update when validated address field implemented
     tutoring_group : 1-n with tutoring.TutoringGroup
+        Deletion rule: SET_NULL
+    school : 1-n with tutoring.School
         Deletion rule: SET_NULL
     """
 
@@ -77,10 +126,8 @@ class Student(Person):
         return reverse('api:student-detail', args=[str(self.id)])
 
 
-class Tutor(Person):
-    """Represents a tutor.
-
-    Inherits from the Person abstract model.
+class Tutor(Profile):
+    """Represents a tutor profile.
 
     Fields
     ------
@@ -101,10 +148,8 @@ class Tutor(Person):
         return reverse('api:tutor-detail', args=[str(self.id)])
 
 
-class SchoolStaffMember(Person):
+class SchoolStaffMember(Profile):
     """Represents a member of a school's staff.
-
-    Inherits from the Person abstract model.
 
     Fields
     ------
