@@ -62,10 +62,14 @@ class User(AbstractUser):
     date_of_birth : date
     gender : char (choices: 'M' or 'F')
     phone_number : char
+    profile_type : char
+        The type of profile this user has. Used to polymorphically find
+        the profile corresponding to a user (profiles can be of various
+        types) through user.profile.
     """
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = 'email'  # default was: username
+    REQUIRED_FIELDS = ['first_name', 'last_name']  # removed email
     objects = UserManager()
 
     date_of_birth = models.DateField(blank=False, null=True,
@@ -91,6 +95,14 @@ class User(AbstractUser):
 
     @property
     def profile(self):
+        """Return the profile of the user.
+
+        The returned object is an instance of the model corresponding to
+        the profile_type.
+
+        Example: if profile_type is 'student', user.profile will be a
+        Student object.
+        """
         if not self.profile_type:
             raise AttributeError('User has no profile')
         model = Profile.get_model(self.profile_type)
