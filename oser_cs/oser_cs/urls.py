@@ -24,5 +24,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
     url(r'^api/docs/', include_docs_urls(title='OSER_CS API')),
+    url('api-auth/', include(
+        'rest_framework.urls', namespace='rest_framework')),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
 ]

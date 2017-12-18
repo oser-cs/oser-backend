@@ -2,10 +2,10 @@
 
 
 def modify_fields(**kwargs):
-    """Modify the fields of a superclass.
+    """Modify the fields of an inherited model.
 
-    Caution: will affect the superclass' fields too. It is preferable to
-    restrict the usage to cases when the superclass is abstract.
+    Caution: will affect the inherited model's fields too. It is preferable to
+    restrict the usage to cases when the inherited model is abstract.
 
     Example
     -------
