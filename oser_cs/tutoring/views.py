@@ -1,9 +1,10 @@
 """Tutoring API views."""
 
 from rest_framework.viewsets import ModelViewSet
+from dry_rest_permissions.generics import DRYPermissions
 
-from tutoring.models import TutoringGroup, School, TutoringSession
-from api.serializers.tutoring import (
+from .models import TutoringGroup, School, TutoringSession
+from .serializers import (
     TutoringGroupSerializer,
     SchoolSerializer, SchoolCreateSerializer,
     TutoringSessionSerializer,
@@ -20,6 +21,7 @@ class TutoringGroupViewSet(ModelViewSet):
 
     queryset = TutoringGroup.objects.all()
     serializer_class = TutoringGroupSerializer
+    permission_classes = (DRYPermissions,)
 
     def get_queryset(self):
         queryset = self.queryset

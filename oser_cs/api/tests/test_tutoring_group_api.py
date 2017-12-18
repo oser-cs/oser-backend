@@ -1,10 +1,12 @@
 """School API tests."""
 
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from rest_framework import status
+from rest_framework.test import APIClient
 
 from users.models import Student, Tutor
-from tutoring.models import TutoringGroup, School
+from tutoring.models import TutoringGroup, School, TutoringGroupLeadership
 
 from tests.utils import random_email, random_uai_code, ModelAPITestCase
 
@@ -16,6 +18,14 @@ class TutoringGroupAPITest(ModelAPITestCase):
     """Test the tutoring group API."""
 
     model = TutoringGroup
+
+    @classmethod
+    def setUpTestData(cls):
+        call_command('loaddata', 'users', verbosity=0)
+        cls.user = User.objects.first()
+
+    def setUp(self):
+        self.client.force_login(self.user)
 
     def create_data(self):
         school = School.objects.create(uai_code=random_uai_code(),
@@ -37,7 +47,10 @@ class TutoringGroupAPITest(ModelAPITestCase):
         for student in Student.objects.all():
             obj.students.add(student)
         for tutor in Tutor.objects.all():
-            obj.tutors.add(tutor)
+            TutoringGroupLeadership.objects.create(
+                tutoring_group=obj,
+                tutor=tutor
+            )
         return obj
 
     def test_list(self):

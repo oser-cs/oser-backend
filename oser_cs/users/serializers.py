@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from users.models import Tutor, Student, SchoolStaffMember
+from .models import Tutor, Student, SchoolStaffMember
 from tutoring.models import School, TutoringGroup
 
 User = get_user_model()

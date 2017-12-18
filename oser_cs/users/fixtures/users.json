@@ -1,0 +1,33 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 30,
+    "fields": {
+      "name": "VP Tutorat",
+      "permissions": []
+    }
+  },
+  {
+    "model": "users.User",
+    "pk": 100,
+    "fields": {
+      "email": "john.doe@example.net",
+      "password": "pwsecretpw",
+      "first_name": "John",
+      "last_name": "Doe",
+      "groups": [30]
+    }
+  },
+  {
+    "model": "users.Profile",
+    "pk": 100,
+    "fields": {
+      "user_id": 100
+    }
+  },
+  {
+    "model": "users.Student",
+    "pk": 100,
+    "fields": {}
+  }
+]

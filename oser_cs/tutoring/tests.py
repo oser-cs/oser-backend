@@ -1,7 +1,9 @@
 """Tutoring tests."""
 
+from django.core.management import call_command
 from django.contrib.auth import get_user_model
-from tutoring.models import TutoringGroup, School, TutoringSession
+from tutoring.models import (
+    TutoringGroup, School, TutoringSession, TutoringGroupLeadership)
 from users.models import Tutor
 from tests.utils import ModelTestCase, random_uai_code, random_email
 
@@ -31,8 +33,8 @@ class TutoringGroupTest(ModelTestCase):
     }
 
     @classmethod
-    def setUpTestData(self):
-        self.obj = TutoringGroup.objects.create()
+    def setUpTestData(cls):
+        cls.obj = TutoringGroup.objects.create()
 
     def test_get_absolute_url(self):
         response = self.client.get(f'/api/tutoring/groups/{self.obj.pk}',
@@ -42,7 +44,8 @@ class TutoringGroupTest(ModelTestCase):
     def test_tutors_many_to_many_relationship(self):
         user = User.objects.create(email=random_email())
         tutor = Tutor.objects.create(user=user)
-        tutor.tutoring_groups.add(self.obj)
+        TutoringGroupLeadership.objects.create(tutoring_group=self.obj,
+                                               tutor=tutor)
         self.assertIn(tutor, self.obj.tutors.all())
         self.assertIn(self.obj, tutor.tutoring_groups.all())
 

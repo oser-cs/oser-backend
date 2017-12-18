@@ -2,8 +2,9 @@
 
 from rest_framework import serializers
 
+from .models import (
+    TutoringGroup, School, TutoringSession, TutoringGroupLeadership)
 from users.models import Student, Tutor
-from tutoring.models import TutoringGroup, School, TutoringSession
 
 
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
@@ -85,6 +86,22 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
                                               read_only=True)
     tutors_count = serializers.IntegerField(source='tutors.count',
                                             read_only=True)
+
+    def create(self, validated_data):
+        tutors = validated_data.pop('tutors')
+        students = validated_data.pop('students')
+        is_leader = validated_data.pop('is_leader', False)
+        tutoring_group = TutoringGroup.objects.create(**validated_data)
+        for student in students:
+            tutoring_group.students.add(student)
+        for tutor in tutors:
+            TutoringGroupLeadership.objects.create(
+                tutoring_group=tutoring_group,
+                tutor=tutor,
+                is_leader=is_leader,
+            )
+        tutoring_group.save()
+        return tutoring_group
 
     class Meta:  # noqa
         model = TutoringGroup

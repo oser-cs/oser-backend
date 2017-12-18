@@ -2,13 +2,20 @@
 
 from datetime import datetime, timedelta
 from django.db import models
+from django.core import checks
 from django.shortcuts import reverse
 from django.template.defaulttags import date as date_tag
+from dry_rest_permissions.generics import allow_staff_or_superuser
+
+from utils import is_in_group, group_exists
 
 from .conf import settings
 from .validators import uai_code_validator
 
 # Create your models here.
+
+
+VP_TUTORAT_GROUP = 'VP Tutorat'
 
 
 class SchoolYear(models.Model):
@@ -35,6 +42,15 @@ class SchoolYear(models.Model):
         return f'{self.year}-{self.year + 1}'
 
 
+class TutoringGroupLeadership(models.Model):
+    """Intermediate model for tutoring group and tutors n-n relationship."""
+
+    tutoring_group = models.ForeignKey('TutoringGroup',
+                                       on_delete=models.CASCADE)
+    tutor = models.ForeignKey('users.Tutor', on_delete=models.CASCADE)
+    is_leader = models.BooleanField(default=False)
+
+
 class TutoringGroup(models.Model):
     """Represents a tutoring group to which tutors and students participate.
 
@@ -54,7 +70,8 @@ class TutoringGroup(models.Model):
     tutors = models.ManyToManyField('users.Tutor',
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
-                                    blank=True)
+                                    blank=True,
+                                    through='TutoringGroupLeadership')
     school = models.ForeignKey('School', on_delete=models.SET_NULL,
                                null=True,
                                related_name='tutoring_groups',
@@ -67,6 +84,49 @@ class TutoringGroup(models.Model):
 
     def get_absolute_url(self):
         return reverse('api:tutoring_group-detail', args=[str(self.id)])
+
+    # System checks
+
+    @classmethod
+    def check(cls, **kwargs):
+        errors = super().check(**kwargs)
+        errors.extend(cls._check_groups_exist(**kwargs))
+        return errors
+
+    @classmethod
+    def _check_groups_exist(cls, **kwargs):
+        errors = []
+        if not group_exists(VP_TUTORAT_GROUP):
+            errors.append(checks.Warning(
+                'no group {} found'.format(VP_TUTORAT_GROUP),
+                hint='Create the {} group'.format(VP_TUTORAT_GROUP),
+                obj=cls,
+            ))
+        return errors
+
+    # API permissions
+
+    @staticmethod
+    def has_read_permission(request):
+        return True
+
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    @allow_staff_or_superuser
+    def has_write_permission(request):
+        """Can only be created or destroyed by admin or VP Tutorat."""
+        return is_in_group(request.user, VP_TUTORAT_GROUP)
+
+    @allow_staff_or_superuser
+    def has_object_update_permission(self, request):
+        """Can only be updated by admin, leader tutor or VP tutorat."""
+        is_leader = (self.tutors
+                     .filter(user_id=request.user.id, is_leader=True)
+                     .exists())
+        is_vp_tutorat = is_in_group(request.user, VP_TUTORAT_GROUP)
+        return is_leader or is_vp_tutorat
 
     def __str__(self):
         return str(self.name)

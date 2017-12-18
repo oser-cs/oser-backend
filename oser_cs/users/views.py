@@ -5,8 +5,8 @@ from rest_framework import viewsets
 from rest_framework.mixins import (
     ListModelMixin, RetrieveModelMixin, CreateModelMixin,
 )
-from users.models import Tutor, Student, SchoolStaffMember
-from api.serializers.users import (
+from .models import Tutor, Student, SchoolStaffMember
+from .serializers import (
     UserSerializer, UserCreateSerializer, UserUpdateSerializer,
     TutorSerializer, StudentSerializer, SchoolStaffMembersSerializer,
 )

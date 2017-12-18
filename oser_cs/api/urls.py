@@ -1,27 +1,26 @@
 """API routers."""
 from rest_framework import routers
 
-from .views import users, tutoring
+from users import views as users_views
+from tutoring import views as tutoring_views
 
 app_name = 'api'
 
-urlpatterns = []
-
-# Create your routes here
+# Register API routes here
 
 router = routers.DefaultRouter()
 
-# users
-router.register(r'users', users.UserViewSet)
-router.register(r'tutors', users.TutorViewSet)
-router.register(r'students', users.StudentViewSet)
-router.register(r'schoolstaffmembers', users.SchoolStaffMemberViewSet)
+# Users views
+router.register(r'users', users_views.UserViewSet)
+router.register(r'tutors', users_views.TutorViewSet)
+router.register(r'students', users_views.StudentViewSet)
+router.register(r'schoolstaffmembers', users_views.SchoolStaffMemberViewSet)
 
-# tutoring
-router.register(r'schools', tutoring.SchoolViewSet)
-router.register(r'tutoring/groups', tutoring.TutoringGroupViewSet,
+# Tutoring views
+router.register(r'schools', tutoring_views.SchoolViewSet)
+router.register(r'tutoring/groups', tutoring_views.TutoringGroupViewSet,
                 base_name='tutoring_group')
-router.register(r'tutoring/sessions', tutoring.TutoringSessionViewSet,
+router.register(r'tutoring/sessions', tutoring_views.TutoringSessionViewSet,
                 base_name='tutoring_session')
 
-urlpatterns += router.urls
+urlpatterns = router.urls

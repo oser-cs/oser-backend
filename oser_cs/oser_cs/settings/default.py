@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'rest_framework',
     # DRF Swagger (API documentation generator)
     'rest_framework_swagger',
+    # DRY REST permissions (rules-based API permissions)
+    # See: https://github.com/dbkaplan/dry-rest-permissions
+    'dry_rest_permissions',
     # Site apps
     'users.apps.UsersConfig',
     'tutoring.apps.TutoringConfig',

@@ -35,11 +35,6 @@ class Profile(models.Model, metaclass=ProfileMeta):
         profile = user.profile  # profile from user
         user = profile.user  # user from profile
 
-    Generic fields defined here
-    ---------------------------
-    phone_number : char
-    date_of_birth : date
-
     Define a specific profile by subclassing this model and defining more
     model fields.
     """
@@ -49,10 +44,6 @@ class Profile(models.Model, metaclass=ProfileMeta):
                                 verbose_name='utilisateur',
                                 primary_key=True,
                                 related_name='profile_object')
-    phone_number = models.CharField(max_length=12, null=True, blank=True,
-                                    verbose_name='téléphone')
-    date_of_birth = models.DateField(null=True,
-                                     verbose_name='date de naissance')
 
     class Meta:  # noqa
         verbose_name = 'profil'

@@ -1,6 +1,6 @@
 *.pyc
 env/
 __pycache__/
-migrations/
 *.db
 *.sqlite3
+migrations/

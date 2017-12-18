@@ -20,13 +20,6 @@ class TestProfile(ModelTestCase):
         'user': {
             'verbose_name': 'utilisateur',
         },
-        'phone_number': {
-            'verbose_name': 'téléphone',
-            'max_length': 12,
-        },
-        'date_of_birth': {
-            'verbose_name': 'date de naissance',
-        },
     }
 
     @classmethod
@@ -85,31 +78,32 @@ class ProfilePrimaryKeyIsUserTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # create a student
-        cls.ua2 = User.objects.create(
+        cls.user = User.objects.create(
             first_name='Adam',
             last_name='Smith',
             email='adam.smith@example.net',
             profile_type='student',
+            date_of_birth='2000-01-03'
         )
-        cls.s = cls.ua2.profile
-        cls.s.date_of_birth = '2000-01-03'
-        cls.s.address = '3 Rue de la vieille poissonnerie, 93100 Montreuil'
+        cls.student = cls.user.profile
+        cls.student.address = ('3 Rue de la vieille poissonnerie, '
+                               '93100 Montreuil')
 
     def test_account_field(self):
-        self.assertEqual(self.s.user, self.ua2)
+        self.assertEqual(self.student.user, self.user)
 
     def test_account_id_field(self):
-        self.assertEqual(self.s.user_id, self.ua2.id)
+        self.assertEqual(self.student.user_id, self.user.id)
 
     def test_account_id_is_pk(self):
-        self.assertEqual(self.s.user_id, self.s.pk)
+        self.assertEqual(self.student.user_id, self.student.pk)
 
     def test_no_proper_id_field(self):
         with self.assertRaises(FieldDoesNotExist):
-            self.s._meta.get_field('id')
+            self.student._meta.get_field('id')
 
     def test_id_with_property(self):
-        self.assertEqual(self.s.id, self.s.user_id)
+        self.assertEqual(self.student.id, self.student.user_id)
 
     def test_reverse_on_user_account(self):
-        self.assertEqual(self.ua2.profile, self.s)
+        self.assertEqual(self.user.profile, self.student)

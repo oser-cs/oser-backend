@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 
 from users.models import Tutor
-from tutoring.models import TutoringGroup
+from tutoring.models import TutoringGroup, TutoringGroupLeadership
 
 from tests.utils import random_email, ModelAPITestCase
 
@@ -28,7 +28,9 @@ class TutorAPITest(ModelAPITestCase):
     def create_obj(self, **kwargs):
         obj = super().create_obj(**kwargs)
         tutoring_group = TutoringGroup.objects.create()
-        obj.tutoring_groups.add(tutoring_group)
+        TutoringGroupLeadership.objects.create(
+            tutoring_group=tutoring_group,
+            tutor=obj)
         return obj
 
     def test_list(self):
