@@ -34,8 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Django REST Framework (DRF)
     'rest_framework',
-    # DRF Swagger (API documentation generator)
-    'rest_framework_swagger',
     # DRY REST permissions (rules-based API permissions)
     # See: https://github.com/dbkaplan/dry-rest-permissions
     'dry_rest_permissions',

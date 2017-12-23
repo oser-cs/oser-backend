@@ -14,17 +14,22 @@ class ProfileMeta(models.base.ModelBase):
 
     Allows to dynamically create the choices for the UserAccount.profile_type
     field.
+
+    Attributes
+    ----------
+    PROFILE_TYPES : list of 2-tuples
+        Directly usable by a field "choices" option.
     """
 
     PROFILE_TYPES = []
 
     def __new__(metacls, name, bases, namespace):
         cls = super().__new__(metacls, name, bases, namespace)
-        if name != 'Profile':
-            metacls.PROFILE_TYPES.append((
-                name.lower(),
-                cls._meta.verbose_name.capitalize()
-            ))
+        if name != 'Profile':  # don't add the base profile model
+            lowercase = name.lower()
+            natural = cls._meta.verbose_name.capitalize()
+            metacls.PROFILE_TYPES.append(
+                (lowercase, natural))
         return cls
 
 
@@ -54,7 +59,7 @@ class Profile(models.Model, metaclass=ProfileMeta):
         return self.user_id
 
     @classmethod
-    def get_profile_types(cls):
+    def get_profile_type_choices(cls):
         """Return the available profile types.
 
         Returns

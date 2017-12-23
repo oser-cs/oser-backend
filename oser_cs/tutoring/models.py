@@ -18,30 +18,6 @@ from .validators import uai_code_validator
 VP_TUTORAT_GROUP = 'VP Tutorat'
 
 
-class SchoolYear(models.Model):
-    """Represents a school year.
-
-    If year is 2017, the school_year object represents the '2017-2018'
-    school year.
-
-    Fields
-    ------
-    year : int field
-    """
-
-    year = models.IntegerField('année', help_text=(
-        "Année calendaire du début de l'année scolaire. "
-        "Exemple : pour l'année scolaire 2017-2018, entrez 2017."
-    ))
-
-    class Meta:  # noqa
-        verbose_name = 'année scolaire'
-        verbose_name_plural = 'années scolaires'
-
-    def __str__(self):
-        return f'{self.year}-{self.year + 1}'
-
-
 class TutoringGroupLeadership(models.Model):
     """Intermediate model for tutoring group and tutors n-n relationship."""
 

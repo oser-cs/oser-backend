@@ -40,23 +40,28 @@ De nombreuses informations sont également disponibles sur le [Wiki](https://git
 
 ### Backend
 
-#### [Django](https://www.djangoproject.com)
+#### Django
 
-Django est un framework de développement web pour Python.
+[Django](https://www.djangoproject.com) est un framework de développement web pour Python.
 
 Le site d'OSER utilise Django en version 2.0.
 
-Django est installé lors de l'installation des `requirements.txt`.
-
 > À l'heure actuelle, peu de tutoriels Django se basent sur la version 2.0, mais il y a en fait très peu de changements non-rétro-compatibles par rapport à la version 1.11, et aucun changement n'est réellement critique. Les améliorations apportées par la version 2.0 sont intéressantes, on peut notamment citer le système d'écriture des URLs qui est grandement simplifié. Pour plus d'infos, lire la [release news](https://www.djangoproject.com/weblog/2017/dec/02/django-20-released/) associée.
 
-#### [Django REST Framework](http://www.django-rest-framework.org)
+#### Django REST Framework
 
-Le Django REST Framework (DRF) permet d'écrire facilement des API REST avec Django.
+Le [Django REST Framework](http://www.django-rest-framework.org) (DRF) permet d'écrire facilement des API REST avec Django.
 
 Le site d'OSER utilise le DRF en version 3.7.3. Cette version est entièrement compatible avec Django 2.0.
 
-Le DRF est installé lors de l'installation des `requirements.txt`.
+#### DRY Rest Permissions
+
+[DRY Rest Permissions](https://github.com/dbkaplan/dry-rest-permissions) est utilisé pour définir les permissions directement sur les modèles Django.
+
+#### FactoryBoy
+
+[FactoryBoy](http://factoryboy.readthedocs.io/en/latest/index.html) est utilisé pour faciliter la création d'objets de test en définissant des usines (*factories*) à partir des modèles Django. Les usines sont définies dans `oser_cs/tests/factory.py`.
+
 
 ## Installation
 
@@ -71,20 +76,20 @@ $ git clone https://github.com/oser-cs/oser-website.git
 $ cd oser-website
 ```
 
-2. Créez un [environnement virtuel](https://github.com/oser-cs/oser-website/wiki/Outils-de-développement-pour-Python#les-environnements-virtuels-avec-virtualenv) puis activez-le :
+2. Créez un [environnement virtuel](https://github.com/oser-cs/oser-website/wiki/Outils-de-développement-pour-Python#les-environnements-virtuels-avec-virtualenv) (ici nommé `env`) puis activez-le :
 
 ```bash
 oser-website $ virtualenv env -p python3
 oser-website $ source env/bin/activate
 ```
 
-3. Installez les dépendances Python :
+3. Installez les dépendances Python avec `pip` :
 
 ```bash
 (env) oser-website $ pip install -r requirements.txt
 ```
 
-4. Lancez les tests :
+4. Lancez les tests pour vous assurer que tout est prêt :
 
 ```bash
 (env) oser-website $ cd oser_cs

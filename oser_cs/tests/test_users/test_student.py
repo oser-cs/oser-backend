@@ -3,7 +3,8 @@
 from django.contrib.auth import get_user_model
 from users.models import Student
 
-from tests.utils import random_email, ModelTestCase
+from tests.factory import StudentFactory
+from tests.utils import ModelTestCase
 
 
 User = get_user_model()
@@ -22,19 +23,14 @@ class StudentTestCase(ModelTestCase):
             'blank': False,
         }
     }
+    model_tests = {
+        'verbose_name': 'lycéen',
+    }
 
     @classmethod
     def setUpTestData(self):
-        user = User.objects.create(email=random_email())
-        self.obj = Student.objects.create(
-            user=user,
-            address='3 Rue Pierre Martin, 75000 PARIS',
-            tutoring_group=None,
-        )
+        self.obj = StudentFactory.create()
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/students/{self.obj.pk}', follow=True)
+        response = self.client.get(f'/api/students/{self.obj.pk}/')
         self.assertEqual(200, response.status_code)
-
-    def test_user_one_to_one_relationship(self):
-        self.assertEqual(User.objects.get(), self.obj.user)

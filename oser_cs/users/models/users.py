@@ -89,8 +89,10 @@ class User(AbstractUser):
     phone_number = models.CharField('téléphone',
                                     max_length=12, null=True, blank=True)
 
+    # type of profile of the user
+    # allows to access the Profile object through user.profile
     profile_type = models.CharField(max_length=20,
-                                    choices=Profile.get_profile_types(),
+                                    choices=Profile.get_profile_type_choices(),
                                     verbose_name='type de profil')
 
     @property

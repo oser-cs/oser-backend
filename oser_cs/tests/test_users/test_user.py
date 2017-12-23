@@ -4,8 +4,8 @@ from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 
 from users.models import Profile
-
 from tests.utils import random_email, ModelTestCase
+from tests.factory import UserFactory
 
 
 User = get_user_model()
@@ -68,21 +68,21 @@ class UserModelTest(ModelTestCase):
             'verbose_name': 'type de profil',
             'blank': False,
             'null': False,
-            'choices': Profile.get_profile_types(),
+            'choices': Profile.get_profile_type_choices(),
         }
     }
 
     @classmethod
     def setUpTestData(self):
-        self.obj = User.objects.create(email=random_email())
+        self.obj = UserFactory.create()
 
     def test_get_absolute_url(self):
         response = self.client.get(f'/api/users/{self.obj.pk}', follow=True)
         self.assertEqual(200, response.status_code)
 
     def test_two_users_with_same_username_allowed(self):
-        self.model.objects.create(email=random_email())
-        self.model.objects.create(email=random_email())
+        self.model.objects.create(email=random_email(), username='foo')
+        self.model.objects.create(email=random_email(), username='foo')
 
     def test_two_users_with_same_email_not_allowed(self):
         with self.assertRaises(IntegrityError):
