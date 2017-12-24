@@ -2,23 +2,20 @@
 
 from datetime import datetime, timedelta
 from django.db import models
-from django.core import checks
 from django.shortcuts import reverse
 from django.template.defaulttags import date as date_tag
 from dry_rest_permissions.generics import allow_staff_or_superuser
 
-from utils import is_in_group, group_exists
+from utils import is_in_group
 
 from .conf import settings
 from .validators import uai_code_validator
+from users.permissions import Groups
 
 # Create your models here.
 
 
-VP_TUTORAT_GROUP = 'VP Tutorat'
-
-
-class TutoringGroupLeadership(models.Model):
+class TutorTutoringGroup(models.Model):
     """Intermediate model for tutoring group and tutors n-n relationship."""
 
     tutoring_group = models.ForeignKey('TutoringGroup',
@@ -47,7 +44,7 @@ class TutoringGroup(models.Model):
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
                                     blank=True,
-                                    through='TutoringGroupLeadership')
+                                    through='TutorTutoringGroup')
     school = models.ForeignKey('School', on_delete=models.SET_NULL,
                                null=True,
                                related_name='tutoring_groups',
@@ -60,25 +57,6 @@ class TutoringGroup(models.Model):
 
     def get_absolute_url(self):
         return reverse('api:tutoring_group-detail', args=[str(self.id)])
-
-    # System checks
-
-    @classmethod
-    def check(cls, **kwargs):
-        errors = super().check(**kwargs)
-        errors.extend(cls._check_groups_exist(**kwargs))
-        return errors
-
-    @classmethod
-    def _check_groups_exist(cls, **kwargs):
-        errors = []
-        if not group_exists(VP_TUTORAT_GROUP):
-            errors.append(checks.Warning(
-                'no group {} found'.format(VP_TUTORAT_GROUP),
-                hint='Create the {} group'.format(VP_TUTORAT_GROUP),
-                obj=cls,
-            ))
-        return errors
 
     # API permissions
 
@@ -93,7 +71,7 @@ class TutoringGroup(models.Model):
     @allow_staff_or_superuser
     def has_write_permission(request):
         """Can only be created or destroyed by admin or VP Tutorat."""
-        return is_in_group(request.user, VP_TUTORAT_GROUP)
+        return is_in_group(request.user, Groups.VP_TUTORAT)
 
     @allow_staff_or_superuser
     def has_object_update_permission(self, request):
@@ -101,7 +79,7 @@ class TutoringGroup(models.Model):
         is_leader = (self.tutors
                      .filter(user_id=request.user.id, is_leader=True)
                      .exists())
-        is_vp_tutorat = is_in_group(request.user, VP_TUTORAT_GROUP)
+        is_vp_tutorat = is_in_group(request.user, Groups.VP_TUTORAT)
         return is_leader or is_vp_tutorat
 
     def __str__(self):

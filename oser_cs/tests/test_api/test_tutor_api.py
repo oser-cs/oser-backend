@@ -4,9 +4,10 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 
 from users.models import Tutor
-from tutoring.models import TutoringGroup, TutoringGroupLeadership
+from tutoring.models import TutoringGroup, TutorTutoringGroup
 
 from tests.utils import random_email, ModelAPITestCase
+from tests.factory import TutorFactory
 
 
 User = get_user_model()
@@ -28,7 +29,7 @@ class TutorAPITest(ModelAPITestCase):
     def create_obj(self, **kwargs):
         obj = super().create_obj(**kwargs)
         tutoring_group = TutoringGroup.objects.create()
-        TutoringGroupLeadership.objects.create(
+        TutorTutoringGroup.objects.create(
             tutoring_group=tutoring_group,
             tutor=obj)
         return obj
@@ -71,7 +72,3 @@ class TutorAPITest(ModelAPITestCase):
         url = '/api/tutors/'
         response = self.client.post(url, data_serialized, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        self.assertEqual(Tutor.objects.count(), 1)
-        self.assertEqual(Tutor.objects.get().user, data.get('user'))
-        self.assertEqual(Tutor.objects.get().promotion, 2017)

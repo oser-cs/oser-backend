@@ -1,20 +1,28 @@
 """Tutoring tests."""
 
-from django.core.management import call_command
+from django.test import TestCase
 from django.contrib.auth import get_user_model
-from tutoring.models import (
-    TutoringGroup, School, TutoringSession, TutoringGroupLeadership)
+import tutoring.models
+from users.permissions import Groups
 from users.models import Tutor
+from utils import group_exists
 from tests.utils import ModelTestCase, random_uai_code, random_email
-
+from tests.factory import StudentFactory, TutoringGroupFactory
 
 User = get_user_model()
+
+
+class TutoringTest(TestCase):
+    """General tests on the tutoring app."""
+
+    def test_VP_TUTORAT_exists(self):
+        self.assertTrue(group_exists(Groups.VP_TUTORAT))
 
 
 class TutoringGroupTest(ModelTestCase):
     """Test the TutoringGroup model."""
 
-    model = TutoringGroup
+    model = tutoring.models.TutoringGroup
     field_tests = {
         'name': {
             'verbose_name': 'nom',
@@ -34,26 +42,37 @@ class TutoringGroupTest(ModelTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.obj = TutoringGroup.objects.create()
+        cls.obj = TutoringGroupFactory.create()
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/tutoring/groups/{self.obj.pk}',
-                                   follow=True)
+        response = self.client.get(f'/api/tutoring/groups/{self.obj.pk}/')
         self.assertEqual(200, response.status_code)
 
     def test_tutors_many_to_many_relationship(self):
         user = User.objects.create(email=random_email())
         tutor = Tutor.objects.create(user=user)
-        TutoringGroupLeadership.objects.create(tutoring_group=self.obj,
-                                               tutor=tutor)
+        tutoring.models.TutorTutoringGroup.objects.create(
+            tutoring_group=self.obj,
+            tutor=tutor)
         self.assertIn(tutor, self.obj.tutors.all())
         self.assertIn(self.obj, tutor.tutoring_groups.all())
+
+
+class TutoringGroupPermissionsTest(TestCase):
+    """Test permissions on Tutoring Group."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.student = StudentFactory.create()
+
+    def test_student_in_group_can_read(self):
+        pass
 
 
 class SchoolTest(ModelTestCase):
     """Test the School model."""
 
-    model = School
+    model = tutoring.models.School
     field_tests = {
         'uai_code': {
             'unique': True,
@@ -76,8 +95,9 @@ class SchoolTest(ModelTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.obj = School.objects.create(uai_code=random_uai_code(),
-                                        name='Lycée Michelin')
+        cls.obj = tutoring.models.School.objects.create(
+            uai_code=random_uai_code(),
+            name='Lycée Michelin')
 
     def test_uai_code_help_text_indicates_format(self):
         help_text = self.model._meta.get_field('uai_code').help_text
@@ -102,7 +122,7 @@ class SchoolTest(ModelTestCase):
 class TutoringSessionTest(ModelTestCase):
     """Test the TutoringSession model."""
 
-    model = TutoringSession
+    model = tutoring.models.TutoringSession
     field_tests = {
         'date': {
             'verbose_name': 'date',
@@ -126,8 +146,8 @@ class TutoringSessionTest(ModelTestCase):
 
     @classmethod
     def setUpTestData(self):
-        tutoring_group = TutoringGroup.objects.create()
-        self.obj = TutoringSession.objects.create(
+        tutoring_group = tutoring.models.TutoringGroup.objects.create()
+        self.obj = tutoring.models.TutoringSession.objects.create(
             tutoring_group=tutoring_group)
 
     def test_get_absolute_url(self):
@@ -136,6 +156,8 @@ class TutoringSessionTest(ModelTestCase):
         self.assertEqual(200, response.status_code)
 
     def test_tutoring_group_one_to_many_relationship(self):
-        self.assertEqual(TutoringGroup.objects.get(), self.obj.tutoring_group)
+        self.assertEqual(tutoring.models.TutoringGroup.objects.get(),
+                         self.obj.tutoring_group)
         self.assertIn(self.obj,
-                      TutoringGroup.objects.get().tutoring_sessions.all())
+                      tutoring.models.TutoringGroup.objects.get()
+                      .tutoring_sessions.all())

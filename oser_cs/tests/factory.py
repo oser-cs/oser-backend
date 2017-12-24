@@ -7,7 +7,9 @@ import factory
 import factory.django
 from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 import users.models
+from users.permissions import Groups
 import tutoring.models
 from tests.utils.misc import random_uai_code
 
@@ -48,6 +50,13 @@ class UserFactory(factory.DjangoModelFactory):
                                   locale='fr_FR')
     phone_number = factory.Faker('phone_number', locale='fr_FR')
 
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """Override the default ``_create`` with our custom call."""
+        manager = cls._get_manager(model_class)
+        # The default would use ``manager.create(*args, **kwargs)``
+        return manager.create_user(*args, **kwargs)
+
 
 @factory.django.mute_signals(post_save)
 class ProfileFactory(factory.DjangoModelFactory):
@@ -59,22 +68,25 @@ class ProfileFactory(factory.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
 
 
-class StudentFactory(ProfileFactory):
-    """Student object factory."""
-
-    class Meta:  # noqa
-        model = users.models.Student
-
-    address = factory.Faker('address', locale='fr_FR')
-
-
 class TutorFactory(ProfileFactory):
     """Tutor object factory."""
 
     class Meta:  # noqa
         model = users.models.Tutor
 
-    promotion = 2019
+    promotion = factory.Iterator([2019, 2020, 2021])
+
+
+class VpTutoratTutorFactory(TutorFactory):
+    """VP Tutorat tutor object factory."""
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """Override the default ``_create`` with our custom call."""
+        manager = cls._get_manager(model_class)
+        obj = manager.create(*args, **kwargs)
+        Group.objects.get(name=Groups.VP_TUTORAT).user_set.add(obj.user)
+        return obj
 
 
 class SchoolFactory(factory.DjangoModelFactory):
@@ -96,3 +108,36 @@ class SchoolStaffMemberFactory(ProfileFactory):
 
     school = factory.SubFactory(SchoolFactory)
     role = 'directeur'
+
+
+class TutoringGroupFactory(factory.DjangoModelFactory):
+    """TutoringGroup object factory."""
+
+    class Meta:  # noqa
+        model = tutoring.models.TutoringGroup
+
+    name = factory.Iterator(['Seconde', 'Première', 'Terminale'])
+    school = factory.SubFactory(SchoolFactory)
+
+
+class TutorTutoringGroupFactory(factory.DjangoModelFactory):
+    """Intermediate tutor-tutoring group object factory."""
+
+    class Meta:  # noqa
+        model = tutoring.models.TutorTutoringGroup
+
+    tutor = factory.SubFactory(TutorFactory)
+    tutoring_group = factory.SubFactory(TutoringGroupFactory)
+    is_leader = False
+
+
+class StudentFactory(ProfileFactory):
+    """Student object factory, member of a tutoring group."""
+
+    class Meta:  # noqa
+        model = users.models.Student
+
+    address = factory.Faker('address', locale='fr_FR')
+    tutoring_group = factory.SubFactory(TutoringGroupFactory)
+    # school is the same as the tutoring group's
+    school = factory.SelfAttribute('tutoring_group.school')

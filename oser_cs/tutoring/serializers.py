@@ -3,7 +3,7 @@
 from rest_framework import serializers
 
 from .models import (
-    TutoringGroup, School, TutoringSession, TutoringGroupLeadership)
+    TutoringGroup, School, TutoringSession, TutorTutoringGroup)
 from users.models import Student, Tutor
 
 
@@ -95,7 +95,7 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
         for student in students:
             tutoring_group.students.add(student)
         for tutor in tutors:
-            TutoringGroupLeadership.objects.create(
+            TutorTutoringGroup.objects.create(
                 tutoring_group=tutoring_group,
                 tutor=tutor,
                 is_leader=is_leader,

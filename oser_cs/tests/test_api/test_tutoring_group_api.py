@@ -1,75 +1,43 @@
 """School API tests."""
 
 from django.contrib.auth import get_user_model
-from django.core.management import call_command
 from rest_framework import status
-from rest_framework.test import APIClient
 
-from users.models import Student, Tutor
-from tutoring.models import TutoringGroup, School, TutoringGroupLeadership
+from tutoring.models import TutoringGroup
 
-from tests.utils import random_email, random_uai_code, ModelAPITestCase
+from tests.utils import AuthModelAPITestCase
+from tests.factory import TutoringGroupFactory, VpTutoratTutorFactory
 
 
 User = get_user_model()
 
 
-class TutoringGroupAPITest(ModelAPITestCase):
-    """Test the tutoring group API."""
+class TutoringGroupAPIAsStandardUser(AuthModelAPITestCase):
+    """Test the tutoring group API for standard users."""
 
     model = TutoringGroup
 
     @classmethod
     def setUpTestData(cls):
-        call_command('loaddata', 'users', verbosity=0)
-        cls.user = User.objects.first()
-
-    def setUp(self):
-        self.client.force_login(self.user)
-
-    def create_data(self):
-        school = School.objects.create(uai_code=random_uai_code(),
-                                       name='Lycée Matisse')
-        for _ in range(3):
-            user = User.objects.create(email=random_email())
-            Student.objects.create(user=user)
-        for _ in range(3):
-            user = User.objects.create(email=random_email())
-            Tutor.objects.create(user=user)
-        data = {
-            'name': 'Matisse Secondes',
-            'school': school,
-        }
-        return data
-
-    def create_obj(self, **kwargs):
-        obj = super().create_obj(**kwargs)
-        for student in Student.objects.all():
-            obj.students.add(student)
-        for tutor in Tutor.objects.all():
-            TutoringGroupLeadership.objects.create(
-                tutoring_group=obj,
-                tutor=tutor
-            )
-        return obj
+        super().setUpTestData()
 
     def test_list(self):
         n_items = 5
         for _ in range(n_items):
-            self.create_obj()
+            TutoringGroupFactory.create()
         url = '/api/tutoring/groups/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), n_items)
 
     def test_retrieve(self):
-        obj = self.create_obj()
+        obj = TutoringGroupFactory.create()
         url = f'/api/tutoring/groups/{obj.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_data_has_expected_values(self):
-        obj = self.create_obj()
+        obj = TutoringGroupFactory.create()
         url = f'/api/tutoring/groups/{obj.pk}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -81,34 +49,40 @@ class TutoringGroupAPITest(ModelAPITestCase):
         for key in keys:
             self.assertIn(key, response.data)
 
-    def test_create(self):
-        """Ensure we can create a new object through the API."""
-        data = self.create_data()
-        data['tutors'] = Tutor.objects.all()
-        data['students'] = Student.objects.all()
+    def test_cannot_create(self):
+        obj = TutoringGroupFactory.create()
+        data = {
+            'name': obj.name,
+            'school': obj.school.get_absolute_url(),
+            'tutors': obj.tutors.all(),
+            'students': obj.students.all(),
+        }
+        url = '/api/tutoring/groups/'
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        students_serialized = [student.get_absolute_url()
-                               for student in data['students']]
-        tutors_serialized = [tutor.get_absolute_url()
-                             for tutor in data['tutors']]
-        data_serialized = {
-            **data,
-            'students': students_serialized,
-            'tutors': tutors_serialized,
-            'school': data['school'].get_absolute_url()
+
+class TutoringGroupAPIAsVpTutorat(AuthModelAPITestCase):
+    """Test the tutoring group API for VP Tutorat users."""
+
+    model = TutoringGroup
+
+    @classmethod
+    def get_user(cls):
+        tutor = VpTutoratTutorFactory.create()
+        return tutor.user
+
+    def test_create(self):
+        """Ensure we can create a new tutoring group through the API."""
+        obj = TutoringGroupFactory.create()
+        data = {
+            'name': obj.name,
+            'school': obj.school.get_absolute_url(),
+            'tutors': obj.tutors.all(),
+            'students': obj.students.all(),
         }
 
+        # send POST request to create tutoring group
         url = '/api/tutoring/groups/'
-        response = self.client.post(url, data_serialized, format='json')
+        response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        self.assertEqual(TutoringGroup.objects.count(), 1)
-        group = TutoringGroup.objects.get()
-        students = group.students.all()
-        tutors = group.tutors.all()
-        self.assertQuerysetEqual(students, map(repr, data['students']),
-                                 ordered=False)
-        self.assertQuerysetEqual(tutors, map(repr, data['tutors']),
-                                 ordered=False)
-        self.assertEqual(group.school, data['school'])
-        self.assertEqual(group.name, 'Matisse Secondes')
