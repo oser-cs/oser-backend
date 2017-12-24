@@ -1,15 +1,14 @@
 """School API tests."""
 
-from django.contrib.auth import get_user_model
 from rest_framework import status
 
 from tutoring.models import TutoringGroup
 
 from tests.utils import AuthModelAPITestCase
-from tests.factory import TutoringGroupFactory, VpTutoratTutorFactory
-
-
-User = get_user_model()
+from tests.factory import (
+    TutoringGroupFactory, UserFactory, VpTutoratTutorFactory,
+    SchoolFactory,
+)
 
 
 class TutoringGroupAPIAsStandardUser(AuthModelAPITestCase):
@@ -18,10 +17,10 @@ class TutoringGroupAPIAsStandardUser(AuthModelAPITestCase):
     model = TutoringGroup
 
     @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
+    def get_user(cls):
+        return UserFactory.create()
 
-    def test_list(self):
+    def test_can_list(self):
         n_items = 5
         for _ in range(n_items):
             TutoringGroupFactory.create()
@@ -30,17 +29,14 @@ class TutoringGroupAPIAsStandardUser(AuthModelAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), n_items)
 
-    def test_retrieve(self):
+    def test_can_retrieve(self):
         obj = TutoringGroupFactory.create()
-        url = f'/api/tutoring/groups/{obj.pk}/'
-        response = self.client.get(url)
+        response = self.client.get(obj.get_absolute_url())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_data_has_expected_values(self):
         obj = TutoringGroupFactory.create()
-        url = f'/api/tutoring/groups/{obj.pk}/'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(obj.get_absolute_url())
         keys = (
             'id', 'url', 'name', 'tutors', 'students',
             'tutors_count', 'students_count',
@@ -72,17 +68,16 @@ class TutoringGroupAPIAsVpTutorat(AuthModelAPITestCase):
         tutor = VpTutoratTutorFactory.create()
         return tutor.user
 
-    def test_create(self):
-        """Ensure we can create a new tutoring group through the API."""
-        obj = TutoringGroupFactory.create()
+    def test_can_create(self):
+        """Ensure a VP Tutorat can create new tutoring group."""
+        school = SchoolFactory.create()
+        obj = TutoringGroupFactory.build(school=school)
         data = {
             'name': obj.name,
             'school': obj.school.get_absolute_url(),
-            'tutors': obj.tutors.all(),
-            'students': obj.students.all(),
+            'tutors': [],
+            'students': [],
         }
-
-        # send POST request to create tutoring group
         url = '/api/tutoring/groups/'
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

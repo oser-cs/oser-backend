@@ -1,7 +1,6 @@
 """API test utilities."""
 
 from rest_framework.test import APITestCase
-from tests.factory import UserFactory
 
 __all__ = ('ModelAPITestCase', 'AuthModelAPITestCase')
 
@@ -34,7 +33,7 @@ class AuthModelAPITestCase(ModelAPITestCase):
     @classmethod
     def get_user(cls):
         """Return a user to log into the API with."""
-        return UserFactory.create()
+        raise NotImplementedError
 
     @classmethod
     def setUpTestData(cls):

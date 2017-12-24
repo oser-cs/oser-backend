@@ -153,7 +153,7 @@ class ModelTestCase(TestCase, metaclass=ModelTestCaseMeta):
     def setUpClass(cls):
         super().setUpClass()
         if not cls.model:
-            raise TypeError(f'Model not defined in {cls.__name__}')
+            raise TypeError(f'Model attribute not defined in {cls.__name__}')
 
 
 class MixinModelTestCaseMeta(ModelTestCaseMeta):

@@ -3,14 +3,19 @@
 FactoryBoy docs: http://factoryboy.readthedocs.io/en/latest/index.html
 """
 
-import factory
-import factory.django
+import datetime
+
 from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+
+import factory
+import factory.django
+
 import users.models
 from users.permissions import Groups
 import tutoring.models
+
 from tests.utils.misc import random_uai_code
 
 User = get_user_model()
@@ -131,6 +136,20 @@ class TutorTutoringGroupFactory(factory.DjangoModelFactory):
     is_leader = False
 
 
+class TutoringSessionFactory(factory.DjangoModelFactory):
+    """Tutoring session object factory."""
+
+    class Meta:  # noqa
+        model = tutoring.models.TutoringSession
+
+    # random date 30 days ahead in time
+    date = factory.Faker('future_date', end_date='+30d')
+    start_time = factory.LazyFunction(datetime.datetime.now)
+    end_time = factory.LazyAttribute(
+        lambda o: o.start_time + datetime.timedelta(hours=2))
+    tutoring_group = factory.SubFactory(TutoringGroupFactory)
+
+
 class StudentFactory(ProfileFactory):
     """Student object factory, member of a tutoring group."""
 
@@ -139,5 +158,5 @@ class StudentFactory(ProfileFactory):
 
     address = factory.Faker('address', locale='fr_FR')
     tutoring_group = factory.SubFactory(TutoringGroupFactory)
-    # school is the same as the tutoring group's
+    # student's school is the same as the student's tutoring group's
     school = factory.SelfAttribute('tutoring_group.school')

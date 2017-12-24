@@ -5,9 +5,6 @@ from tests.utils import FieldTestCase, ModelTestCase, MixinModelTestCase
 from tests.utils import MetaTestCase
 
 
-# TODO test misc.random_uai_code
-
-
 class FieldTestCaseTest(MetaTestCase):
     """Test the usage of FieldTestCase."""
 
@@ -122,3 +119,28 @@ class MixinModelTestCaseTest(TestCase):
             }
 
         cls.test_case = PlaceTestCase
+
+
+class UtilsImportsTest(TestCase):
+    """Test utils imports work properly."""
+
+    def test_import_meta_test_case(self):
+        from tests.utils import MetaTestCase
+
+    def test_import_field_test_case(self):
+        from tests.utils import FieldTestCase
+
+    def test_import_model_test_case(self):
+        from tests.utils import ModelTestCase
+
+    def test_import_abstract_model_test_case(self):
+        from tests.utils import MixinModelTestCase
+
+    def test_import_random_email(self):
+        from tests.utils import random_email
+
+    def test_import_random_uai_code(self):
+        from tests.utils import random_uai_code
+
+    def test_import_api_utils(self):
+        from tests.utils import ModelAPITestCase
