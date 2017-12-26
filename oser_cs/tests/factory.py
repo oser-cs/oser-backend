@@ -39,15 +39,20 @@ class UserFactory(factory.DjangoModelFactory):
 
     class Meta:  # noqa
         model = User
+        exclude = ('uid',)
 
     # random but realistic first_name
     first_name = factory.Faker('first_name')
     # random but realistic last_name
     last_name = factory.Faker('last_name')
     # email built after first_name and last_name
-    email = factory.LazyAttribute(lambda o: '{}.{}@example.net'
-                                  .format(o.first_name.lower(),
-                                          o.last_name.lower()))
+    uid = factory.Sequence(lambda n: n)
+    email = factory.LazyAttribute(
+        lambda o:
+        '{}.{}-{}@exmaple.net'.format(
+            o.first_name.lower(),
+            o.last_name.lower(),
+            o.uid))
     # this is a default, override by passing `profile_type='...'` in create()
     profile_type = 'student'
     date_of_birth = factory.Faker('date_this_century',
@@ -100,9 +105,11 @@ class SchoolFactory(factory.DjangoModelFactory):
 
     class Meta:  # noqa
         model = tutoring.models.School
+        exclude = ('school_name',)
 
     uai_code = factory.LazyFunction(random_uai_code)
-    name = factory.Faker('name', locale='fr_FR')
+    school_name = factory.Faker('name', locale='fr_FR')
+    name = factory.LazyAttribute(lambda o: f'Lycée {o.school_name}')
     address = factory.Faker('address', locale='fr_FR')
 
 
@@ -121,8 +128,10 @@ class TutoringGroupFactory(factory.DjangoModelFactory):
 
     class Meta:  # noqa
         model = tutoring.models.TutoringGroup
+        exclude = ('level',)
 
-    name = factory.Iterator(['Seconde', 'Première', 'Terminale'])
+    level = factory.Iterator(['Seconde', 'Première', 'Terminale'])
+    name = factory.LazyAttribute(lambda o: f'{o.school} ({o.level})')
     school = factory.SubFactory(SchoolFactory)
 
 

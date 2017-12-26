@@ -18,7 +18,7 @@ class SchoolReadTest(AuthAPITestMixin, APIReadTestMixin, APITestCase):
     list_url = '/api/schools/'
     retrieve_url_format = '/api/schools/{obj.pk}/'
     data_content_keys = ('uai_code', 'students', 'name', 'url',
-                         'students_count',)
+                         'students_count', 'address',)
 
     @classmethod
     def get_user(cls):

@@ -24,7 +24,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = School
-        fields = ('uai_code', 'url', 'name', 'students',
+        fields = ('uai_code', 'url', 'name', 'address', 'students',
                   'students_count',)
         extra_kwargs = {
             'url': {'view_name': 'api:school-detail'},
