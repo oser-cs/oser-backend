@@ -101,3 +101,36 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
         tutor = VpTutoratTutorFactory.create()
         self.assertAuthorized(self.perform_delete, user=tutor.user,
                               expected_status_code=status.HTTP_204_NO_CONTENT)
+
+    def test_list_students(self):
+        pass  # TODO
+
+    def test_add_student(self):
+        pass  # TODO
+
+    def test_remove_student(self):
+        pass  # TODO
+
+    def test_list_tutors(self):
+        pass  # TODO
+
+    def test_add_tutor(self):
+        pass  # TODO
+
+    def test_remove_tutor(self):
+        pass  # TODO
+
+    def test_list_meetings(self):
+        pass  # TODO
+
+    def test_list_past_meetings(self):
+        pass  # TODO
+
+    def test_list_next_meetings(self):
+        pass  # TODO
+
+    def test_add_meeting(self):
+        pass  # TODO
+
+    def test_remove_meeting(self):
+        pass  # TODO

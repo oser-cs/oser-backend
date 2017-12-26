@@ -53,3 +53,6 @@ class StudentEndpointsTest(HyperlinkedAPITestCase):
         obj = self.factory.create()
         response = self.client.delete(f'/api/students/{obj.pk}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_retrieve_tutoring_group(self):
+        pass  # TODO

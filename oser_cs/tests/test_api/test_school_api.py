@@ -54,3 +54,21 @@ class SchoolEndpointsTest(HyperlinkedAPITestCase):
         url = '/api/schools/{obj.pk}/'.format(obj=obj)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_list_tutors(self):
+        pass  # TODO
+
+    def test_list_staff(self):
+        pass  # TODO
+
+    def test_list_tutoring_groups(self):
+        pass  # TODO
+
+    def test_list_meetings(self):
+        pass  # TODO
+
+    def test_list_past_meetings(self):
+        pass  # TODO
+
+    def test_list_next_meetings(self):
+        pass  # TODO

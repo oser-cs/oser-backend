@@ -3,15 +3,13 @@
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.db import transaction
-from tests.factory import (
-    UserFactory, StudentFactory, TutorFactory, TutoringGroupFactory,
-    TutorTutoringGroupFactory,
-)
-from users.permissions import setup_groups
+from tests.factory import StudentFactory
 
 
 class Command(BaseCommand):
-    help = 'Populates the database with fake data.'
+    """Populate the database with fake data."""
+
+    help = 'Populate the database with fake data.'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -25,8 +23,8 @@ class Command(BaseCommand):
         with transaction.atomic():
             if options['flushbefore']:
                 call_command('flush')
-            setup_groups()
             n_students = 10
             StudentFactory.create_batch(n_students)
             self.stdout.write(f'Created {n_students} students.')
             self.stdout.write(self.style.SUCCESS('Populated database.'))
+        self.check()
