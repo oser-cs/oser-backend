@@ -27,7 +27,7 @@ class TutoringSessionTest(ModelTestCase):
     model_tests = {
         'verbose_name': 'séance de tutorat',
         'verbose_name_plural': 'séances de tutorat',
-        'ordering': ('date',),
+        'ordering': ('date', 'start_time'),
     }
 
     @classmethod

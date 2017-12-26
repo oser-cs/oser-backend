@@ -1,47 +1,8 @@
 """Test the custom test utilities."""
 from django.db import models
 from django.test import TestCase
-from tests.utils import FieldTestCase, ModelTestCase, MixinModelTestCase
+from tests.utils import ModelTestCase, MixinModelTestCase
 from tests.utils import MetaTestCase
-
-
-class FieldTestCaseTest(MetaTestCase):
-    """Test the usage of FieldTestCase."""
-
-    expected_test_methods = [
-        'test_title_verbose_name',
-        'test_title_max_length_value',
-        'test_title_blank_is_true',
-        'test_title_null_is_true',
-        'test_title_unique_is_false',
-    ]
-
-    @classmethod
-    def setUpTestData(cls):
-
-        class Article(models.Model):
-            """Dummy model."""
-
-            title = models.CharField('titre',
-                                     max_length=200,
-                                     blank=True,
-                                     null=True)
-
-            class Meta:  # noqa
-                app_label = 'tests'
-
-        class TitleFieldTestCase(FieldTestCase):
-            model = Article
-            field_name = 'title'
-            tests = {
-                'verbose_name': 'titre',
-                'max_length': 200,
-                'blank': True,
-                'null': True,
-                'unique': False,
-            }
-
-        cls.test_case = TitleFieldTestCase
 
 
 class ModelTestCaseTest(MetaTestCase):
@@ -70,6 +31,8 @@ class ModelTestCaseTest(MetaTestCase):
 
             class Meta:  # noqa
                 app_label = 'tests'
+                ordering = ('title',)
+                verbose_name = 'my album'
 
         class AlbumTestCase(ModelTestCase):
             model = Album
@@ -84,6 +47,11 @@ class ModelTestCaseTest(MetaTestCase):
                 'is_published': {
                     'verbose_name': 'publié',
                 }
+            }
+            model_tests = {
+                'ordering': ('title',),
+                'verbose_name': 'my album',
+                'abstract': False,
             }
 
         cls.test_case = AlbumTestCase
@@ -126,9 +94,6 @@ class UtilsImportsTest(TestCase):
 
     def test_import_meta_test_case(self):
         from tests.utils import MetaTestCase
-
-    def test_import_field_test_case(self):
-        from tests.utils import FieldTestCase
 
     def test_import_model_test_case(self):
         from tests.utils import ModelTestCase
