@@ -23,7 +23,6 @@ class TestProfile(ModelTestCase):
         },
     }
     model_tests = {
-        # TODO
         'verbose_name': 'profil',
     }
 

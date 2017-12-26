@@ -26,7 +26,6 @@ class SchoolTest(ModelTestCase):
             'verbose_name': 'adresse',
         }
     }
-    # TODO implement
     model_tests = {
         'verbose_name': 'lycée',
         'ordering': ('name',),

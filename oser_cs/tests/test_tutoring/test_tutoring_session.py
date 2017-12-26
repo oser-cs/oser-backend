@@ -23,7 +23,6 @@ class TutoringSessionTest(ModelTestCase):
             'verbose_name': 'groupe de tutorat',
         },
     }
-    # TODO implement
     model_tests = {
         'verbose_name': 'séance de tutorat',
         'verbose_name_plural': 'séances de tutorat',

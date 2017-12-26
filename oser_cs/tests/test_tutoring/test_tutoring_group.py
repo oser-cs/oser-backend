@@ -19,7 +19,6 @@ class TutoringGroupTest(ModelTestCase):
             'blank': True,
         },
     }
-    # TODO implement
     model_tests = {
         'verbose_name': 'groupe de tutorat',
         'verbose_name_plural': 'groupes de tutorat',
