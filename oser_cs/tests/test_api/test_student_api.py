@@ -1,47 +1,55 @@
 """Student API tests."""
 
-from rest_framework.test import APITestCase
+from rest_framework import status
 
-from users.models import Student
-from tests.factory import (
-    StudentFactory, UserFactory, SchoolFactory, TutoringGroupFactory)
-from tests.utils import AuthAPITestMixin
-from tests.utils import APIReadTestMixin
-from tests.utils import APIPostRequestTestMixin
+from users.serializers import StudentSerializer
+from tests.factory import StudentFactory, UserFactory, TutoringGroupFactory
+from tests.utils.api import HyperlinkedAPITestCase
 
 
-class StudentReadTest(AuthAPITestMixin, APIReadTestMixin, APITestCase):
-    """Test read students as authenticated user."""
+class StudentEndpointsTest(HyperlinkedAPITestCase):
+    """Test access to the students endpoints."""
 
-    model = Student
     factory = StudentFactory
-    list_url = '/api/students/'
-    retrieve_url_format = '/api/students/{obj.pk}/'
-    data_content_keys = ('user_id', 'user', 'address', 'tutoring_group',
-                         'school', 'url')
+    serializer_class = StudentSerializer
 
-    @classmethod
-    def get_user(cls):
-        return UserFactory.create()
+    def test_list(self):
+        response = self.client.get('/api/students/')
+        self.assertEqual(response.status_code, 200)
 
+    def test_retrieve(self):
+        obj = self.factory.create()
+        response = self.client.get(f'/api/students/{obj.pk}/')
+        self.assertEqual(response.status_code, 200)
 
-class StudentCreateTest(APIPostRequestTestMixin, APITestCase):
-    """Test create student as anonymous user."""
-
-    url = '/api/students/'
-
-    def get_obj(self):
+    def test_create(self):
+        url = '/api/students/'
         user = UserFactory.create()
-        school = SchoolFactory.create()
-        tutoring_group = TutoringGroupFactory.create(school=school)
-        obj = StudentFactory.build(user=user, school=school,
-                                   tutoring_group=tutoring_group)
-        return obj
+        tutoring_group = TutoringGroupFactory.create()
+        obj = self.factory.build(user=user,
+                                 tutoring_group=tutoring_group,
+                                 school=tutoring_group.school)
+        data = self.serialize(obj, 'post', url)
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         response.data)
 
-    def get_post_data(self, obj):
-        return {
-            'user': obj.user.get_absolute_url(),
-            'address': obj.address,
-            'school': obj.school.get_absolute_url(),
-            'tutoring_group': obj.tutoring_group.get_absolute_url(),
-        }
+    def test_update(self):
+        obj = self.factory.create()
+        url = f'/api/students/{obj.pk}/'
+        data = self.serialize(obj, 'put', url)
+        data['address'] = 'Modified address'
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_partial_update(self):
+        obj = self.factory.create()
+        response = self.client.patch(f'/api/students/{obj.pk}/',
+                                     data={'address': 'Modified address'},
+                                     format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete(self):
+        obj = self.factory.create()
+        response = self.client.delete(f'/api/students/{obj.pk}/')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

@@ -50,17 +50,10 @@ class SchoolCreateSerializer(SchoolSerializer):
     Suited for: create
     """
 
-    students = serializers.HyperlinkedRelatedField(
-        many=True,
-        required=False,
-        queryset=Student.objects.all(),
-        view_name='api:student-detail',
-        help_text='Lycéens inscrits à ce lycée',
-    )
-
     class Meta(SchoolSerializer.Meta):  # noqa
         extra_kwargs = {
             **SchoolSerializer.Meta.extra_kwargs,
+            'students': {'required': False},
             'uai_code': {'read_only': False},
         }
 
@@ -79,7 +72,7 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
         view_name='api:student-detail',
     )
     school = serializers.HyperlinkedRelatedField(
-        queryset=School.objects.all(),
+        read_only=True,
         view_name='api:school-detail',
     )
     students_count = serializers.IntegerField(source='students.count',

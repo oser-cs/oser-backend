@@ -136,8 +136,5 @@ class UtilsImportsTest(TestCase):
     def test_import_abstract_model_test_case(self):
         from tests.utils import MixinModelTestCase
 
-    def test_import_random_email(self):
-        from tests.utils import random_email
-
     def test_import_random_uai_code(self):
         from tests.utils import random_uai_code

@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer for User.
+    """Hyperlinked serializer for User.
 
     Actions: list, retrieve, delete
     """
@@ -28,27 +28,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = User
-        fields = ('id', 'url', 'email',
-                  'first_name', 'last_name', 'gender',
+        fields = ('id', 'email',
+                  'first_name', 'last_name',
+                  'gender',
                   'phone_number', 'date_of_birth',
-                  'profile',)
+                  'profile', 'url',)
         extra_kwargs = {
-            'url': {'view_name': 'api:user-detail'},
             'email': {'read_only': True},
-        }
-
-
-class UserUpdateSerializer(UserSerializer):
-    """Serializer for updating users.
-
-    Actions: update, partial_update
-    """
-
-    class Meta(UserSerializer.Meta):  # noqa
-        fields = (*UserSerializer.Meta.fields,)
-        extra_kwargs = {
-            **UserSerializer.Meta.extra_kwargs,
-            'email': {'read_only': False},
+            'url': {'view_name': 'api:user-detail'},
         }
 
 
@@ -69,7 +56,21 @@ class UserCreateSerializer(UserSerializer):
         return user
 
     class Meta(UserSerializer.Meta):  # noqa
-        fields = (*UserSerializer.Meta.fields, 'profile_type', 'password',)
+        fields = (*UserSerializer.Meta.fields,
+                  'profile_type', 'password',)
+        extra_kwargs = {
+            **UserSerializer.Meta.extra_kwargs,
+            'email': {'read_only': False},
+        }
+
+
+class UserUpdateSerializer(UserSerializer):
+    """Serializer for updating users.
+
+    Actions: update, partial_update
+    """
+
+    class Meta(UserSerializer.Meta):  # noqa
         extra_kwargs = {
             **UserSerializer.Meta.extra_kwargs,
             'email': {'read_only': False},
@@ -77,7 +78,7 @@ class UserCreateSerializer(UserSerializer):
 
 
 class ProfileSerializer(serializers.Serializer):
-    """Base serializer for profile models."""
+    """Base hyperlinked serializer for profile models."""
 
     user = serializers.HyperlinkedRelatedField(
         read_only=True,
@@ -87,7 +88,7 @@ class ProfileSerializer(serializers.Serializer):
 
 class TutorSerializer(ProfileSerializer,
                       serializers.HyperlinkedModelSerializer):
-    """Serializer for Tutor."""
+    """Hyperlinked serializer for Tutor."""
 
     tutoring_groups = serializers.HyperlinkedRelatedField(
         many=True,
@@ -97,7 +98,7 @@ class TutorSerializer(ProfileSerializer,
 
     class Meta:  # noqa
         model = Tutor
-        fields = ('user_id', 'url', 'user', 'promotion', 'tutoring_groups',)
+        fields = ('user_id', 'user', 'promotion', 'tutoring_groups', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:tutor-detail'},
         }
@@ -105,7 +106,7 @@ class TutorSerializer(ProfileSerializer,
 
 class StudentSerializer(ProfileSerializer,
                         serializers.HyperlinkedModelSerializer):
-    """Serializer for Student."""
+    """Hyperlinked serializer for Student."""
 
     tutoring_group = serializers.HyperlinkedRelatedField(
         queryset=TutoringGroup.objects.all(),
@@ -118,8 +119,8 @@ class StudentSerializer(ProfileSerializer,
 
     class Meta:  # noqa
         model = Student
-        fields = ('user_id', 'url', 'user', 'address', 'tutoring_group',
-                  'school',)
+        fields = ('user_id', 'user', 'address', 'tutoring_group',
+                  'school', 'url')
         extra_kwargs = {
             'url': {'view_name': 'api:student-detail'},
         }

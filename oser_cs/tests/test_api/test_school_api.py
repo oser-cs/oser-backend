@@ -1,45 +1,56 @@
 """School API tests."""
 
-from rest_framework.test import APITestCase
+from rest_framework import status
 
-from tutoring.models import School
-
-from tests.factory import SchoolFactory, UserFactory
-from tests.utils import AuthAPITestMixin
-from tests.utils import APIReadTestMixin
-from tests.utils import APIPostRequestTestMixin
+from tutoring.serializers import SchoolSerializer
+from tests.factory import SchoolFactory
+from tests.utils.api import HyperlinkedAPITestCase
 
 
-class SchoolReadTest(AuthAPITestMixin, APIReadTestMixin, APITestCase):
-    """Test reading schools from API as authenticated user."""
+class SchoolEndpointsTest(HyperlinkedAPITestCase):
+    """Test access to the school endpoints."""
 
-    model = School
     factory = SchoolFactory
-    list_url = '/api/schools/'
-    retrieve_url_format = '/api/schools/{obj.pk}/'
-    data_content_keys = ('uai_code', 'students', 'name', 'url',
-                         'students_count', 'address',)
+    serializer_class = SchoolSerializer
 
-    @classmethod
-    def get_user(cls):
-        return UserFactory.create()
+    def test_list(self):
+        url = '/api/schools/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
+    def test_retrieve(self):
+        obj = self.factory.create()
+        url = '/api/schools/{obj.pk}/'.format(obj=obj)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
-class SchoolCreateTest(AuthAPITestMixin, APIPostRequestTestMixin, APITestCase):
-    """Test creating a school as an authenticated user."""
+    def test_create(self):
+        url = '/api/schools/'
+        obj = self.factory.build()
+        data = self.serialize(obj, 'post', url)
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         msg=response.data)
 
-    url = '/api/schools/'
+    def test_update(self):
+        obj = self.factory.create()
+        url = '/api/schools/{obj.pk}/'.format(obj=obj)
+        data = self.serialize(obj, 'put', url)
+        data['name'] = 'Modified name'
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK,
+                         msg=response.data)
 
-    @classmethod
-    def get_user(cls):
-        return UserFactory.create()
+    def test_partial_update(self):
+        obj = self.factory.create()
+        url = '/api/schools/{obj.pk}/'.format(obj=obj)
+        data = {'name': 'Modified name'}
+        response = self.client.patch(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK,
+                         msg=response.data)
 
-    def get_obj(self):
-        return SchoolFactory.build()
-
-    def get_post_data(self, obj):
-        return {
-            'name': obj.name,
-            'uai_code': obj.uai_code,
-            'address': obj.address,
-        }
+    def test_delete(self):
+        obj = self.factory.create()
+        url = '/api/schools/{obj.pk}/'.format(obj=obj)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

@@ -54,10 +54,7 @@ class TutorViewSet(viewsets.ModelViewSet):
     serializer_class = TutorSerializer
 
 
-class StudentViewSet(ListModelMixin,
-                     RetrieveModelMixin,
-                     CreateModelMixin,
-                     viewsets.GenericViewSet):
+class StudentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows students to be viewed or edited.
 
     retrieve:

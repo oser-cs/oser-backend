@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 
 from users.models import Profile
-from tests.utils import random_email, ModelTestCase
+from tests.utils import ModelTestCase
 from tests.factory import UserFactory
 
 
@@ -81,10 +81,11 @@ class UserModelTest(ModelTestCase):
         self.assertEqual(200, response.status_code)
 
     def test_two_users_with_same_username_allowed(self):
-        self.model.objects.create(email=random_email(), username='foo')
-        self.model.objects.create(email=random_email(), username='foo')
+        UserFactory.create(username='foo')
+        UserFactory.create(username='foo')
 
     def test_two_users_with_same_email_not_allowed(self):
+        same_email = 'same.email@example.net'
         with self.assertRaises(IntegrityError):
-            self.model.objects.create(email='same.email@example.net')
-            self.model.objects.create(email='same.email@example.net')
+            UserFactory.create(email=same_email)
+            UserFactory.create(email=same_email)

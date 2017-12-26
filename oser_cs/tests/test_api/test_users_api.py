@@ -1,52 +1,53 @@
 """Users API tests."""
 
+from rest_framework import status
 
-from django.template.defaulttags import date
-from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase
-
+from users.serializers import UserSerializer, UserCreateSerializer
 from tests.factory import UserFactory
-from tests.utils import AuthAPITestMixin
-from tests.utils import APIPostRequestTestMixin
-from tests.utils import APIReadTestMixin
+from tests.utils.api import HyperlinkedAPITestCase
 
 
-User = get_user_model()
+class UserEndpointsTest(HyperlinkedAPITestCase):
+    """Test access to the users endpoints."""
 
-
-class UserReadTest(AuthAPITestMixin, APIReadTestMixin, APITestCase):
-    """Test authenticated users can read users."""
-
-    model = User
     factory = UserFactory
-    list_url = '/api/users/'
-    retrieve_url_format = '/api/users/{obj.pk}/'
-    data_content_keys = (
-        'id', 'url', 'first_name', 'last_name', 'email', 'date_of_birth',
-        'phone_number', 'gender', 'profile',
-    )
+    serializer_class = UserSerializer
 
-    @classmethod
-    def get_user(cls):
-        return UserFactory.create()
+    def test_list(self):
+        response = self.client.get('/api/users/')
+        self.assertEqual(response.status_code, 200)
 
+    def test_retrieve(self):
+        obj = self.factory.create()
+        response = self.client.get(f'/api/users/{obj.pk}/')
+        self.assertEqual(response.status_code, 200)
 
-class UserCreateTest(APIPostRequestTestMixin, APITestCase):
-    """Test anonymous user can create a user."""
+    def test_create(self):
+        url = '/api/users/'
+        obj = self.factory.build()
+        data = self.serialize(obj, 'post', url,
+                              serializer_class=UserCreateSerializer)
+        data['password'] = 'secret'  # write-only on the serializer
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         response.data)
 
-    url = '/api/users/'
+    def test_update(self):
+        obj = self.factory.create()
+        url = f'/api/users/{obj.pk}/'
+        data = self.serialize(obj, 'put', url)
+        data['first_name'] = 'Modified first name'
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def get_obj(self):
-        return UserFactory.build()
+    def test_partial_update(self):
+        obj = self.factory.create()
+        response = self.client.patch(f'/api/users/{obj.pk}/',
+                                     data={'first_name': 'Some first name'},
+                                     format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def get_post_data(self, obj):
-        return {
-            'email': obj.email,
-            'first_name': obj.first_name,
-            'last_name': obj.last_name,
-            'phone_number': obj.phone_number,
-            'date_of_birth': obj.date_of_birth.strftime('%d/%m/%Y'),
-            'gender': obj.gender,
-            'profile_type': obj.profile_type,
-            'password': 'secret',
-        }
+    def test_delete(self):
+        obj = self.factory.create()
+        response = self.client.delete(f'/api/users/{obj.pk}/')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

@@ -74,10 +74,11 @@ class TutoringGroup(models.Model):
         return is_in_group(request.user, Groups.VP_TUTORAT)
 
     @allow_staff_or_superuser
-    def has_object_update_permission(self, request):
-        """Can only be updated by admin, leader tutor or VP tutorat."""
+    def has_object_write_permission(self, request):
+        """Can only be written by admin, leader tutor or VP tutorat."""
         is_leader = (self.tutors
-                     .filter(user_id=request.user.id, is_leader=True)
+                     .filter(user_id=request.user.id,
+                             tutortutoringgroup__is_leader=True)
                      .exists())
         is_vp_tutorat = is_in_group(request.user, Groups.VP_TUTORAT)
         return is_leader or is_vp_tutorat
@@ -110,7 +111,9 @@ class School(models.Model):
 
     # TODO add UAI code validation
     uai_code = models.CharField(
-        'code UAI', max_length=8, primary_key=True,
+        'code UAI',
+        max_length=8,
+        primary_key=True,
         validators=[uai_code_validator],
         help_text=(
             "Code UAI (ex-RNE) de l'établissement. "

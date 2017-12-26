@@ -1,65 +1,103 @@
-"""School API tests."""
+"""Tutoring group API tests."""
 
-from rest_framework.test import APITestCase
 from rest_framework import status
 
-from tutoring.models import TutoringGroup
-from tests.utils import AuthAPITestMixin
-from tests.utils import APIReadTestMixin
-from tests.utils import APIPostRequestTestMixin
-from tests.factory import (
-    TutoringGroupFactory, UserFactory, VpTutoratTutorFactory, SchoolFactory
-)
+from tests.factory import TutoringGroupFactory, SchoolFactory
+from tests.factory import UserFactory, VpTutoratTutorFactory
+from tutoring.serializers import TutoringGroupSerializer
+from tests.utils.api import HyperlinkedAPITestCase
 
 
-class TutoringGroupReadTest(AuthAPITestMixin, APIReadTestMixin,
-                            APITestCase):
-    """Test authenticated user can read tutoring groups."""
+class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
+    """Test access to the tutoring group endpoints."""
 
-    model = TutoringGroup
     factory = TutoringGroupFactory
-    list_url = '/api/tutoring/groups/'
-    retrieve_url_format = '/api/tutoring/groups/{obj.pk}/'
-    data_content_keys = ('id', 'url', 'name', 'tutors', 'students',
-                         'tutors_count', 'students_count', 'school',)
+    serializer_class = TutoringGroupSerializer
 
-    def get_obj(self):
-        return TutoringGroupFactory.create()
+    def test_list(self):
+        url = '/api/tutoring/groups/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
-    @classmethod
-    def get_user(cls):
-        return UserFactory.create()
+    def test_retrieve(self):
+        obj = self.factory.create()
+        url = '/api/tutoring/groups/{obj.pk}/'.format(obj=obj)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
-
-class CreateTutoringGroupStandardUser(AuthAPITestMixin,
-                                      APIPostRequestTestMixin,
-                                      APITestCase):
-    """Test a standard user cannot create a tutoring group."""
-
-    url = '/api/tutoring/groups/'
-    expected_status_code = status.HTTP_403_FORBIDDEN
-
-    def get_obj(self):
+    def perform_create(self, user=None):
+        if user is not None:
+            self.client.force_login(user)
+        url = '/api/tutoring/groups/'
         school = SchoolFactory.create()
-        return TutoringGroupFactory.build(school=school)
+        obj = self.factory.build(school=school, id=123)
+        data = self.serialize(obj, 'post', url)
+        response = self.client.post(url, data, format='json')
+        return response
 
-    def get_post_data(self, obj):
-        return {
-            'name': obj.name,
-            'school': obj.school.get_absolute_url(),
-        }
+    def test_create_anonymous_user_forbidden(self):
+        self.assertForbidden(self.perform_create, user=None)
 
-    @classmethod
-    def get_user(cls):
-        return UserFactory.create()
+    def test_create_regular_user_forbidden(self):
+        self.assertForbidden(self.perform_create, user=UserFactory.create())
 
-
-class CreateTutoringGroupVpTutorat(CreateTutoringGroupStandardUser):
-    """Test a VP Tutorat user can create a tutoring group."""
-
-    expected_status_code = status.HTTP_201_CREATED
-
-    @classmethod
-    def get_user(cls):
+    def test_create_as_vp_tutorat_allowed(self):
         tutor = VpTutoratTutorFactory.create()
-        return tutor.user
+        self.assertAuthorized(self.perform_create, user=tutor.user,
+                              expected_status_code=status.HTTP_201_CREATED)
+
+    def perform_update(self):
+        obj = self.factory.create()
+        url = '/api/tutoring/groups/{obj.pk}/'.format(obj=obj)
+        data = self.serialize(obj, 'put', url)
+        data['name'] = 'Modified name'
+        response = self.client.put(url, data, format='json')
+        return response
+
+    def test_update_anonymous_user_forbidden(self):
+        self.assertForbidden(self.perform_update, user=None)
+
+    def test_update_regular_user_forbidden(self):
+        self.assertForbidden(self.perform_update, user=UserFactory.create())
+
+    def test_update_vp_tutorat_allowed(self):
+        tutor = VpTutoratTutorFactory.create()
+        self.assertAuthorized(self.perform_update, user=tutor.user,
+                              expected_status_code=status.HTTP_200_OK)
+
+    def perform_partial_update(self):
+        obj = self.factory.create()
+        url = '/api/tutoring/groups/{obj.pk}/'.format(obj=obj)
+        data = {'name': 'Modified name'}
+        response = self.client.patch(url, data, format='json')
+        return response
+
+    def test_partial_update_anonymous_user_forbidden(self):
+        self.assertForbidden(self.perform_partial_update, user=None)
+
+    def test_partial_update_regular_user_forbidden(self):
+        self.assertForbidden(self.perform_partial_update,
+                             user=UserFactory.create())
+
+    def test_partial_update_vp_tutorat_allowed(self):
+        tutor = VpTutoratTutorFactory.create()
+        self.assertAuthorized(self.perform_partial_update, user=tutor.user,
+                              expected_status_code=status.HTTP_200_OK)
+
+    def perform_delete(self):
+        obj = self.factory.create()
+        url = '/api/tutoring/groups/{obj.pk}/'.format(obj=obj)
+        response = self.client.delete(url)
+        return response
+
+    def test_delete_anonymous_user_forbidden(self):
+        self.assertForbidden(self.perform_delete, user=None)
+
+    def test_delete_regular_user_forbidden(self):
+        self.assertForbidden(self.perform_delete,
+                             user=UserFactory.create())
+
+    def test_delete_vp_tutorat_allowed(self):
+        tutor = VpTutoratTutorFactory.create()
+        self.assertAuthorized(self.perform_delete, user=tutor.user,
+                              expected_status_code=status.HTTP_204_NO_CONTENT)
