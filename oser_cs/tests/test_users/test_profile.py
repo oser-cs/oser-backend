@@ -56,7 +56,7 @@ class TestProfileTypes(TestCase):
         self.assertTupleEqual(profile_types, (
             ('student', 'Lycéen'),
             ('tutor', 'Tuteur'),
-            ('schoolstaffmember', 'Personnel de lycée'),
+            ('schoolstaffmember', 'Membre du personnel de lycée'),
         ))
 
     def test_generic_profile_not_in_profile_types(self):

@@ -71,6 +71,9 @@ class UserModelTest(ModelTestCase):
             'choices': Profile.get_profile_type_choices(),
         }
     }
+    model_tests = {
+        'verbose_name': 'utilisateur',
+    }
 
     @classmethod
     def setUpTestData(self):

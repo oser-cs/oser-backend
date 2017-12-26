@@ -161,8 +161,8 @@ class SchoolStaffMember(Profile):
     role = models.CharField('rôle', max_length=100)
 
     class Meta:  # noqa
-        verbose_name = 'personnel de lycée'
-        verbose_name_plural = 'personnels de lycée'
+        verbose_name = 'membre du personnel de lycée'
+        verbose_name_plural = 'membres du personnel de lycée'
 
     def get_absolute_url(self):
         return reverse('api:schoolstaffmember-detail', args=[str(self.id)])

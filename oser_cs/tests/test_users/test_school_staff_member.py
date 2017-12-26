@@ -23,6 +23,10 @@ class SchoolStaffMemberTestCase(ModelTestCase):
             'max_length': 100,
         },
     }
+    model_tests = {
+        'verbose_name': 'membre du personnel de lycée',
+        'verbose_name_plural': 'membres du personnel de lycée',
+    }
 
     @classmethod
     def setUpTestData(self):
