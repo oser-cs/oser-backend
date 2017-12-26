@@ -1,75 +1,46 @@
 """Student API tests."""
 
-from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework.test import APITestCase
 
 from users.models import Student
-from tutoring.models import School, TutoringGroup
+from tests.factory import (
+    StudentFactory, UserFactory, SchoolFactory, TutoringGroupFactory)
+from tests.utils import AuthAPITestMixin
+from tests.utils import APIReadTestMixin
+from tests.utils import APIPostRequestTestMixin
 
-from tests.utils import random_email, random_uai_code, ModelAPITestCase
 
-
-User = get_user_model()
-
-
-class StudentAPITest(ModelAPITestCase):
-    """Test the student API."""
+class StudentReadTest(AuthAPITestMixin, APIReadTestMixin, APITestCase):
+    """Test read students as authenticated user."""
 
     model = Student
+    factory = StudentFactory
+    list_url = '/api/students/'
+    retrieve_url_format = '/api/students/{obj.pk}/'
+    data_content_keys = ('user', 'address', 'tutoring_group', 'school', 'url')
 
-    def create_data(self):
-        user = User.objects.create(email=random_email())
-        school = School.objects.create(uai_code=random_uai_code())
-        tutoring_group = TutoringGroup.objects.create()
-        data = {
-            'user': user,
-            'address': '3 Place de la Barre, 59000 LILLE',
-            'school': school,
-            'tutoring_group': tutoring_group,
+    @classmethod
+    def get_user(cls):
+        return UserFactory.create()
+
+
+class StudentCreateTest(APIPostRequestTestMixin, APITestCase):
+    """Test create student as anonymous user."""
+
+    url = '/api/students/'
+
+    def get_obj(self):
+        user = UserFactory.create()
+        school = SchoolFactory.create()
+        tutoring_group = TutoringGroupFactory.create(school=school)
+        obj = StudentFactory.build(user=user, school=school,
+                                   tutoring_group=tutoring_group)
+        return obj
+
+    def get_post_data(self, obj):
+        return {
+            'user': obj.user.get_absolute_url(),
+            'address': obj.address,
+            'school': obj.school.get_absolute_url(),
+            'tutoring_group': obj.tutoring_group.get_absolute_url(),
         }
-        return data
-
-    def test_list(self):
-        n_items = 5
-        for _ in range(n_items):
-            self.create_obj()
-        url = '/api/students/'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), n_items)
-
-    def test_retrieve(self):
-        student = self.create_obj()
-        url = f'/api/students/{student.pk}/'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_data_has_expected_values(self):
-        student = self.create_obj()
-        url = f'/api/students/{student.pk}/'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        keys = (
-            'user', 'address', 'tutoring_group', 'school', 'url',
-        )
-        for key in keys:
-            self.assertIn(key, response.data)
-
-    def test_create(self):
-        """Ensure we can create a new student object through the API."""
-        data = self.create_data()
-        hyperlinked = 'user school tutoring_group'.split()
-        data_serialized = {
-            key: key in hyperlinked and value.get_absolute_url() or value
-            for key, value in data.items()
-        }
-        url = '/api/students/'
-
-        response = self.client.post(url, data_serialized, format='json')
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Student.objects.count(), 1)
-        self.assertEqual(Student.objects.get().user, data.get('user'))
-        self.assertEqual(Student.objects.get().school, data.get('school'))
-        self.assertEqual(Student.objects.get().tutoring_group,
-                         data.get('tutoring_group'))

@@ -80,7 +80,7 @@ class ProfileSerializer(serializers.Serializer):
     """Base serializer for profile models."""
 
     user = serializers.HyperlinkedRelatedField(
-        queryset=get_user_model().objects.all(),
+        read_only=True,
         view_name='api:user-detail',
     )
 

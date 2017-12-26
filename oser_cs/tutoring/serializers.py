@@ -3,8 +3,8 @@
 from rest_framework import serializers
 
 from .models import (
-    TutoringGroup, School, TutoringSession, TutorTutoringGroup)
-from users.models import Student, Tutor
+    TutoringGroup, School, TutoringSession)
+from users.models import Student
 
 
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
@@ -70,12 +70,12 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
 
     tutors = serializers.HyperlinkedRelatedField(
         many=True,
-        queryset=Tutor.objects.all(),
+        read_only=True,
         view_name='api:tutor-detail',
     )
     students = serializers.HyperlinkedRelatedField(
         many=True,
-        queryset=Student.objects.all(),
+        read_only=True,
         view_name='api:student-detail',
     )
     school = serializers.HyperlinkedRelatedField(
@@ -86,22 +86,6 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
                                               read_only=True)
     tutors_count = serializers.IntegerField(source='tutors.count',
                                             read_only=True)
-
-    def create(self, validated_data):
-        tutors = validated_data.pop('tutors')
-        students = validated_data.pop('students')
-        is_leader = validated_data.pop('is_leader', False)
-        tutoring_group = TutoringGroup.objects.create(**validated_data)
-        for student in students:
-            tutoring_group.students.add(student)
-        for tutor in tutors:
-            TutorTutoringGroup.objects.create(
-                tutoring_group=tutoring_group,
-                tutor=tutor,
-                is_leader=is_leader,
-            )
-        tutoring_group.save()
-        return tutoring_group
 
     class Meta:  # noqa
         model = TutoringGroup

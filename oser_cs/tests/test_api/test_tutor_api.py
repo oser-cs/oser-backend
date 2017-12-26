@@ -1,56 +1,41 @@
 """Tutor API tests."""
 
-from rest_framework import status
+from rest_framework.test import APITestCase
 
-from tests.utils import AuthModelAPITestCase, ModelAPITestCase
+from users.models import Tutor
+from tests.utils import AuthAPITestMixin
+from tests.utils import APIReadTestMixin
+from tests.utils import APIPostRequestTestMixin
 from tests.factory import TutorFactory, UserFactory
 
 
-class TutorAPIAsStandardUser(AuthModelAPITestCase):
-    """Test the tutors API for standard users."""
+class TutorReadTest(AuthAPITestMixin, APIReadTestMixin,
+                    APITestCase):
+    """Test read tutors from API as authenticated user."""
+
+    model = Tutor
+    factory = TutorFactory
+    list_url = '/api/tutors/'
+    retrieve_url = '/api/tutors/{obj.pk}/'
+    data_content_keys = ('user', 'promotion', 'tutoring_groups', 'url',)
 
     @classmethod
     def get_user(cls):
         return UserFactory.create()
 
-    def test_list(self):
-        n_items = 5
-        for _ in range(n_items):
-            TutorFactory.create()
-        url = '/api/tutors/'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), n_items)
 
-    def test_retrieve(self):
-        obj = TutorFactory.create()
-        url = obj.get_absolute_url()
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+class TutorCreateTest(APIPostRequestTestMixin, APITestCase):
+    """Test create tutor as anonymous user."""
 
-    def test_data_has_expected_values(self):
-        obj = TutorFactory.create()
-        url = obj.get_absolute_url()
-        response = self.client.get(url)
-        keys = (
-            'user', 'promotion', 'tutoring_groups', 'url',
-        )
-        for key in keys:
-            self.assertIn(key, response.data)
+    url = '/api/tutors/'
 
-
-class TutorCreateAPITest(ModelAPITestCase):
-    """Test creation of tutors as un-authenticated user."""
-
-    def test_can_create(self):
-        """Ensure we can create a new tutor through API."""
+    def get_obj(self):
         user = UserFactory.create()
         obj = TutorFactory.build(user=user)
-        data = {
-            'user': user.get_absolute_url(),
+        return obj
+
+    def get_post_data(self, obj):
+        return {
+            'user': obj.user.get_absolute_url(),
             'promotion': obj.promotion,
-            'tutoring_groups': [],
         }
-        url = '/api/tutors/'
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

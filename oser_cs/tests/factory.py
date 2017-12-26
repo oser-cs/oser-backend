@@ -54,6 +54,7 @@ class UserFactory(factory.DjangoModelFactory):
                                   before_today=True, after_today=False,
                                   locale='fr_FR')
     phone_number = factory.Faker('phone_number', locale='fr_FR')
+    gender = factory.Iterator([User.MALE, User.FEMALE])
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
