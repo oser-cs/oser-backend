@@ -60,7 +60,7 @@ Le site d'OSER utilise le DRF en version 3.7.3. Cette version est entièrement c
 
 #### FactoryBoy
 
-[FactoryBoy](http://factoryboy.readthedocs.io/en/latest/index.html) est utilisé pour faciliter la création d'objets de test en définissant des usines (*factories*) à partir des modèles Django. Les usines sont définies dans `oser_cs/tests/factory.py`.
+[FactoryBoy](http://factoryboy.readthedocs.io/en/latest/index.html) est utilisé pour faciliter la création d'objets de test en définissant des usines (*factories*) directement à partir des modèles Django. Les usines sont définies dans `oser_cs/tests/factory.py`.
 
 
 ## Installation
@@ -89,17 +89,29 @@ oser-website $ source env/bin/activate
 (env) oser-website $ pip install -r requirements.txt
 ```
 
-4. Lancez les tests pour vous assurer que tout est prêt :
+4. Configurez la BDD de développement :
 
 ```bash
 (env) oser-website $ cd oser_cs
+(env) oser_cs $ python manage.py makemigrations
+(env) oser_cs $ python manage.py migrate
+```
+
+5. Lancez les tests pour vous assurer que tout est prêt :
+
+```bash
 (env) oser_cs $ python manage.py test
 ```
 
-5. Démarrez le serveur local :
+6. (Optionnel) Peuplez la BDD de développement avec des données d'imitation :
 
 ```bash
-(env) oser-website $ cd oser_cs
+(env) oser_cs $ python manage.py populatedb
+```
+
+7. Démarrez le serveur local :
+
+```bash
 (env) oser_cs $ python manage.py runserver
 ```
 
@@ -113,9 +125,34 @@ Rendez-vous sur [`http://localhost:8000/api/`](http://localhost:8000/api/) et vo
 
 :construction_worker_man: Section en construction.
 
+### Backend
+
+#### Structure des données
+
+TODO
+
+#### Documentation de l'API
+
+Elle est accessible à l'endpoint `/api/docs/`. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/api/docs`](http://localhost:8000/api/docs).
+
+![API Docs](media/api-docs.png)
+
 ## Contribuer
 
 :construction_worker_man: Section en construction.
+
+### Pratiques de test
+
+- Dès que vous corrigez un bug, pensez à écrire un test de non-régression (qui permettra de s'assurer que le bug n'arrive plus).
+- Tout élément de *business logic* doit être testé par un test fonctionnel.
+
+#### Test de l'API
+
+- Les tests de l'API sont définis dans le package `tests/test_api`.
+- Tous les endpoints d'une ressource doivent être testés par un test fonctionnel qui envoie la requête et s'assure que le `status_code` est celui attendu.
+- Les permissions d'un endpoint doivent être testées par un test fonctionnel également.
+- Un template de cas de test de ressource basée sur un modèle est proposé dans `tests/test_api/model_api_boilerplate.py`.
+
 
 ## À propos d'OSER
 

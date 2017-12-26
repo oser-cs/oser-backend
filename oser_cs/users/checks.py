@@ -5,7 +5,7 @@ from users.permissions import setup_groups
 
 
 @register(Tags.models)
-def groups_check(app_configs, **kwargs):
+def check_groups(app_configs, **kwargs):
     """Check for users groups and add those missing as necessary."""
     errors = []
     groups_created = setup_groups()
