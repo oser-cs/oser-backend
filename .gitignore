@@ -3,5 +3,8 @@ env/
 __pycache__/
 *.db
 *.sqlite3
-migrations/
+oser_cs/*/migrations/*
+!oser_cs/users/migrations/__init__.py
+!oser_cs/tutoring/migrations/__init__.py
+!oser_cs/api/migrations/__init__.py
 docs/_build/
