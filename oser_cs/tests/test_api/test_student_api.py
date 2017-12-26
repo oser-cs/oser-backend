@@ -17,7 +17,8 @@ class StudentReadTest(AuthAPITestMixin, APIReadTestMixin, APITestCase):
     factory = StudentFactory
     list_url = '/api/students/'
     retrieve_url_format = '/api/students/{obj.pk}/'
-    data_content_keys = ('user', 'address', 'tutoring_group', 'school', 'url')
+    data_content_keys = ('user_id', 'user', 'address', 'tutoring_group',
+                         'school', 'url')
 
     @classmethod
     def get_user(cls):

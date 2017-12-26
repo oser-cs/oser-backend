@@ -17,7 +17,8 @@ class TutorReadTest(AuthAPITestMixin, APIReadTestMixin,
     factory = TutorFactory
     list_url = '/api/tutors/'
     retrieve_url = '/api/tutors/{obj.pk}/'
-    data_content_keys = ('user', 'promotion', 'tutoring_groups', 'url',)
+    data_content_keys = ('user_id', 'user', 'promotion', 'tutoring_groups',
+                         'url',)
 
     @classmethod
     def get_user(cls):

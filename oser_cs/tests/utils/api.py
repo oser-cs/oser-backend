@@ -1,33 +1,9 @@
 """API test utilities."""
 
-from rest_framework.test import APITestCase
 from rest_framework import status
 
 
-__all__ = ('ModelAPITestCase', 'AuthAPITestMixin', 'APIReadTestMixin',
-           'APIPostRequestTestMixin')
-
-
-class ModelAPITestCase(APITestCase):
-    """Generic model API test case."""
-
-    model = None
-
-    @property
-    def model_name(self):
-        return self.model._meta.model_name
-
-    @property
-    def model_name_plural(self):
-        return self.model_name + 's'
-
-    def create_data(self):
-        return {}
-
-    def create_obj(self, **kwargs):
-        create_data = self.create_data()
-        kwargs.update(create_data)
-        return self.model.objects.create(**kwargs)
+__all__ = ('AuthAPITestMixin', 'APIReadTestMixin', 'APIPostRequestTestMixin')
 
 
 class AuthAPITestMixin:
@@ -97,15 +73,15 @@ class APIReadTestMixin:
     def test_data_content(self):
         """Test the content of a retrieve action data.
 
-        Retrieves an object as in test_retrieve and checks that keys specified
-        in `data_content_keys` are contained in response.data.
+        Retrieves an object as in test_retrieve and checks that the set of
+        keys specified in `data_content_keys` equals the keys of the
+        response data.
         """
         obj = self.factory.create()
         url = obj.get_absolute_url()
         response = self.client.get(url)
-        keys = self.data_content_keys
-        for key in keys:
-            self.assertIn(key, response.data)
+        self.assertEqual(
+            set(self.data_content_keys), set(response.data.keys()))
 
 
 class APIRequestTestMixin:
@@ -136,4 +112,5 @@ class APIPostRequestTestMixin(APIRequestTestMixin):
         obj = self.get_obj()
         data = self.get_post_data(obj)
         response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, self.expected_status_code)
+        self.assertEqual(response.status_code, self.expected_status_code,
+                         response.data)

@@ -141,6 +141,3 @@ class UtilsImportsTest(TestCase):
 
     def test_import_random_uai_code(self):
         from tests.utils import random_uai_code
-
-    def test_import_api_utils(self):
-        from tests.utils import ModelAPITestCase

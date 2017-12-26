@@ -87,7 +87,7 @@ class User(AbstractUser):
 
     # TODO add a proper phone number validator
     phone_number = models.CharField('téléphone',
-                                    max_length=12, null=True, blank=True)
+                                    max_length=20, null=True, blank=True)
 
     # type of profile of the user
     # allows to access the Profile object through user.profile
