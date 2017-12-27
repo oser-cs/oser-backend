@@ -18,8 +18,8 @@ from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
+from .views import ReactAppView
 
 
 urlpatterns = [
@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^api/docs/', include_docs_urls(title='OSER_CS API')),
     url('api-auth/', include(
         'rest_framework.urls', namespace='rest_framework')),
-    url(r'^$', TemplateView.as_view(template_name='index.html')),
+    url(r'^$', ReactAppView.as_view()),
 ]
 
 # DEVELOPMENT ONLY

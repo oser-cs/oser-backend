@@ -96,6 +96,17 @@ Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/
 - Les permissions d'un endpoint doivent être testées par un test fonctionnel également.
 - Un template de cas de test de ressource basée sur un modèle est proposé dans `tests/test_api/model_api_boilerplate.py`.
 
+### Intégration frontend/backend
+
+Le frontend est situé au même niveau que les autres applications Django, dans `oser_cs/frontend`. Ce dossier a été généré avec `create-react-app`.
+
+Pour le développement, il faut mettre en route deux serveurs :
+
+1. Le serveur Django, avec `python manage.py runserver` dans `oser_cs/`
+2. Le serveur *hot-reload* de React, avec `npm start` dans `oser_cs/frontend`
+
+Le site sera alors accessible à l'adresse `http://localhost:3000/`.
+
 ### Frontend
 
 #### Configuration

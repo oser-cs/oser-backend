@@ -7,3 +7,4 @@ Sphinx==1.6.5
 sphinx-autobuild==0.7.1
 numpydoc==0.7.0
 sphinx_rtd_theme==0.2.4
+django-cors-headers==2.1.0

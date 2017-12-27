@@ -1,20 +1,34 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
+import axios from 'axios';
 import './App.css';
 
+
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {text: 'Initial text!'}
+  }
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+    return (<div className="App">
+      <button type="button" onClick={() => this.sendGET('http://localhost:8000/api/students/')}
+        >Send GET /students
+      </button>
+      <button type="button" onClick={() => this.sendGET('http://localhost:8000/api/tutors/')}
+        >Send GET /tutors
+      </button>
+      <button type="button" onClick={() => this.sendGET('http://localhost:8000/api/schools/')}
+        >Send GET /schools
+      </button>
+      <p>{ this.state.text }</p>
+    </div>);
+  }
+
+  sendGET(endpoint) {
+    console.log("Sending a GET API Call !");
+    axios.get(endpoint)
+    .then(response => {
+      this.setState({text: JSON.stringify(response.data)})
+    })
   }
 }
 

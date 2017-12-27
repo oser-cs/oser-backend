@@ -10,6 +10,7 @@ oser_cs/*/migrations/*
 !oser_cs/tutoring/migrations/__init__.py
 !oser_cs/api/migrations/__init__.py
 docs/_build/
+oser_cs/frontend/build/
 
 # databases
 *.db
