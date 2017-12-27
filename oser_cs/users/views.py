@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from rest_framework.mixins import (
     ListModelMixin, RetrieveModelMixin, CreateModelMixin,
 )
+from dry_rest_permissions.generics import DRYPermissions
 from .models import Tutor, Student, SchoolStaffMember
 from .serializers import (
     UserSerializer, UserCreateSerializer, UserUpdateSerializer,
@@ -28,6 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
 
     queryset = User.objects.all()
+    permission_classes = (DRYPermissions,)
 
     def get_serializer_class(self):
         if self.action == 'create':

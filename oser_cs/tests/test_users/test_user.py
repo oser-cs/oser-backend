@@ -80,7 +80,8 @@ class UserModelTest(ModelTestCase):
         self.obj = UserFactory.create()
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/users/{self.obj.pk}', follow=True)
+        self.client.force_login(self.obj)
+        response = self.client.get(f'/api/users/{self.obj.pk}/')
         self.assertEqual(200, response.status_code)
 
     def test_two_users_with_same_username_allowed(self):

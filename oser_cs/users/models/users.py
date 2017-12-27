@@ -4,6 +4,7 @@ from django.shortcuts import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as _UserManager
+from dry_rest_permissions.generics import authenticated_users
 
 from utils import modify_fields
 from .profiles import Profile
@@ -116,3 +117,21 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse('api:user-detail', args=[str(self.id)])
+
+    @staticmethod
+    @authenticated_users
+    def has_read_permission(request):
+        return True
+
+    @authenticated_users
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        """Anyone can create a user."""
+        return True
+
+    @authenticated_users
+    def has_object_write_permission(self, request):
+        return request.user.id == self.id
