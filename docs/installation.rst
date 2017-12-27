@@ -9,7 +9,7 @@ Cette page vous indique étape par étape comme installer l'environnement de dé
 Prérequis
 =========
 
-Tout d'abord, munissez-vous de `Python 3.5+ <https://www.python.org/downloads/>`_ et de `virtualenv <https://pypi.python.org/pypi/virtualenv>`_ si ce n'est pas encore fait. Utiliser un environnement virtuel simplifie le processus d'installation et vous évite de polluer votre installation système. Vous aurez aussi besoin de `Git <https://git-scm.com>`_ pour cloner le dépôt.
+Tout d'abord, munissez-vous de `Python 3.5+ <https://www.python.org/downloads/>`_ et de `virtualenv <https://pypi.python.org/pypi/virtualenv>`_ si ce n'est pas encore fait. Vous aurez aussi besoin de `Git <https://git-scm.com>`_ pour cloner le dépôt.
 
 Installer le serveur local
 ==========================

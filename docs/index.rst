@@ -12,20 +12,27 @@ Site web d'OSER
 
 Cette documentation est destinée aux développeurs du site web d'OSER. Vous trouverez ici toutes les informations nécessaires pour contribuer au développement du site. *Happy coding!*
 
-Table des matières
-==================
-
 .. toctree::
    :maxdepth: 2
-   :caption: Bien commencer
+   :caption: Table des matières
 
-   installation
+   installation.rst
+   documenter.rst
+
+
+.. toctree::
+  :maxdepth: 1
+  :caption: Ressources d'apprentissage
+  :glob:
+
+  ressources-apprentissage/*
 
 Liens
 =====
 
 - Documentation : |DOCS|
 - Dépôt Git : |REPO|
+
 
 Indices and tables
 ==================
