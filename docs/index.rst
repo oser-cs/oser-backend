@@ -7,22 +7,27 @@
 Site web d'OSER
 ===============
 
-Cette documentation est destinée aux développeurs du site web d'OSER. Vous trouverez ici toutes les informations nécessaires pour contribuer au développement du site. *Happy coding!*
+.. image:: /media/logo-medium.png
+
+
+Cette documentation est destinée aux développeurs du site web d'OSER. Vous trouverez ici toutes les informations nécessaires pour contribuer à la maintenance ou au développement du site.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Guide du développeur
+  :maxdepth: 2
+  :caption: Guide de l'administrateur
 
-   installation.rst
-   documenter.rst
-
+  gestion-utilisateurs
 
 .. toctree::
-  :maxdepth: 1
-  :caption: Ressources d'apprentissage
-  :glob:
+  :maxdepth: 2
+  :caption: Guide du développeur
 
-  ressources-apprentissage/*
+  introduction
+  installation
+  documenter
+  ressources-apprentissage/index
+
+
 
 Liens utiles
 ============
@@ -31,6 +36,13 @@ Liens utiles
 - Dépôt Git : https://github.com/oser-cs/oser-website.git
 - Django : https://docs.djangoproject.com/fr/2.0/
 - Django REST Framework : http://www.django-rest-framework.org
+
+Support
+=======
+
+Hé, toi ! Tu rencontres des problèmes dans la maintenance du site ou as une question à poser ? N'hésite pas à contacter l'un des auteurs :
+
+.. include:: authors.rst
 
 Indices and tables
 ==================
