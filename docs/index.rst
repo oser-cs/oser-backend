@@ -3,9 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. |REPO| replace:: https://github.com/oser-cs/oser-website.git
-.. |DOCS| replace:: http://oser-website.readthedocs.io/en/latest/
-
 ===============
 Site web d'OSER
 ===============
@@ -14,7 +11,7 @@ Cette documentation est destinée aux développeurs du site web d'OSER. Vous tro
 
 .. toctree::
    :maxdepth: 2
-   :caption: Table des matières
+   :caption: Guide du développeur
 
    installation.rst
    documenter.rst
@@ -27,12 +24,13 @@ Cette documentation est destinée aux développeurs du site web d'OSER. Vous tro
 
   ressources-apprentissage/*
 
-Liens
-=====
+Liens utiles
+============
 
-- Documentation : |DOCS|
-- Dépôt Git : |REPO|
-
+- Documentation : http://oser-website.readthedocs.io/en/latest/
+- Dépôt Git : https://github.com/oser-cs/oser-website.git
+- Django : https://docs.djangoproject.com/fr/2.0/
+- Django REST Framework : http://www.django-rest-framework.org
 
 Indices and tables
 ==================

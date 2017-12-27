@@ -1,5 +1,3 @@
-.. |REPO| replace:: https://github.com/oser-cs/oser-website.git
-
 ============
 Installation
 ============
@@ -15,12 +13,11 @@ Installer le serveur local
 ==========================
 
 Tout d'abord, clonez le dépôt sur votre ordinateur :
-
-.. parsed-literal::
-  $ git clone |REPO|
+::
+  $ git clone https://github.com/oser-cs/oser-website.git
   $ cd oser-website
 
-Créez ensuite un environnement virtuel (ici appelé ```env``) puis activez-le :
+Créez ensuite un environnement virtuel (ici appelé ``env``) puis activez-le :
 ::
   oser-website $ virtualenv env -p python 3
   oser-website $ source env/bin/activate
