@@ -14,7 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.urls import include
+from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
@@ -28,3 +30,7 @@ urlpatterns = [
         'rest_framework.urls', namespace='rest_framework')),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
 ]
+
+# DEVELOPMENT ONLY
+# Directly serving static files in production is inefficient
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

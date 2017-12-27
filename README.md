@@ -96,6 +96,11 @@ Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/
 - Les permissions d'un endpoint doivent être testées par un test fonctionnel également.
 - Un template de cas de test de ressource basée sur un modèle est proposé dans `tests/test_api/model_api_boilerplate.py`.
 
+### Frontend
+
+#### Configuration
+
+https://stanko.github.io/webpack-babel-react-revisited/
 
 ## À propos d'OSER
 
