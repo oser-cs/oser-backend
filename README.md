@@ -62,68 +62,9 @@ Le site d'OSER utilise le DRF en version 3.7.3. Cette version est entièrement c
 
 [FactoryBoy](http://factoryboy.readthedocs.io/en/latest/index.html) est utilisé pour faciliter la création d'objets de test en définissant des usines (*factories*) directement à partir des modèles Django. Les usines sont définies dans `oser_cs/tests/factory.py`.
 
-
-## Installation
-
-:construction: Section en construction.
-
-> Expliquer ici comment installer l'environnement de développement du site, du clonage du dépôt au démarrage du site en local.
-
-1. Clonez ce dépôt sur votre ordinateur :
-
-```bash
-$ git clone https://github.com/oser-cs/oser-website.git
-$ cd oser-website
-```
-
-2. Créez un [environnement virtuel](https://github.com/oser-cs/oser-website/wiki/Outils-de-développement-pour-Python#les-environnements-virtuels-avec-virtualenv) (ici nommé `env`) puis activez-le :
-
-```bash
-oser-website $ virtualenv env -p python3
-oser-website $ source env/bin/activate
-```
-
-3. Installez les dépendances Python avec `pip` :
-
-```bash
-(env) oser-website $ pip install -r requirements.txt
-```
-
-4. Configurez la BDD de développement :
-
-```bash
-(env) oser-website $ cd oser_cs
-(env) oser_cs $ python manage.py makemigrations
-(env) oser_cs $ python manage.py migrate
-```
-
-5. Lancez les tests pour vous assurer que tout est prêt :
-
-```bash
-(env) oser_cs $ python manage.py test
-```
-
-6. (Optionnel) Peuplez la BDD de développement avec des données d'imitation :
-
-```bash
-(env) oser_cs $ python manage.py populatedb
-```
-
-7. Démarrez le serveur local :
-
-```bash
-(env) oser_cs $ python manage.py runserver
-```
-
-Rendez-vous sur [`http://localhost:8000/api/`](http://localhost:8000/api/) et vous obtiendrez quelque chose comme :
-
-![Accueil de l'API](media/api_home.png)
-
-:tada:
-
 ## Documentation
 
-:construction_worker_man: Section en construction.
+La documentation du site est hébergée sur [ReadTheDocs](http://oser-website.readthedocs.io/fr/latest/).
 
 ### Backend
 
