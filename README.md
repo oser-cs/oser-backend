@@ -23,24 +23,28 @@ De nombreuses informations sont également disponibles sur le [Wiki](https://git
 
 ## Table des matières
 
-- [Dépendances](#dépendances)
-- [Installation](#installation)
 - [Documentation](#documentation)
+- [Dépendances](#dépendances)
 - [Contribuer](#contribuer)
 - [À propos d'OSER](#À-propos-doser)
+
+## Documentation
+
+La documentation complète du site est hébergée sur [ReadTheDocs](http://oser-website.readthedocs.io/fr/latest/).
+
+La documentation de l'API est accessible à l'endpoint `/api/docs/`. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/api/docs`](http://localhost:8000/api/docs). Vous pouvez aussi librement parcourir l'API à l'adresse [`http://localhost:8000/api/`](http://localhost:8000/api/).
+
+![API Docs](media/api-docs.png)
+
+#### Structure des données
+
+TODO
 
 ## Dépendances
 
 :construction: Section en construction.
 
-> Lister ici les frameworks, packages et autres technos sur lesquelles le projet s'appuie. Pour chaque dépendance, indiquer :
-> - la version utilisée ;
-> - pour quoi la dépendance est utilisée ;
-> -  comment l'installer (instructions ou lien vers une ressource externe).
-
-### Backend
-
-#### Django
+### Django
 
 [Django](https://www.djangoproject.com) est un framework de développement web pour Python.
 
@@ -48,70 +52,21 @@ Le site d'OSER utilise Django en version 2.0.
 
 > À l'heure actuelle, peu de tutoriels Django se basent sur la version 2.0, mais il y a en fait très peu de changements non-rétro-compatibles par rapport à la version 1.11, et aucun changement n'est réellement critique. Les améliorations apportées par la version 2.0 sont intéressantes, on peut notamment citer le système d'écriture des URLs qui est grandement simplifié. Pour plus d'infos, lire la [release news](https://www.djangoproject.com/weblog/2017/dec/02/django-20-released/) associée.
 
-#### Django REST Framework
+### Django REST Framework
 
 Le [Django REST Framework](http://www.django-rest-framework.org) (DRF) permet d'écrire facilement des API REST avec Django.
 
 Le site d'OSER utilise le DRF en version 3.7.3. Cette version est entièrement compatible avec Django 2.0.
 
-#### DRY Rest Permissions
-
-[DRY Rest Permissions](https://github.com/dbkaplan/dry-rest-permissions) est utilisé pour définir les permissions directement sur les modèles Django.
-
-#### FactoryBoy
-
-[FactoryBoy](http://factoryboy.readthedocs.io/en/latest/index.html) est utilisé pour faciliter la création d'objets de test en définissant des usines (*factories*) directement à partir des modèles Django. Les usines sont définies dans `oser_cs/tests/factory.py`.
-
-## Documentation
-
-La documentation du site est hébergée sur [ReadTheDocs](http://oser-website.readthedocs.io/fr/latest/).
-
-### Backend
-
-#### Structure des données
+### React
 
 TODO
-
-#### Documentation de l'API
-
-Elle est accessible à l'endpoint `/api/docs/`. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/api/docs`](http://localhost:8000/api/docs).
-
-![API Docs](media/api-docs.png)
 
 ## Contribuer
 
 Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/site-internet-backlog).
 
-:construction: Section en construction.
-
-### Pratiques de test
-
-- Dès que vous corrigez un bug, pensez à écrire un test de non-régression (qui permettra de s'assurer que le bug n'arrive plus).
-- Tout élément de *business logic* doit être testé par un test fonctionnel.
-
-#### Test de l'API
-
-- Les tests de l'API sont définis dans le package `tests/test_api`.
-- Tous les endpoints d'une ressource doivent être testés par un test fonctionnel qui envoie la requête et s'assure que le `status_code` est celui attendu.
-- Les permissions d'un endpoint doivent être testées par un test fonctionnel également.
-- Un template de cas de test de ressource basée sur un modèle est proposé dans `tests/test_api/model_api_boilerplate.py`.
-
-### Intégration frontend/backend
-
-Le frontend est situé au même niveau que les autres applications Django, dans `oser_cs/frontend`. Ce dossier a été généré avec `create-react-app`.
-
-Pour le développement, il faut mettre en route deux serveurs :
-
-1. Le serveur Django, avec `python manage.py runserver` dans `oser_cs/`
-2. Le serveur *hot-reload* de React, avec `npm start` dans `oser_cs/frontend`
-
-Le site sera alors accessible à l'adresse `http://localhost:3000/`.
-
-### Frontend
-
-#### Configuration
-
-https://stanko.github.io/webpack-babel-react-revisited/
+Consultez le guide du développeur de la [documentation](http://localhost:8000/index.html) pour plus d'informations sur le développement du site.
 
 ## À propos d'OSER
 

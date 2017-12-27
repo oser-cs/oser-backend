@@ -14,6 +14,7 @@ Cette documentation est destinée aux développeurs du site web d'OSER. Vous tro
    :caption: Guide du développeur
 
    installation.rst
+   pratiques-de-test.rst
    documenter.rst
 
 
