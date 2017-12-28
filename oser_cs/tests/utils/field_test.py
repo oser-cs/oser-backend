@@ -10,7 +10,7 @@ PRINT_FIELD_TEST_CALLS = False
 def print_called(f):
     """Decorator, prints a message when a function is called."""
     def decorated(*args, **kwargs):
-        print(f'\nCalled: {f.__name__}')
+        print('\nCalled: {}'.format(f.__name__))
         return f(*args, **kwargs)
     decorated.__name__ = f.__name__
     return decorated
@@ -87,14 +87,16 @@ class ModelTestCaseMeta(type):
         """Called before test methods are created."""
         model_attr_name = metacls.model_attr_name
         if not hasattr(cls, model_attr_name):
-            raise AttributeError(f'{model_attr_name} attribute not defined for'
-                                 f' {cls.__name__}')
+            raise AttributeError(
+                '{} attribute not defined for {}'.format(model_attr_name,
+                                                         cls.__name__))
 
         if ('tests' in namespace and
                 cls._field_tests_attr_name not in namespace):
             raise AttributeError(
-                '{model_attr_name_cap} field tests should be defined in '
-                f'{cls._field_tests_attr_name}, not tests (in {cls.__name__})'
+                '{} field tests should be defined in {}, not tests (in {})'
+                .format(model_attr_name, cls._field_tests_attr_name,
+                        cls.__name__)
             )
 
     @classmethod
@@ -168,7 +170,8 @@ class BaseTestFactory(metaclass=TestFactoryMeta):
     def create(self, attr, value, **kwargs):
         if not self.name_formatter:
             raise ValueError(
-                f'Name formatter not defined for {self.__class____name__}')
+                'Name formatter not defined for {}'
+                .format(self.__class____name__))
         test_method = self._get_test_method(attr, value, **kwargs)
         test_method.__name__ = self.format_name(
             attr, value, **kwargs).lower()

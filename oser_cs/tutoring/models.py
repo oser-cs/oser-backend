@@ -1,16 +1,19 @@
 """Tutoring models."""
 
 from datetime import datetime, timedelta
+
 from django.db import models
 from django.shortcuts import reverse
 from django.template.defaulttags import date as date_tag
-from dry_rest_permissions.generics import allow_staff_or_superuser
+from dry_rest_permissions.generics import (allow_staff_or_superuser,
+                                           authenticated_users)
 
+from users.permissions import Groups
 from utils import is_in_group
 
 from .conf import settings
 from .validators import uai_code_validator
-from users.permissions import Groups
+
 
 # Create your models here.
 
@@ -58,12 +61,12 @@ class TutoringGroup(models.Model):
     def get_absolute_url(self):
         return reverse('api:tutoring_group-detail', args=[str(self.id)])
 
-    # API permissions
-
     @staticmethod
+    @authenticated_users
     def has_read_permission(request):
         return True
 
+    @authenticated_users
     def has_object_read_permission(self, request):
         return True
 
@@ -201,4 +204,4 @@ class TutoringSession(models.Model):
 
     def __str__(self):
         date = date_tag(self.date, 'SHORT_DATE_FORMAT')
-        return f'{self.tutoring_group} ({date})'
+        return '{} ({})'.format(self.tutoring_group, date)

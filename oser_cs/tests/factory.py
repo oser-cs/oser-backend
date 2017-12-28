@@ -107,7 +107,7 @@ class SchoolFactory(factory.DjangoModelFactory):
 
     uai_code = factory.LazyFunction(random_uai_code)
     school_name = factory.Faker('name', locale='fr_FR')
-    name = factory.LazyAttribute(lambda o: f'Lycée {o.school_name}')
+    name = factory.LazyAttribute(lambda o: 'Lycée {o.school_name}'.format(o=o))
     address = factory.Faker('address', locale='fr_FR')
 
 
@@ -129,7 +129,8 @@ class TutoringGroupFactory(factory.DjangoModelFactory):
         exclude = ('level',)
 
     level = factory.Iterator(['Seconde', 'Première', 'Terminale'])
-    name = factory.LazyAttribute(lambda o: f'{o.school} ({o.level})')
+    name = factory.LazyAttribute(
+        lambda o: '{o.school} ({o.level})'.format(o=o))
     school = factory.SubFactory(SchoolFactory)
 
 

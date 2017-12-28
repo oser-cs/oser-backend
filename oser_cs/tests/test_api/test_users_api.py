@@ -28,7 +28,7 @@ class UserEndpointsTest(HyperlinkedAPITestCase):
 
     def perform_retrieve(self):
         obj = self.factory.create()
-        response = self.client.get(f'/api/users/{obj.pk}/')
+        response = self.client.get('/api/users/{obj.pk}/'.format(obj=obj))
         return response
 
     def test_retrieve_anonymous_is_forbidden(self):
@@ -60,7 +60,7 @@ class UserEndpointsTest(HyperlinkedAPITestCase):
     def perform_update(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        url = f'/api/users/{obj.pk}/'
+        url = '/api/users/{obj.pk}/'.format(obj=obj)
         data = self.serialize(obj, 'put', url)
         data['first_name'] = 'Modified first name'
         response = self.client.put(url, data, format='json')
@@ -81,7 +81,7 @@ class UserEndpointsTest(HyperlinkedAPITestCase):
     def perform_partial_update(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.patch(f'/api/users/{obj.pk}/',
+        response = self.client.patch('/api/users/{obj.pk}/'.format(obj=obj),
                                      data={'first_name': 'Some first name'},
                                      format='json')
         return response
@@ -102,7 +102,7 @@ class UserEndpointsTest(HyperlinkedAPITestCase):
     def perform_delete(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.delete(f'/api/users/{obj.pk}/')
+        response = self.client.delete('/api/users/{obj.pk}/'.format(obj=obj))
         return response
 
     def test_delete_anonymous_is_forbidden(self):

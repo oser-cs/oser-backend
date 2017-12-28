@@ -25,6 +25,6 @@ class Command(BaseCommand):
                 call_command('flush')
             n_students = 10
             StudentFactory.create_batch(n_students)
-            self.stdout.write(f'Created {n_students} students.')
+            self.stdout.write('Created {} students.'.format(n_students))
             self.stdout.write(self.style.SUCCESS('Populated database.'))
         self.check()

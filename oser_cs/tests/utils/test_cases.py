@@ -1,11 +1,12 @@
 """Definition of FieldTestCase and ModelTestCase."""
 
 import unittest
-from django.db.models.base import ModelBase
-from django.db import connection
-from django.test import TestCase
-from .field_test import ModelTestCaseMeta
 
+from django.db import connection
+from django.db.models.base import ModelBase
+from django.test import TestCase
+
+from .field_test import ModelTestCaseMeta
 
 __all__ = ('MetaTestCase', 'ModelTestCase', 'MixinModelTestCase',)
 
@@ -92,7 +93,8 @@ class ModelTestCase(TestCase, metaclass=ModelTestCaseMeta):
     def setUpClass(cls):
         super().setUpClass()
         if not cls.model:
-            raise TypeError(f'Model attribute not defined in {cls.__name__}')
+            raise TypeError('Model attribute not defined in {}'
+                            .format(cls.__name__))
 
 
 class MixinModelTestCaseMeta(ModelTestCaseMeta):
@@ -132,7 +134,8 @@ class MixinModelTestCase(TestCase, metaclass=MixinModelTestCaseMeta):
     @classmethod
     def setUpClass(cls):
         if not cls.mixin:
-            raise AttributeError(f'Mixin not defined in {cls.__name__}')
+            raise AttributeError('Mixin not defined in {}'
+                                 .format(cls.__name__))
         # Create a dummy model which extends the mixin
         cls.model = ModelBase('__TestModel__' + cls.mixin.__name__,
                               (cls.mixin,),

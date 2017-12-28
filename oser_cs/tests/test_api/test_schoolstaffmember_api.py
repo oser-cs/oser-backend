@@ -1,8 +1,9 @@
 """SchoolStaffMember API tests."""
-from users.serializers import SchoolStaffMembersSerializer
-from tests.factory import SchoolStaffMemberFactory, SchoolFactory
-from tests.utils.api import HyperlinkedAPITestCase
+from tests.factory import SchoolFactory, SchoolStaffMemberFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
+from tests.utils.api import HyperlinkedAPITestCase
+
+from users.serializers import SchoolStaffMembersSerializer
 
 
 class SchoolStaffMemberEndpointsTest(ProfileEndpointsTestMixin,
@@ -22,7 +23,8 @@ class SchoolStaffMemberEndpointsTest(ProfileEndpointsTestMixin,
     def perform_retrieve(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.get(f'/api/schoolstaffmembers/{obj.pk}/')
+        response = self.client.get(
+            '/api/schoolstaffmembers/{obj.pk}/'.format(obj=obj))
         return response
 
     def perform_create(self):

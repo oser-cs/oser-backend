@@ -38,7 +38,7 @@ class HyperlinkedAPITestCase(APITestCase):
         """Return the serializer class."""
         if self.serializer_class is None:
             raise AttributeError('serializer_class attribute not defined'
-                                 f'for {self.__class__}')
+                                 'for {}'.format(self.__class__))
         return self.serializer_class
 
     def assertAuthorized(self, perform_request, user, expected_status_code):

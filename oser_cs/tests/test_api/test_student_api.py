@@ -1,8 +1,9 @@
 """Student API tests."""
-from users.serializers import StudentSerializer
-from tests.factory import StudentFactory, UserFactory, TutoringGroupFactory
-from tests.utils.api import HyperlinkedAPITestCase
+from tests.factory import StudentFactory, TutoringGroupFactory, UserFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
+from tests.utils.api import HyperlinkedAPITestCase
+
+from users.serializers import StudentSerializer
 
 
 class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
@@ -21,7 +22,7 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
     def perform_retrieve(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.get(f'/api/students/{obj.pk}/')
+        response = self.client.get('/api/students/{obj.pk}/'.format(obj=obj))
         return response
 
     def perform_create(self):
@@ -38,7 +39,7 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
     def perform_update(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        url = f'/api/students/{obj.pk}/'
+        url = '/api/students/{obj.pk}/'.format(obj=obj)
         data = self.serialize(obj, 'put', url)
         data['address'] = 'Modified address'
         response = self.client.put(url, data, format='json')
@@ -47,7 +48,7 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
     def perform_partial_update(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.patch(f'/api/students/{obj.pk}/',
+        response = self.client.patch('/api/students/{obj.pk}/'.format(obj=obj),
                                      data={'address': 'Modified address'},
                                      format='json')
         return response
@@ -55,7 +56,8 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
     def perform_delete(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.delete(f'/api/students/{obj.pk}/')
+        response = self.client.delete(
+            '/api/students/{obj.pk}/'.format(obj=obj))
         return response
 
     def test_retrieve_tutoring_group(self):

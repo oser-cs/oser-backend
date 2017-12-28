@@ -1,11 +1,11 @@
 """Tutoring group API tests."""
 
 from rest_framework import status
-
-from tests.factory import TutoringGroupFactory, SchoolFactory
-from tests.factory import UserFactory, VpTutoratTutorFactory
-from tutoring.serializers import TutoringGroupSerializer
+from tests.factory import (SchoolFactory, TutoringGroupFactory, UserFactory,
+                           VpTutoratTutorFactory)
 from tests.utils.api import HyperlinkedAPITestCase
+
+from tutoring.serializers import TutoringGroupSerializer
 
 
 class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
@@ -14,16 +14,30 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
     factory = TutoringGroupFactory
     serializer_class = TutoringGroupSerializer
 
-    def test_list(self):
+    def perform_list(self):
         url = '/api/tutoring/groups/'
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        return response
 
-    def test_retrieve(self):
+    def test_list_anonymous_is_forbidden(self):
+        self.assertForbidden(self.perform_list, user=None)
+
+    def test_list_authenticated_is_allowed(self):
+        self.assertAuthorized(self.perform_list, user=UserFactory.create(),
+                              expected_status_code=status.HTTP_200_OK)
+
+    def perform_retrieve(self):
         obj = self.factory.create()
         url = '/api/tutoring/groups/{obj.pk}/'.format(obj=obj)
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        return response
+
+    def test_retrieve_anonymous_is_forbidden(self):
+        self.assertForbidden(self.perform_retrieve, user=None)
+
+    def test_retrieve_authenticated_is_allowed(self):
+        self.assertAuthorized(self.perform_retrieve, user=UserFactory.create(),
+                              expected_status_code=status.HTTP_200_OK)
 
     def perform_create(self, user=None):
         if user is not None:

@@ -1,9 +1,10 @@
 """School model tests."""
 
 from django.contrib.auth import get_user_model
-import tutoring.models
-from tests.utils import ModelTestCase
 from tests.factory import SchoolFactory
+from tests.utils import ModelTestCase
+
+import tutoring.models
 
 User = get_user_model()
 
@@ -49,6 +50,7 @@ class SchoolTest(ModelTestCase):
 
     def test_get_absolute_url(self):
         url = self.obj.get_absolute_url()
-        self.assertEqual(url, f'/api/schools/{self.obj.uai_code}/')
-        response = self.client.get(f'/api/schools/{self.obj.uai_code}/')
+        expected = '/api/schools/{}/'.format(self.obj.uai_code)
+        self.assertEqual(url, expected)
+        response = self.client.get(url)
         self.assertEqual(200, response.status_code)

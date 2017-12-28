@@ -21,7 +21,7 @@ class TutorEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
     def perform_retrieve(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.get(f'/api/tutors/{obj.pk}/')
+        response = self.client.get('/api/tutors/{obj.pk}/'.format(obj=obj))
         return response
 
     def perform_create(self):
