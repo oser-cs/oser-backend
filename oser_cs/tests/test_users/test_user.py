@@ -67,7 +67,7 @@ class UserModelTest(ModelTestCase):
         'profile_type': {
             'verbose_name': 'type de profil',
             'blank': False,
-            'null': False,
+            'null': True,
             'choices': Profile.get_profile_type_choices(),
         }
     }

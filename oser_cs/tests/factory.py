@@ -39,6 +39,7 @@ class UserFactory(factory.DjangoModelFactory):
         model = User
         exclude = ('uid',)
 
+    is_staff = False
     # random but realistic first_name
     first_name = factory.Faker('first_name')
     # random but realistic last_name

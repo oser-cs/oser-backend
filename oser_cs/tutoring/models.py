@@ -155,10 +155,12 @@ class School(models.Model):
 
     @staticmethod
     @authenticated_users
+    @allow_staff_or_superuser
     def has_write_permission(request):
         return is_in_group(request.user, Groups.VP_TUTORAT)
 
     @authenticated_users
+    @allow_staff_or_superuser
     def has_object_write_permission(self, request):
         return is_in_group(request.user, Groups.VP_TUTORAT)
 

@@ -47,6 +47,9 @@ class ProfileViewSetMeta(type):
     """
 
     ACTIONS_DOCSTRING_TEMPLATE = """
+
+    Available actions
+
     list:
     Return all {plural}.
 

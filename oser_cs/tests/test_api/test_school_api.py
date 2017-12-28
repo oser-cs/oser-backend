@@ -1,7 +1,7 @@
 """School API tests."""
 
 from rest_framework import status
-from tests.factory import SchoolFactory, VpTutoratTutorFactory
+from tests.factory import SchoolFactory, VpTutoratTutorFactory, UserFactory
 from tests.utils.api import HyperlinkedAPITestCase
 
 from tutoring.serializers import SchoolSerializer
@@ -45,6 +45,12 @@ class SchoolEndpointsTest(HyperlinkedAPITestCase):
     def test_create_as_vp_tutorat_allowed(self):
         tutor = VpTutoratTutorFactory.create()
         user = tutor.user
+        self.assertRequestResponse(
+            self.perform_create, user=user,
+            expected_status_code=status.HTTP_201_CREATED)
+
+    def test_create_as_admin_allowed(self):
+        user = UserFactory.create(is_staff=True)
         self.assertRequestResponse(
             self.perform_create, user=user,
             expected_status_code=status.HTTP_201_CREATED)

@@ -1,12 +1,13 @@
 """Users models."""
+from django.contrib.auth.models import UserManager as _UserManager
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.shortcuts import reverse
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import UserManager as _UserManager
 from dry_rest_permissions.generics import authenticated_users
 
 from utils import modify_fields
+
 from .profiles import Profile
 
 
@@ -93,6 +94,7 @@ class User(AbstractUser):
     # type of profile of the user
     # allows to access the Profile object through user.profile
     profile_type = models.CharField(max_length=20,
+                                    null=True,
                                     choices=Profile.get_profile_type_choices(),
                                     verbose_name='type de profil')
 
@@ -110,7 +112,7 @@ class User(AbstractUser):
             raise AttributeError('User has no profile')
         model = Profile.get_model(self.profile_type)
         try:
-            return model.objects.get(user=self)
+            return model.objects.get(user_id=self.id)
         except ObjectDoesNotExist:
             raise AttributeError('User has no profile')
     profile.fget.short_description = 'profil'
