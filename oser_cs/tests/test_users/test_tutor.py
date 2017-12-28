@@ -31,5 +31,6 @@ class TutorTestCase(ModelTestCase):
         self.obj = TutorFactory.create()
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/tutors/{self.obj.pk}/')
+        url = self.obj.get_absolute_url()
+        response = self.client.get(url)
         self.assertEqual(200, response.status_code)

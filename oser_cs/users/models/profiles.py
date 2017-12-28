@@ -3,6 +3,7 @@
 from django.db import models
 from django.apps import apps
 from django.shortcuts import reverse
+from dry_rest_permissions.generics import authenticated_users
 from ..utils import get_promotion_range
 from ..apps import UsersConfig
 
@@ -120,6 +121,24 @@ class Student(Profile):
 
     def get_absolute_url(self):
         return reverse('api:student-detail', args=[str(self.id)])
+
+    @staticmethod
+    @authenticated_users
+    def has_read_permission(request):
+        return True
+
+    @authenticated_users
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    def has_write_permission(request):
+        """Anyone can create a student object."""
+        return True
+
+    @authenticated_users
+    def has_object_write_permission(self, request):
+        return request.user.id == self.user.id
 
 
 class Tutor(Profile):

@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 from users.models import Student
 
-from tests.factory import StudentFactory
+from tests.factory import StudentFactory, UserFactory
 from tests.utils import ModelTestCase
 
 
@@ -32,5 +32,7 @@ class StudentTestCase(ModelTestCase):
         self.obj = StudentFactory.create()
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/students/{self.obj.pk}/')
+        self.client.force_login(UserFactory.create())
+        url = self.obj.get_absolute_url()
+        response = self.client.get(url)
         self.assertEqual(200, response.status_code)

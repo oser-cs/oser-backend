@@ -33,7 +33,8 @@ class SchoolStaffMemberTestCase(ModelTestCase):
         self.obj = SchoolStaffMemberFactory.create()
 
     def test_get_absolute_url(self):
-        response = self.client.get(f'/api/schoolstaffmembers/{self.obj.pk}/')
+        url = self.obj.get_absolute_url()
+        response = self.client.get(url)
         self.assertEqual(200, response.status_code)
 
     def test_school_one_to_many_relationship(self):

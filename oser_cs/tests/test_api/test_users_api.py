@@ -18,11 +18,11 @@ class UserEndpointsTest(HyperlinkedAPITestCase):
         return response
 
     def test_list_anonymous_is_forbidden(self):
-        """Visitors cannot list users."""
+        """Test anonymous user cannot list users."""
         self.assertForbidden(self.perform_list, user=None)
 
     def test_list_authenticated_is_allowed(self):
-        """Test that authenticated can list users."""
+        """Test that authenticated user can list users."""
         self.assertAuthorized(self.perform_list, user=UserFactory.create(),
                               expected_status_code=status.HTTP_200_OK)
 

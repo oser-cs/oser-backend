@@ -71,6 +71,7 @@ class StudentViewSet(viewsets.ModelViewSet):
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = (DRYPermissions,)
 
 
 class SchoolStaffMemberViewSet(ListModelMixin,

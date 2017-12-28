@@ -81,7 +81,8 @@ class UserModelTest(ModelTestCase):
 
     def test_get_absolute_url(self):
         self.client.force_login(self.obj)
-        response = self.client.get(f'/api/users/{self.obj.pk}/')
+        url = self.obj.get_absolute_url()
+        response = self.client.get(url)
         self.assertEqual(200, response.status_code)
 
     def test_two_users_with_same_username_allowed(self):
