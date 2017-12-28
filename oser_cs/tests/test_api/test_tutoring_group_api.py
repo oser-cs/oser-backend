@@ -1,7 +1,7 @@
 """Tutoring group API tests."""
 
 from rest_framework import status
-from tests.factory import (SchoolFactory, TutoringGroupFactory, UserFactory,
+from tests.factory import (SchoolFactory, TutoringGroupFactory,
                            VpTutoratTutorFactory)
 from tests.utils.api import HyperlinkedAPITestCase
 
@@ -19,12 +19,9 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
         response = self.client.get(url)
         return response
 
-    def test_list_anonymous_is_forbidden(self):
-        self.assertForbidden(self.perform_list, user=None)
-
-    def test_list_authenticated_is_allowed(self):
-        self.assertAuthorized(self.perform_list, user=UserFactory.create(),
-                              expected_status_code=status.HTTP_200_OK)
+    def test_list_requires_authentication(self):
+        self.assertRequiresAuth(self.perform_list,
+                                expected_status_code=status.HTTP_200_OK)
 
     def perform_retrieve(self):
         obj = self.factory.create()
@@ -32,12 +29,9 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
         response = self.client.get(url)
         return response
 
-    def test_retrieve_anonymous_is_forbidden(self):
-        self.assertForbidden(self.perform_retrieve, user=None)
-
-    def test_retrieve_authenticated_is_allowed(self):
-        self.assertAuthorized(self.perform_retrieve, user=UserFactory.create(),
-                              expected_status_code=status.HTTP_200_OK)
+    def test_retrieve_requires_authentication(self):
+        self.assertRequiresAuth(self.perform_retrieve,
+                                expected_status_code=status.HTTP_200_OK)
 
     def perform_create(self, user=None):
         if user is not None:
@@ -49,16 +43,14 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
         response = self.client.post(url, data, format='json')
         return response
 
-    def test_create_anonymous_user_forbidden(self):
-        self.assertForbidden(self.perform_create, user=None)
-
-    def test_create_regular_user_forbidden(self):
-        self.assertForbidden(self.perform_create, user=UserFactory.create())
+    def test_create_requires_more_than_authentication(self):
+        self.assertAuthForbidden(self.perform_create)
 
     def test_create_as_vp_tutorat_allowed(self):
         tutor = VpTutoratTutorFactory.create()
-        self.assertAuthorized(self.perform_create, user=tutor.user,
-                              expected_status_code=status.HTTP_201_CREATED)
+        self.assertRequestResponse(
+            self.perform_create, user=tutor.user,
+            expected_status_code=status.HTTP_201_CREATED)
 
     def perform_update(self):
         obj = self.factory.create()
@@ -68,16 +60,13 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
         response = self.client.put(url, data, format='json')
         return response
 
-    def test_update_anonymous_user_forbidden(self):
-        self.assertForbidden(self.perform_update, user=None)
-
-    def test_update_regular_user_forbidden(self):
-        self.assertForbidden(self.perform_update, user=UserFactory.create())
+    def test_update_requires_more_than_authentication(self):
+        self.assertAuthForbidden(self.perform_update)
 
     def test_update_vp_tutorat_allowed(self):
         tutor = VpTutoratTutorFactory.create()
-        self.assertAuthorized(self.perform_update, user=tutor.user,
-                              expected_status_code=status.HTTP_200_OK)
+        self.assertRequestResponse(self.perform_update, user=tutor.user,
+                                   expected_status_code=status.HTTP_200_OK)
 
     def perform_partial_update(self):
         obj = self.factory.create()
@@ -86,17 +75,14 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
         response = self.client.patch(url, data, format='json')
         return response
 
-    def test_partial_update_anonymous_user_forbidden(self):
-        self.assertForbidden(self.perform_partial_update, user=None)
-
-    def test_partial_update_regular_user_forbidden(self):
-        self.assertForbidden(self.perform_partial_update,
-                             user=UserFactory.create())
+    def test_partial_update_requires_more_than_authentication(self):
+        self.assertAuthForbidden(self.perform_partial_update)
 
     def test_partial_update_vp_tutorat_allowed(self):
         tutor = VpTutoratTutorFactory.create()
-        self.assertAuthorized(self.perform_partial_update, user=tutor.user,
-                              expected_status_code=status.HTTP_200_OK)
+        self.assertRequestResponse(
+            self.perform_partial_update, user=tutor.user,
+            expected_status_code=status.HTTP_200_OK)
 
     def perform_delete(self):
         obj = self.factory.create()
@@ -104,17 +90,14 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
         response = self.client.delete(url)
         return response
 
-    def test_delete_anonymous_user_forbidden(self):
-        self.assertForbidden(self.perform_delete, user=None)
-
-    def test_delete_regular_user_forbidden(self):
-        self.assertForbidden(self.perform_delete,
-                             user=UserFactory.create())
+    def test_delete_requires_more_than_authentication(self):
+        self.assertAuthForbidden(self.perform_delete)
 
     def test_delete_vp_tutorat_allowed(self):
         tutor = VpTutoratTutorFactory.create()
-        self.assertAuthorized(self.perform_delete, user=tutor.user,
-                              expected_status_code=status.HTTP_204_NO_CONTENT)
+        self.assertRequestResponse(
+            self.perform_delete, user=tutor.user,
+            expected_status_code=status.HTTP_204_NO_CONTENT)
 
     def test_list_students(self):
         pass  # TODO

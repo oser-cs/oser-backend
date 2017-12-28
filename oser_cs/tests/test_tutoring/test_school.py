@@ -1,7 +1,7 @@
 """School model tests."""
 
 from django.contrib.auth import get_user_model
-from tests.factory import SchoolFactory
+from tests.factory import SchoolFactory, UserFactory
 from tests.utils import ModelTestCase
 
 import tutoring.models
@@ -49,6 +49,7 @@ class SchoolTest(ModelTestCase):
         self.assertIn("site du ministère de l'Éducation Nationale", help_text)
 
     def test_get_absolute_url(self):
+        self.client.force_login(UserFactory.create())
         url = self.obj.get_absolute_url()
         expected = '/api/schools/{}/'.format(self.obj.uai_code)
         self.assertEqual(url, expected)

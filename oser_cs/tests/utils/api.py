@@ -1,7 +1,8 @@
 """API test utilities."""
 
-from rest_framework.test import APITestCase, APIRequestFactory
 from rest_framework import status
+from rest_framework.test import APIRequestFactory, APITestCase
+from tests.factory import UserFactory
 
 __all__ = ('HyperlinkedAPITestCase',)
 
@@ -41,20 +42,29 @@ class HyperlinkedAPITestCase(APITestCase):
                                  'for {}'.format(self.__class__))
         return self.serializer_class
 
-    def assertAuthorized(self, perform_request, user, expected_status_code):
-        """Assert a user is authorized to make a given request.
+    @staticmethod
+    def _check_response(perform_request, response):
+        if response is None:
+            raise AssertionError('{} did not return a response'
+                                 .format(perform_request.__name__))
+
+    def assertRequestResponse(self, perform_request, user,
+                              expected_status_code):
+        """Perform a request and check the response's status code.
 
         Parameters
         ----------
         perform_request : function: None -> response
             Should send the request of interest and return the response object.
-        user : Django User
+        user : Django User or None
+            If not None, will be logged in the test client.
         expected_status_code : int
             HTTP status code.
         """
         if user is not None:
             self.client.force_login(user)
         response = perform_request()
+        self._check_response(perform_request, response)
         self.assertEqual(response.status_code, expected_status_code)
 
     def assertForbidden(self, perform_request, user):
@@ -69,4 +79,32 @@ class HyperlinkedAPITestCase(APITestCase):
         if user is not None:
             self.client.force_login(user)
         response = perform_request()
+        self._check_response(perform_request, response)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def assertRequiresAuth(self, perform_request, expected_status_code,
+                           forbidden=False):
+        """Assert a request requires to be authenticated.
+
+        Parameters
+        ----------
+        perform_request : function: None -> response
+            Should send the request of interest and return the response object.
+        user : Django User
+        expected_status_code : int
+            HTTP status code.
+        """
+        self.assertForbidden(perform_request, user=None)
+        self.assertRequestResponse(perform_request, user=UserFactory.create(),
+                                   expected_status_code=expected_status_code)
+
+    def assertAuthForbidden(self, perform_request):
+        """Assert request is forbidden to anonymous and authenticated users.
+
+        Parameters
+        ----------
+        perform_request : function: None -> response
+            Should send the request of interest and return the response object.
+        """
+        self.assertForbidden(perform_request, user=None)
+        self.assertForbidden(perform_request, user=UserFactory.create())

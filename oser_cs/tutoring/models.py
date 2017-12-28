@@ -144,6 +144,24 @@ class School(models.Model):
     def get_absolute_url(self):
         return reverse('api:school-detail', args=[str(self.uai_code)])
 
+    @staticmethod
+    @authenticated_users
+    def has_read_permission(request):
+        return True
+
+    @authenticated_users
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    @authenticated_users
+    def has_write_permission(request):
+        return is_in_group(request.user, Groups.VP_TUTORAT)
+
+    @authenticated_users
+    def has_object_write_permission(self, request):
+        return is_in_group(request.user, Groups.VP_TUTORAT)
+
     def __str__(self):
         return str(self.name)
 

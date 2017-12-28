@@ -36,6 +36,7 @@ class SchoolViewSet(ModelViewSet):
     """
 
     queryset = School.objects.all()
+    permission_classes = (DRYPermissions,)
 
     def get_queryset(self):
         queryset = self.queryset
