@@ -1,4 +1,5 @@
 """Student API tests."""
+from rest_framework import status
 from tests.factory import StudentFactory, TutoringGroupFactory, UserFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
@@ -61,4 +62,11 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
         return response
 
     def test_retrieve_tutoring_group(self):
-        pass  # TODO
+        def perform_retrieve_tutoring_group():
+            obj = self.factory.create()
+            response = self.client.get(
+                '/api/students/{}/tutoringgroup/'.format(obj.pk))
+            return response
+
+        self.assertRequiresAuth(perform_retrieve_tutoring_group,
+                                expected_status_code=status.HTTP_200_OK)

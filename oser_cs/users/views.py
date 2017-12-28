@@ -1,16 +1,17 @@
 """Users API views."""
 
 from django.contrib.auth import get_user_model
-from rest_framework import viewsets
-from rest_framework.mixins import (
-    ListModelMixin, RetrieveModelMixin, CreateModelMixin,
-)
 from dry_rest_permissions.generics import DRYPermissions
-from .models import Tutor, Student, SchoolStaffMember
-from .serializers import (
-    UserSerializer, UserCreateSerializer, UserUpdateSerializer,
-    TutorSerializer, StudentSerializer, SchoolStaffMembersSerializer,
-)
+from rest_framework import viewsets
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
+
+from tutoring.serializers import TutoringGroupSerializer
+
+from .models import SchoolStaffMember, Student, Tutor
+from .serializers import (SchoolStaffMembersSerializer, StudentSerializer,
+                          TutorSerializer, UserCreateSerializer,
+                          UserSerializer, UserUpdateSerializer)
 
 User = get_user_model()
 
@@ -103,6 +104,15 @@ class StudentViewSet(ProfileViewSet):
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+
+    @detail_route()
+    def tutoringgroup(self, request, pk=None):
+        """Retrieve the tutoring group of a student."""
+        student = self.get_object()
+        tutoring_group = student.tutoring_group
+        serializer = TutoringGroupSerializer(tutoring_group,
+                                             context={'request': request})
+        return Response(serializer.data)
 
 
 class SchoolStaffMemberViewSet(ProfileViewSet):
