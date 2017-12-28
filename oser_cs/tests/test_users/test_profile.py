@@ -1,13 +1,12 @@
 """Profile model tests."""
 
-from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.exceptions import FieldDoesNotExist
-
-from users.models import Profile, Student
-from tests.factory import UserFactory, ProfileFactory
+from django.test import TestCase
+from tests.factory import ProfileFactory, UserFactory
 from tests.utils import ModelTestCase
 
+from users.models import Profile, Student
 
 User = get_user_model()
 
@@ -38,6 +37,10 @@ class TestProfile(ModelTestCase):
 
     def test_full_name_property(self):
         self.assertEqual(self.obj.full_name, 'Bob Dylan')
+
+    def test_get_absolute_url_raises_attribute_error(self):
+        with self.assertRaises(AttributeError):
+            self.obj.get_absolute_url()
 
 
 class TestProfileTypes(TestCase):

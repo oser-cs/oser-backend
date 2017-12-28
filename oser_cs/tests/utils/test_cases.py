@@ -7,8 +7,7 @@ from django.test import TestCase
 from .field_test import ModelTestCaseMeta
 
 
-__all__ = ('MetaTestCase', 'ModelTestCase',
-           'MixinModelTestCase',)
+__all__ = ('MetaTestCase', 'ModelTestCase', 'MixinModelTestCase',)
 
 
 def run_tests(test_case):
@@ -27,9 +26,20 @@ class MetaTestCase(TestCase):
     """Test case for testing custom test cases.
 
     Subclasses should define the test_case class attribute.
+
+    Attributes
+    ----------
+    test_case : subclass of TestCase
+        The test case to test.
+    execute_test_case : bool, default is True
+        If True, the test_case will be executed and checked for errors
+        and failures.
+    expected_test_methods : list of str
+        List of test methods that should be found on test_case.
     """
 
     test_case = None
+    execute_test_case = True
     expected_test_methods = []
 
     def test_created_test_methods(self):
@@ -38,7 +48,7 @@ class MetaTestCase(TestCase):
                             msg=method_name)
 
     def test_execute_generated_methods(self):
-        if self.test_case is None:
+        if self.test_case is None or not self.execute_test_case:
             return
         results = run_tests(self.test_case)
         self.assertFalse(results.errors or results.failures)

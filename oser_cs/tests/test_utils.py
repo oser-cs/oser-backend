@@ -1,8 +1,20 @@
 """Test the custom test utilities."""
 from django.db import models
 from django.test import TestCase
-from tests.utils import ModelTestCase, MixinModelTestCase
-from tests.utils import MetaTestCase
+from tests.utils import MetaTestCase, MixinModelTestCase, ModelTestCase
+
+
+class UtilsImportsTest(TestCase):
+    """Test utils imports work properly."""
+
+    def test_import_meta_test_case(self):
+        from tests.utils import MetaTestCase
+
+    def test_import_model_test_case(self):
+        from tests.utils import ModelTestCase
+
+    def test_import_abstract_model_test_case(self):
+        from tests.utils import MixinModelTestCase
 
 
 class ModelTestCaseTest(MetaTestCase):
@@ -57,7 +69,7 @@ class ModelTestCaseTest(MetaTestCase):
         cls.test_case = AlbumTestCase
 
 
-class MixinModelTestCaseTest(TestCase):
+class MixinModelTestCaseTest(MetaTestCase):
     """Test the usage of MixinModelTestCase."""
 
     expected_test_methods = [
@@ -87,19 +99,3 @@ class MixinModelTestCaseTest(TestCase):
             }
 
         cls.test_case = PlaceTestCase
-
-
-class UtilsImportsTest(TestCase):
-    """Test utils imports work properly."""
-
-    def test_import_meta_test_case(self):
-        from tests.utils import MetaTestCase
-
-    def test_import_model_test_case(self):
-        from tests.utils import ModelTestCase
-
-    def test_import_abstract_model_test_case(self):
-        from tests.utils import MixinModelTestCase
-
-    def test_import_random_uai_code(self):
-        from tests.utils import random_uai_code

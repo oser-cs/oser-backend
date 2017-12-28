@@ -39,56 +39,74 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
 
-class TutorViewSet(viewsets.ModelViewSet):
-    """API endpoint that allows tutors to be viewed or edited.
+class ProfileViewSetMeta(type):
+    """Metaclass for ProfileViewSet.
+
+    Automatically adds action to the concrete viewset docstring.
+    """
+
+    ACTIONS_DOCSTRING_TEMPLATE = """
+    list:
+    Return all {plural}.
 
     retrieve:
-    Return a tutor instance.
-
-    list:
-    Return all tutors.
+    Return a {singular} instance.
 
     create:
-    Create a tutor instance.
+    Create a {singular} instance.
+
+    destroy:
+    Destroy a {singular} instance.
+
+    update:
+    Update a {singular} instance (requires full data about the instance).
+
+    partial_update:
+    Partially update a {singular} instance (e.g. a single attribute).
     """
+
+    def __new__(metacls, name, bases, namespace):
+        add_actions_docs = namespace.pop('add_actions_docs', True)
+        cls = super().__new__(metacls, name, bases, namespace)
+        if add_actions_docs:
+            if not cls.__doc__:
+                cls.__doc__ = ""
+            if not hasattr(cls, 'queryset'):
+                raise AttributeError('ProfileViewSet subclass must define '
+                                     'a queryset attribute')
+            # build the actions dosctring
+            actions_doc = type(cls).ACTIONS_DOCSTRING_TEMPLATE.format(
+                singular=cls.queryset.model._meta.model_name,
+                plural=cls.queryset.model._meta.model_name + 's',
+            )
+            # append actions docstring to viewset's docstring.
+            cls.__doc__ += actions_doc
+        return cls
+
+
+class ProfileViewSet(viewsets.ModelViewSet, metaclass=ProfileViewSetMeta):
+    """Abstract viewset for profiles."""
+
+    permission_classes = (DRYPermissions,)  # defined for all profile types
+    add_actions_docs = False
+
+
+class TutorViewSet(ProfileViewSet):
+    """API endpoint that allows tutors to be viewed or edited."""
 
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
 
 
-class StudentViewSet(viewsets.ModelViewSet):
-    """API endpoint that allows students to be viewed or edited.
-
-    retrieve:
-    Return a student instance.
-
-    list:
-    Return all students.
-
-    create:
-    Create a student instance.
-    """
+class StudentViewSet(ProfileViewSet):
+    """API endpoint that allows students to be viewed or edited."""
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    permission_classes = (DRYPermissions,)
 
 
-class SchoolStaffMemberViewSet(ListModelMixin,
-                               RetrieveModelMixin,
-                               CreateModelMixin,
-                               viewsets.GenericViewSet):
-    """API endpoint that allows school staff members to be viewed or edited.
-
-    retrieve:
-    Return a school staff member instance.
-
-    list:
-    Return all school staff members.
-
-    create:
-    Create a school staff member instance.
-    """
+class SchoolStaffMemberViewSet(ProfileViewSet):
+    """API endpoint that allows school staff members to be viewed or edited."""
 
     queryset = SchoolStaffMember.objects.all()
     serializer_class = SchoolStaffMembersSerializer

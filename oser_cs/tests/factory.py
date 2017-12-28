@@ -5,18 +5,16 @@ FactoryBoy docs: http://factoryboy.readthedocs.io/en/latest/index.html
 
 import datetime
 
-from django.db.models.signals import post_save
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
-
 import factory
 import factory.django
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.db.models.signals import post_save
 
-import users.models
-from users.permissions import Groups
 import tutoring.models
-
-from tests.utils.misc import random_uai_code
+import users.models
+from tutoring.utils import random_uai_code
+from users.permissions import Groups
 
 User = get_user_model()
 

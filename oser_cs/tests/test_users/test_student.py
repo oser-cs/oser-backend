@@ -1,23 +1,18 @@
 """Student model tests."""
 
-from django.contrib.auth import get_user_model
-from users.models import Student
-
-from tests.factory import StudentFactory, UserFactory
+from tests.factory import StudentFactory
+from tests.test_users.mixins import ProfileTestMixin
 from tests.utils import ModelTestCase
 
+from tutoring.models import School, TutoringGroup
+from users.models import Student
 
-User = get_user_model()
 
-
-class StudentTestCase(ModelTestCase):
+class StudentTestCase(ProfileTestMixin, ModelTestCase):
     """Test case for Student model."""
 
     model = Student
     field_tests = {
-        'user': {
-            'verbose_name': 'utilisateur',
-        },
         'address': {
             'verbose_name': 'adresse',
             'blank': False,
@@ -31,8 +26,12 @@ class StudentTestCase(ModelTestCase):
     def setUpTestData(self):
         self.obj = StudentFactory.create()
 
-    def test_get_absolute_url(self):
-        self.client.force_login(UserFactory.create())
-        url = self.obj.get_absolute_url()
-        response = self.client.get(url)
-        self.assertEqual(200, response.status_code)
+    def test_school_relationship(self):
+        self.assertEqual(School.objects.get(), self.obj.school)
+        self.assertIn(self.obj, School.objects.get().students.all())
+
+    def test_tutoring_group_relationship(self):
+        self.assertEqual(TutoringGroup.objects.get(), self.obj.tutoring_group)
+        self.assertIn(self.obj, TutoringGroup.objects.get().students.all())
+
+    # TODO test 1-n relationship with tutoring group

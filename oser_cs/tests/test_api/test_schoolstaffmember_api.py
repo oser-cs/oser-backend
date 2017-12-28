@@ -1,32 +1,34 @@
-"""Tutor API tests."""
-from users.serializers import TutorSerializer
-from tests.factory import TutorFactory
+"""SchoolStaffMember API tests."""
+from users.serializers import SchoolStaffMembersSerializer
+from tests.factory import SchoolStaffMemberFactory, SchoolFactory
 from tests.utils.api import HyperlinkedAPITestCase
 from tests.test_api.mixins import ProfileEndpointsTestMixin
 
 
-class TutorEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
-    """Test access to the tutors endpoints.
+class SchoolStaffMemberEndpointsTest(ProfileEndpointsTestMixin,
+                                     HyperlinkedAPITestCase):
+    """Test access to the school staff member endpoints.
 
     Regular actions tests are provided by the ProfileEndpointsTestMixin.
     """
 
-    factory = TutorFactory
-    serializer_class = TutorSerializer
+    factory = SchoolStaffMemberFactory
+    serializer_class = SchoolStaffMembersSerializer
 
     def perform_list(self):
-        response = self.client.get('/api/tutors/')
+        response = self.client.get('/api/schoolstaffmembers/')
         return response
 
     def perform_retrieve(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.get(f'/api/tutors/{obj.pk}/')
+        response = self.client.get(f'/api/schoolstaffmembers/{obj.pk}/')
         return response
 
     def perform_create(self):
-        url = '/api/tutors/'
-        obj = self.factory.build()
+        url = '/api/schoolstaffmembers/'
+        school = SchoolFactory.create()
+        obj = self.factory.build(school=school)
         data = self.serialize(obj, 'post', url)
         response = self.client.post(url, data, format='json')
         return response
@@ -34,23 +36,23 @@ class TutorEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
     def perform_update(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        url = '/api/tutors/{obj.pk}/'.format(obj=obj)
+        url = '/api/schoolstaffmembers/{obj.pk}/'.format(obj=obj)
         data = self.serialize(obj, 'put', url)
-        data['promotion'] = 2020
+        data['role'] = 'proviseur'
         response = self.client.put(url, data, format='json')
         return response
 
     def perform_partial_update(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        url = '/api/tutors/{obj.pk}/'.format(obj=obj)
-        data = {'promotion': 2020}
+        url = '/api/schoolstaffmembers/{obj.pk}/'.format(obj=obj)
+        data = {'role': 'proviseur'}
         response = self.client.patch(url, data, format='json')
         return response
 
     def perform_delete(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        url = '/api/tutors/{obj.pk}/'.format(obj=obj)
+        url = '/api/schoolstaffmembers/{obj.pk}/'.format(obj=obj)
         response = self.client.delete(url)
         return response

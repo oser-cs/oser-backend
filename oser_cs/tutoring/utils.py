@@ -1,10 +1,7 @@
-"""Generic test function generators and other test utilities."""
+"""Tutoring utilities."""
 
 import random
 from string import ascii_lowercase, digits
-
-
-__all__ = ('random_uai_code',)
 
 
 def random_uai_code():

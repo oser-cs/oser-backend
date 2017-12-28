@@ -1,23 +1,18 @@
 """SchoolStaffMember model tests."""
 
-from django.contrib.auth import get_user_model
-from users.models import SchoolStaffMember
-from tutoring.models import School
 from tests.factory import SchoolStaffMemberFactory
+from tests.test_users.mixins import ProfileTestMixin
 from tests.utils import ModelTestCase
 
+from tutoring.models import School
+from users.models import SchoolStaffMember
 
-User = get_user_model()
 
-
-class SchoolStaffMemberTestCase(ModelTestCase):
+class SchoolStaffMemberTestCase(ProfileTestMixin, ModelTestCase):
     """Test case for SchoolStaffMember model."""
 
     model = SchoolStaffMember
     field_tests = {
-        'user': {
-            'verbose_name': 'utilisateur',
-        },
         'role': {
             'verbose_name': 'rôle',
             'max_length': 100,
@@ -31,11 +26,6 @@ class SchoolStaffMemberTestCase(ModelTestCase):
     @classmethod
     def setUpTestData(self):
         self.obj = SchoolStaffMemberFactory.create()
-
-    def test_get_absolute_url(self):
-        url = self.obj.get_absolute_url()
-        response = self.client.get(url)
-        self.assertEqual(200, response.status_code)
 
     def test_school_one_to_many_relationship(self):
         self.assertEqual(School.objects.get(), self.obj.school)
