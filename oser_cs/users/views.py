@@ -98,6 +98,15 @@ class TutorViewSet(ProfileViewSet):
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
 
+    @detail_route()
+    def tutoringgroups(self, request, pk=None):
+        """Retrieve the tutoring groups of a tutor."""
+        tutor = self.get_object()
+        tutoring_groups = tutor.tutoring_groups.all()
+        serializer = TutoringGroupSerializer(tutoring_groups, many=True,
+                                             context={'request': request})
+        return Response(serializer.data)
+
 
 class StudentViewSet(ProfileViewSet):
     """API endpoint that allows students to be viewed or edited."""

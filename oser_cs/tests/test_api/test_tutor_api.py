@@ -1,8 +1,10 @@
 """Tutor API tests."""
-from users.serializers import TutorSerializer
-from tests.factory import TutorFactory
-from tests.utils.api import HyperlinkedAPITestCase
+from rest_framework import status
+from tests.factory import TutorFactory, TutorTutoringGroupFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
+from tests.utils.api import HyperlinkedAPITestCase
+
+from users.serializers import TutorSerializer
 
 
 class TutorEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
@@ -54,3 +56,15 @@ class TutorEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
         url = '/api/tutors/{obj.pk}/'.format(obj=obj)
         response = self.client.delete(url)
         return response
+
+    def test_list_tutoring_groups(self):
+        def perform_list_tutoring_groups():
+            obj = self.factory.create()
+            # add tutor to several tutoring groups
+            TutorTutoringGroupFactory.create_batch(3, tutor=obj)
+            url = '/api/tutors/{}/tutoringgroups/'.format(obj.pk)
+            response = self.client.get(url)
+            return response
+
+        self.assertRequiresAuth(perform_list_tutoring_groups,
+                                expected_status_code=status.HTTP_200_OK)
