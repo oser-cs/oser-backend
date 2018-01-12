@@ -10,7 +10,6 @@ from django.contrib.messages import constants as messages
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 dn = os.path.dirname
 BASE_DIR = dn(dn(dn(os.path.abspath(__file__))))
-REACT_APP_DIR = os.path.join(BASE_DIR, 'frontend')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
