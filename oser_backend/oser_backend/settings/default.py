@@ -1,5 +1,5 @@
 """
-Django settings for oserwebsite project.
+Django settings for oser_backend project.
 
 Base settings common to all environments.
 """
@@ -59,7 +59,7 @@ MIDDLEWARE = [
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 
-ROOT_URLCONF = 'oser_cs.urls'
+ROOT_URLCONF = 'oser_backend.urls'
 
 TEMPLATES = [
     {
@@ -77,7 +77,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'oser_cs.wsgi.application'
+WSGI_APPLICATION = 'oser_backend.wsgi.application'
 
 # Flash messages classes
 MESSAGE_TAGS = {
