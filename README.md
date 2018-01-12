@@ -60,7 +60,7 @@ Le site d'OSER utilise le DRF en version 3.7.3. Cette version est entièrement c
 
 Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/site-internet-backlog).
 
-Consultez le guide du développeur de la [documentation backend](http://localhost:8000/index.html) pour plus d'informations sur le développement du site.
+Consultez le guide du développeur de la [documentation backend](http://oser-website.readthedocs.io/fr/latest/) pour plus d'informations sur le développement du site.
 
 ## À propos d'OSER
 
