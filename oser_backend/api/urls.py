@@ -3,6 +3,7 @@ from rest_framework import routers
 
 from users import views as users_views
 from tutoring import views as tutoring_views
+from showcase_site import views as showcase_site_views
 
 app_name = 'api'
 
@@ -22,5 +23,8 @@ router.register(r'tutoring/groups', tutoring_views.TutoringGroupViewSet,
                 base_name='tutoring_group')
 router.register(r'tutoring/sessions', tutoring_views.TutoringSessionViewSet,
                 base_name='tutoring_session')
+
+# Showcase site views
+router.register(r'articles', showcase_site_views.ArticleViewSet)
 
 urlpatterns = router.urls

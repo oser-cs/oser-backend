@@ -82,15 +82,13 @@ class HyperlinkedAPITestCase(APITestCase):
         self._check_response(perform_request, response)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def assertRequiresAuth(self, perform_request, expected_status_code,
-                           forbidden=False):
+    def assertRequiresAuth(self, perform_request, expected_status_code):
         """Assert a request requires to be authenticated.
 
         Parameters
         ----------
         perform_request : function: None -> response
             Should send the request of interest and return the response object.
-        user : Django User
         expected_status_code : int
             HTTP status code.
         """

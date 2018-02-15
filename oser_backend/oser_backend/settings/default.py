@@ -43,6 +43,7 @@ PROJECT_APPS = [
     'users.apps.UsersConfig',
     'tutoring.apps.TutoringConfig',
     'api.apps.ApiConfig',
+    'showcase_site.apps.ShowcaseSiteConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -145,3 +146,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# User-uploaded media files
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
