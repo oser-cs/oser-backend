@@ -32,7 +32,7 @@ class ProfileEndpointsTestMixin:
 
     def test_update_authenticated_is_forbidden(self):
         """Test an authenticated user cannot update any profile."""
-        self.assertForbidden(self.perform_update, user=UserFactory.create())
+        self.assertAuthForbidden(self.perform_update)
 
     def test_update_authenticated_self_is_allowed(self):
         """Test an authenticated user can update their own profile."""
@@ -46,8 +46,7 @@ class ProfileEndpointsTestMixin:
 
     def test_partial_update_authenticated_is_forbidden(self):
         """Test authenticated user cannot partially update any profile."""
-        self.assertForbidden(self.perform_partial_update,
-                             user=UserFactory.create())
+        self.assertAuthForbidden(self.perform_partial_update)
 
     def test_partial_update_authenticated_self_is_allowed(self):
         """Test an authenticated user can partially update their profile."""
@@ -61,9 +60,8 @@ class ProfileEndpointsTestMixin:
     # delete action
 
     def test_delete_authenticated_is_forbidden(self):
-        """Test an authenticated user cannot delete any school staff member."""
-        self.assertForbidden(self.perform_delete,
-                             user=UserFactory.create())
+        """Test authenticated user cannot delete any school staff member."""
+        self.assertAuthForbidden(self.perform_delete)
 
     def test_delete_authenticated_self_is_allowed(self):
         """Test authenticated school staff member can delete its profile."""

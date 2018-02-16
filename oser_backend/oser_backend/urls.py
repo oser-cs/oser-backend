@@ -19,14 +19,16 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from rest_framework.documentation import include_docs_urls
+from rest_framework.authtoken.views import obtain_auth_token
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
     url(r'^api/docs/', include_docs_urls(title='OSER_CS API')),
-    url('api-auth/', include(
-        'rest_framework.urls', namespace='rest_framework')),
+    url('api/auth/', include('rest_framework.urls',
+                             namespace='rest_framework')),
+    url(r'^api/auth/get-token/$', obtain_auth_token, name='get-auth-token'),
 ]
 
 # Serve static and media files with Django during development

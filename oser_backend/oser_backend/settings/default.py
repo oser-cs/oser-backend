@@ -33,6 +33,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     # Django REST Framework (DRF)
     'rest_framework',
+    'rest_framework.authtoken',
     # DRY REST permissions (rules-based API permissions)
     # See: https://github.com/dbkaplan/dry-rest-permissions
     'dry_rest_permissions',
@@ -91,7 +92,9 @@ MESSAGE_TAGS = {
 # Django rest framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication'
+        'rest_framework.authentication.TokenAuthentication',
+        # v Enable session authentication in the browsable API
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DATE_FORMAT': '%d/%m/%Y',
     'DATE_INPUT_FORMATS': ['%d/%m/%Y'],
