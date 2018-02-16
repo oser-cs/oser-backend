@@ -34,13 +34,41 @@ En supplément, la documentation de l'API générée par Django est accessible �
 
 ![API Docs](media/api-docs.png)
 
-#### Structure des données
+#### Authentification
 
-TODO
+> Remarque : actuellement, certaines ressources (les articles par exemple) sont accessibles sans authentification. Cela ne sera plus le cas dans de futures versions.
+
+Pour communiquer avec l'API, un client doit être authentifié. La méthode standard de la [*token authentication*](https://auth0.com/learn/token-based-authentication-made-easy/) est employée ici.
+
+Le principe est le suivant :
+
+- Le client s'authentifie en utilisant un nom d'utilisateur et un mot de passe.
+- Le backend génère un *token* et le renvoie au client.
+- Le client peut alors utiliser le *token* pour réaliser d'autres requêtes qui nécessitent d'être authentifié.
+
+> Quel intérêt par rapport à une authentification username/password basique ?
+
+L'avantage est de pouvoir stocker ce token dans un cookie ou dans le stockage local du navigateur, et ainsi éviter de redemander le nom d'utilisateur/mot de passe à chaque réouverture du navigateur.
+
+> Concrètement, comment faire pour authentifier un utilisateur ?
+
+Du point de vue d'un client, la procédure d'authentification se fait en 2 étapes :
+
+A. Récupération du token en envoyant une requête POST à l'endpoint `/api/auth/get-token` avec `username` et le `password` fournis par l'utilisateur.
+
+```
+$ curl -X POST -d "username=user&password=pass" localhost:8000/api/auth/get-token/
+{"token":"b6302cebe7817532987e7a8767611b2600414915"}
+```
+
+B. Usage du token lors de futures requêtes en envoyant le paramètre `Authorization: Token <token>` dans l'entête.
+
+```
+$ curl -X GET "localhost:8000/api/articles/" -H "Authorization: Token b6302cebe7817532987e7a8767611b2600414915"
+[{"id": 39, "content": ...}, ...]
+```
 
 ## Dépendances
-
-:construction: Section en construction.
 
 ### Django
 
