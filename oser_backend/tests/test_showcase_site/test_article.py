@@ -1,5 +1,6 @@
 """Article model tests."""
 
+from showcase_site.models import Article
 from tests.factory import ArticleFactory
 from tests.utils import ModelTestCase
 
@@ -39,7 +40,8 @@ class ArticleTest(ModelTestCase):
         cls.obj = ArticleFactory.create(title='This is an article')
 
     def test_slug_filled_from_title(self):
-        self.assertEqual(self.obj.slug, 'this-is-an-article')
+        obj = Article.objects.create(title='This is another article')
+        self.assertEqual(obj.slug, 'this-is-another-article')
 
     def test_get_absolute_url(self):
         url = self.obj.get_absolute_url()

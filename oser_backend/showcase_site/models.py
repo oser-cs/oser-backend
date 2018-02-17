@@ -1,10 +1,23 @@
 """Showcase site models."""
 
+from django.utils.text import slugify
 from django.db import models
 from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
 
 # Create your models here.
+
+
+class Category(models.Model):
+    """Represents a group of articles."""
+    title = models.CharField('titre', max_length=100, unique=True)
+
+    class Meta:  # noqa
+        verbose_name = 'catégorie'
+        ordering = ('title',)
+
+    def __str__(self):
+        return str(self.title)
 
 
 class Article(models.Model):
@@ -36,6 +49,12 @@ class Article(models.Model):
     # ^blank=True to allow True of False value (otherwise
     # validation would force pinned to be True)
     # see: https://docs.djangoproject.com/fr/2.0/ref/forms/fields/#booleanfield
+    categories = models.ManyToManyField('Category')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.title and not self.slug:
+            self.slug = slugify(self.title)
 
     class Meta:  # noqa
         verbose_name = 'article'

@@ -12,7 +12,6 @@ import factory.django
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
-from django.utils.text import slugify
 
 import tutoring.models
 import users.models
@@ -182,7 +181,6 @@ class ArticleFactory(factory.DjangoModelFactory):
         model = showcase_site.models.Article
 
     title = factory.Faker('sentence', ext_word_list=None)
-    slug = factory.LazyAttribute(lambda o: slugify(o.title))
     content = factory.Faker('text', max_nb_chars=2000)
     published = factory.Faker('date')
     pinned = factory.Iterator((True, False, False, False))

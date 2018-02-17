@@ -23,3 +23,5 @@ yarn-error.log*
 
 # media files
 oser_backend/media/
+
+migrations/
