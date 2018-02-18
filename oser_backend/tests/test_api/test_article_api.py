@@ -1,6 +1,8 @@
 """Article API tests."""
 
+from django.test import TestCase
 from rest_framework import status
+from rest_framework.test import APIRequestFactory
 from tests.factory import ArticleFactory, CategoryFactory
 from tests.utils import HyperlinkedAPITestCase
 from showcase_site.serializers import ArticleSerializer
@@ -102,3 +104,52 @@ class ArticleEndpointsTest(HyperlinkedAPITestCase):
         self.assertRequiresAuth(
             self.perform_delete,
             expected_status_code=status.HTTP_204_NO_CONTENT)
+
+
+class ArticleSerializerTestCase(TestCase):
+    """Base test case for ArticleSerializer tests."""
+
+    def setUp(self):
+        factory = APIRequestFactory()
+        self.request = factory.get('/api/')
+        self.obj = ArticleFactory.create()
+        self.serializer = self.get_serializer()
+
+    def get_serializer(self):
+        return ArticleSerializer(
+            instance=self.obj,
+            context={'request': self.request})
+
+
+class TestArticleSerializer(ArticleSerializerTestCase):
+    """Test the Article serializer."""
+
+    def test_contains_expected_fields(self):
+        data = self.serializer.data
+        self.assertEqual(set(data), set([
+            'id', 'url', 'title', 'slug',
+            'content', 'published', 'image',
+            'pinned', 'categories']))
+
+    def test_slug_is_read_only(self):
+        self.assertTrue(self.serializer.fields['slug'].read_only)
+
+
+class TestArticleCategories(ArticleSerializerTestCase):
+    """Test the ArticleSerializer's categories field.
+
+    It is an instance of CategoryField and converts the article's categories
+    objects to a list of their titles.
+    """
+
+    def setUp(self):
+        super().setUp()
+        # add a few categories to article
+        for category in CategoryFactory.create_batch(3):
+            self.obj.categories.add(category)
+        self.obj.save()
+
+    def test_contains_categories_titles(self):
+        expected = set(self.serializer.data['categories'])
+        actual = set(c.title for c in self.obj.categories.all())
+        self.assertEqual(actual, expected)

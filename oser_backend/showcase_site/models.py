@@ -10,7 +10,12 @@ from dry_rest_permissions.generics import authenticated_users
 
 class Category(models.Model):
     """Represents a group of articles."""
+
     title = models.CharField('titre', max_length=100, unique=True)
+
+    @property
+    def articles_count(self):
+        return self.article_set.count()
 
     class Meta:  # noqa
         verbose_name = 'catégorie'
@@ -58,7 +63,7 @@ class Article(models.Model):
 
     class Meta:  # noqa
         verbose_name = 'article'
-        ordering = ('-pinned', '-published',)
+        ordering = ('-published',)
 
     def get_absolute_url(self):
         """Return the article's absolute url."""

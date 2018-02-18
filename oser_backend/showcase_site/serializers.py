@@ -29,6 +29,14 @@ class CategoryField(serializers.RelatedField):
         return Category.objects.all()
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    """Serializer for Category."""
+
+    class Meta:  # noqa
+        model = Category
+        fields = ('id', 'title', 'articles_count')
+
+
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for Article.
 
