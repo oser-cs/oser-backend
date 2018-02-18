@@ -21,6 +21,13 @@ class CategoryField(serializers.RelatedField):
         category = Category.objects.get(title=data)
         return category
 
+    def get_queryset(self):
+        """Define default queryset to be all categories.
+
+        Allows to skip passing queryset=... when creating a CategoryField.
+        """
+        return Category.objects.all()
+
 
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for Article.
@@ -28,7 +35,7 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     Suited for: list, retrieve, update, partial_update, delete
     """
 
-    categories = CategoryField(many=True, queryset=Category.objects.all())
+    categories = CategoryField(many=True)
 
     class Meta:  # noqa
         model = Article

@@ -1,9 +1,8 @@
 """Article API tests."""
 
 from rest_framework import status
-from tests.factory import ArticleFactory
-from tests.utils.api import HyperlinkedAPITestCase
-
+from tests.factory import ArticleFactory, CategoryFactory
+from tests.utils import HyperlinkedAPITestCase
 from showcase_site.serializers import ArticleSerializer
 
 
@@ -36,16 +35,36 @@ class ArticleEndpointsTest(HyperlinkedAPITestCase):
             user=None,
             expected_status_code=status.HTTP_200_OK)
 
-    def perform_create(self):
-        url = '/api/articles/'
+    create_url = '/api/articles/'
+
+    def get_create_data(self):
+        # Use .build() instead of .create() to get a raw object
+        # not stored in DB.
         obj = self.factory.build()
-        data = self.serialize(obj, 'post', url)
-        response = self.client.post(url, data, format='json')
+        data = self.serialize(obj, 'post', self.create_url)
+        return data
+
+    def perform_create(self, data=None):
+        if data is None:
+            data = self.get_create_data()
+        response = self.client.post(self.create_url, data, format='json')
         return response
 
     def test_create_requires_to_be_authenticated(self):
         self.assertRequiresAuth(
             self.perform_create,
+            expected_status_code=status.HTTP_201_CREATED)
+
+    def test_create_with_categories(self):
+        # create categories
+        categories = CategoryFactory.create_batch(3)
+        data = self.get_create_data()
+        # add categories titles to the POST data
+        for cat in categories:
+            data.setdefault('categories', []).append(cat.title)
+
+        self.assertUserRequestResponse(
+            lambda: self.perform_create(data=data),
             expected_status_code=status.HTTP_201_CREATED)
 
     def perform_update(self):

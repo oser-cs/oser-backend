@@ -180,7 +180,15 @@ class ArticleFactory(factory.DjangoModelFactory):
     class Meta:  # noqa
         model = showcase_site.models.Article
 
-    title = factory.Faker('sentence', ext_word_list=None)
+    title = factory.Faker('sentence')
     content = factory.Faker('text', max_nb_chars=2000)
     published = factory.Faker('date')
     pinned = factory.Iterator((True, False, False, False))
+
+
+class CategoryFactory(factory.DjangoModelFactory):
+
+    class Meta:  # noqa
+        model = showcase_site.models.Category
+
+    title = factory.Faker('word')
