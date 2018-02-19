@@ -47,14 +47,6 @@ def article_images(number):
             yield wrapped_img
 
 
-def create(f):
-    return f
-
-
-def clean(f):
-    return f
-
-
 class Command(BaseCommand):
     """Populate the database with fake data."""
 
@@ -111,7 +103,7 @@ class Command(BaseCommand):
                               .format(categories.count(), article))
 
     def create_articles(self):
-        with self.creating(ArticleFactory, 3) as n:
+        with self.creating(ArticleFactory, 5) as n:
             for image in article_images(n):
                 article = ArticleFactory.create(image=image)
                 self.add_random_categories(article)
