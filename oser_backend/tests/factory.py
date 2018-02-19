@@ -44,9 +44,9 @@ class UserFactory(factory.DjangoModelFactory):
 
     is_staff = False
     # random but realistic first_name
-    first_name = factory.Faker('first_name')
+    first_name = factory.Faker('first_name', locale='fr')
     # random but realistic last_name
-    last_name = factory.Faker('last_name')
+    last_name = factory.Faker('last_name', locale='fr')
     # email built after first_name and last_name
     uid = factory.Sequence(lambda n: n)
     email = factory.LazyAttribute(
@@ -59,8 +59,8 @@ class UserFactory(factory.DjangoModelFactory):
     profile_type = 'student'
     date_of_birth = factory.Faker('date_this_century',
                                   before_today=True, after_today=False,
-                                  locale='fr_FR')
-    phone_number = factory.Faker('phone_number', locale='fr_FR')
+                                  locale='fr')
+    phone_number = factory.Faker('phone_number', locale='fr')
     gender = factory.Iterator([User.MALE, User.FEMALE])
 
     @classmethod
@@ -110,9 +110,9 @@ class SchoolFactory(factory.DjangoModelFactory):
         exclude = ('school_name',)
 
     uai_code = factory.LazyFunction(random_uai_code)
-    school_name = factory.Faker('name', locale='fr_FR')
+    school_name = factory.Faker('name', locale='fr')
     name = factory.LazyAttribute(lambda o: 'Lycée {o.school_name}'.format(o=o))
-    address = factory.Faker('address', locale='fr_FR')
+    address = factory.Faker('address', locale='fr')
 
 
 class SchoolStaffMemberFactory(ProfileFactory):
@@ -169,7 +169,7 @@ class StudentFactory(ProfileFactory):
     class Meta:  # noqa
         model = users.models.Student
 
-    address = factory.Faker('address', locale='fr_FR')
+    address = factory.Faker('address', locale='fr')
     tutoring_group = factory.SubFactory(TutoringGroupFactory)
     # student's school is the same as the student's tutoring group's
     school = factory.SelfAttribute('tutoring_group.school')
@@ -180,8 +180,8 @@ class ArticleFactory(factory.DjangoModelFactory):
     class Meta:  # noqa
         model = showcase_site.models.Article
 
-    title = factory.Faker('sentence')
-    content = factory.Faker('text', max_nb_chars=2000)
+    title = factory.Faker('sentence', locale='fr')
+    content = factory.Faker('text', max_nb_chars=2000, locale='fr')
     published = factory.Faker('date')
     pinned = factory.Iterator((True, False, False, False))
 
@@ -199,6 +199,6 @@ class TestimonyFactory(factory.DjangoModelFactory):
     class Meta:  # noqa
         model = showcase_site.models.Testimony
 
-    author_name = factory.Faker('name')
-    author_position = factory.Faker('job')
-    content = factory.Faker('text', max_nb_chars=300)
+    author_name = factory.Faker('name', locale='fr')
+    author_position = factory.Faker('job', locale='fr')
+    content = factory.Faker('text', max_nb_chars=200, locale='fr')

@@ -13,6 +13,11 @@ from showcase_site.models import Category
 from tests.factory import StudentFactory
 from tests.factory import ArticleFactory
 from tests.factory import CategoryFactory
+from tests.factory import TestimonyFactory
+
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(HERE, 'data')
 
 
 def article_filename(i):
@@ -20,9 +25,8 @@ def article_filename(i):
 
 
 def count_article_images():
-    path = 'tests/media/'
     count = 0
-    while os.path.exists(path + article_filename(count)):
+    while os.path.exists(os.path.join(data_path, article_filename(count))):
         count += 1
     return count
 
@@ -34,13 +38,21 @@ def article_images(number):
     images = cycle(range(num_images))
     for _ in range(number):
         filename = article_filename(next(images))
-        path = 'tests/media/' + filename
+        path = os.path.join(data_path, filename)
         with open(path, 'rb') as img:
             wrapped_img = File(img)
             # Default name of the file is the full path to img.
             # Use only the filename.
             wrapped_img.name = filename
             yield wrapped_img
+
+
+def create(f):
+    return f
+
+
+def clean(f):
+    return f
 
 
 class Command(BaseCommand):
@@ -105,10 +117,15 @@ class Command(BaseCommand):
                 self.add_random_categories(article)
                 article.save()
 
+    def create_testimonies(self):
+        with self.creating(TestimonyFactory, 6) as n:
+            TestimonyFactory.create_batch(n)
+
     def clean(self):
         StudentFactory._meta.model.objects.all().delete()
         Category.objects.all().delete()
         ArticleFactory._meta.model.objects.all().delete()
+        TestimonyFactory._meta.model.objects.all().delete()
         call_command('clean_media')
         self.stdout.write(self.style.SUCCESS('Cleaned populated database.'))
 
@@ -122,5 +139,6 @@ class Command(BaseCommand):
                 self.create_students()
                 self.create_categories()
                 self.create_articles()
+                self.create_testimonies()
                 self.stdout.write(self.style.SUCCESS('Populated database.'))
         self.check()
