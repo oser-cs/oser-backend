@@ -93,7 +93,7 @@ class ModelTestCase(TestCase, metaclass=ModelTestCaseMeta):
     def setUpClass(cls):
         super().setUpClass()
         if not cls.model:
-            raise TypeError('Model attribute not defined in {}'
+            raise TypeError('model not declared on {}'
                             .format(cls.__name__))
 
 

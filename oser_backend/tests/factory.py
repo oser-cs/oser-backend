@@ -192,3 +192,13 @@ class CategoryFactory(factory.DjangoModelFactory):
         model = showcase_site.models.Category
 
     title = factory.Faker('word')
+
+
+class TestimonyFactory(factory.DjangoModelFactory):
+
+    class Meta:  # noqa
+        model = showcase_site.models.Testimony
+
+    author_name = factory.Faker('name')
+    author_position = factory.Faker('job')
+    content = factory.Faker('text', max_nb_chars=300)

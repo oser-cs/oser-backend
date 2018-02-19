@@ -3,6 +3,8 @@
 See FieldTestMeta docstring for available field tests.
 """
 
+from django.core.exceptions import FieldDoesNotExist
+
 # Toggle to True to print a message when a field test method is called.
 PRINT_FIELD_TEST_CALLS = False
 
@@ -244,8 +246,18 @@ class FieldTestFactory(BaseTestFactory):
             field=field_name, attr=attr, value=value)
 
     def get_test_kwargs(self, field_name):
-        field = self.model._meta.get_field(field_name)
-        return {'field': field}
+        try:
+            field = self.model._meta.get_field(field_name)
+            return {'field': field}
+        except FieldDoesNotExist:
+            # look for a property instead
+            try:
+                prop = getattr(self.model, field_name).fget
+                return {'field': prop}
+            except AttributeError:
+                raise AttributeError(
+                    "'{}' object has no field or property '{}'"
+                    .format(self.model._meta.object_name, field_name))
 
     @staticmethod
     def perform_test(attr, value, field):

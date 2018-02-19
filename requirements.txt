@@ -1,4 +1,4 @@
-Django>=2.0
+Django==2.0
 djangorestframework>=3.7.3
 factory-boy>=2.9.2
 coreapi-cli>=1.0

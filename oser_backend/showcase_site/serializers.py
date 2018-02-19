@@ -1,7 +1,7 @@
 """Showcase site API serializers."""
 
 from rest_framework import serializers
-from .models import Article, Category
+from .models import Article, Category, Testimony
 
 
 class CategoryField(serializers.RelatedField):
@@ -43,7 +43,7 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     Suited for: list, retrieve, update, partial_update, delete
     """
 
-    categories = CategoryField(many=True)
+    categories = CategoryField(many=True, required=False)
 
     class Meta:  # noqa
         model = Article
@@ -54,3 +54,11 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
             'slug': {'read_only': True},
             'url': {'view_name': 'api:article-detail'},
         }
+
+
+class TestimonySerializer(serializers.ModelSerializer):
+    """Serializer for Testimony."""
+
+    class Meta:  # noqa
+        model = Testimony
+        fields = ('id', 'author', 'created', 'content',)

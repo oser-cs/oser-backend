@@ -3,6 +3,7 @@
 from django.contrib import admin
 from .models import Article
 from .models import Category
+from .models import Testimony
 
 # Register your models here.
 
@@ -31,3 +32,17 @@ class CategoryAdmin(admin.ModelAdmin):
 
     class Meta:  # noqa
         model = Category
+
+
+@admin.register(Testimony)
+class TestimonyAdmin(admin.ModelAdmin):
+    """Testimony admin panel."""
+
+    list_display = ('__str__', 'get_preview', 'created',)
+    list_filter = ('created',)
+
+    def get_preview(self, obj):
+        if len(obj.content) > 100:
+            return obj.content[:100] + ' […]'
+        return obj.content
+    get_preview.short_description = 'Aperçu'
