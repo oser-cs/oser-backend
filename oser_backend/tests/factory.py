@@ -4,7 +4,8 @@ FactoryBoy docs: http://factoryboy.readthedocs.io/en/latest/index.html
 """
 
 import datetime
-
+import random
+from string import printable
 
 import factory
 import factory.django
@@ -49,12 +50,19 @@ class UserFactory(factory.DjangoModelFactory):
     last_name = factory.Faker('last_name', locale='fr')
     # email built after first_name and last_name
     uid = factory.Sequence(lambda n: n)
-    email = factory.LazyAttribute(
-        lambda o:
-        '{}.{}-{}@exmaple.net'.format(
-            o.first_name.lower(),
-            o.last_name.lower(),
-            o.uid))
+
+    @factory.lazy_attribute
+    def email(self):
+        # email can only contain printable characters,
+        # i.e. not "ç", no "é", ...
+        def printable_only(s):
+            return ''.join(c for c in filter(lambda x: x in printable, s))
+
+        return '{}.{}-{}@example.net'.format(
+            printable_only(self.first_name.lower()),
+            printable_only(self.last_name.lower()),
+            self.uid)
+
     # this is a default, override by passing `profile_type='...'` in create()
     profile_type = 'student'
     date_of_birth = factory.Faker('date_this_century',
@@ -176,6 +184,7 @@ class StudentFactory(ProfileFactory):
 
 
 class ArticleFactory(factory.DjangoModelFactory):
+    """Article object factory."""
 
     class Meta:  # noqa
         model = showcase_site.models.Article
@@ -187,6 +196,7 @@ class ArticleFactory(factory.DjangoModelFactory):
 
 
 class CategoryFactory(factory.DjangoModelFactory):
+    """Category object factory."""
 
     class Meta:  # noqa
         model = showcase_site.models.Category
@@ -195,6 +205,7 @@ class CategoryFactory(factory.DjangoModelFactory):
 
 
 class TestimonyFactory(factory.DjangoModelFactory):
+    """Testimony object factory."""
 
     class Meta:  # noqa
         model = showcase_site.models.Testimony
@@ -202,3 +213,14 @@ class TestimonyFactory(factory.DjangoModelFactory):
     author_name = factory.Faker('name', locale='fr')
     author_position = factory.Faker('job', locale='fr')
     content = factory.Faker('text', max_nb_chars=200, locale='fr')
+
+
+class KeyFigureFactory(factory.DjangoModelFactory):
+    """Key figure object factory."""
+
+    class Meta:  # noqa
+        model = showcase_site.models.KeyFigure
+
+    figure = factory.LazyFunction(lambda: random.randint(10, 500))
+    description = factory.Faker('text', max_nb_chars=100)
+    order = factory.Sequence(lambda n: n)

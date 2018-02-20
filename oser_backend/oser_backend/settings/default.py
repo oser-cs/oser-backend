@@ -42,6 +42,8 @@ THIRD_PARTY_APPS = [
     'dry_rest_permissions',
     # Frontend integration
     'corsheaders',
+    # Sortable models in Admin
+    'adminsortable2',
 ]
 PROJECT_APPS = [
     'users.apps.UsersConfig',

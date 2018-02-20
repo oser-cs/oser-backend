@@ -1,9 +1,11 @@
 """Showcase site admin panel configuration."""
 
 from django.contrib import admin
+from adminsortable2.admin import SortableAdminMixin
 from .models import Article
 from .models import Category
 from .models import Testimony
+from .models import KeyFigure
 
 # Register your models here.
 
@@ -19,9 +21,6 @@ class ArticleAdmin(admin.ModelAdmin):
     # reorganize fields
     fields = ('title', 'slug', 'categories', 'pinned', 'image', 'content',)
 
-    class Meta:  # noqa
-        model = Article
-
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -32,9 +31,6 @@ class CategoryAdmin(admin.ModelAdmin):
     def get_num_articles(self, obj):
         return obj.article_set.count()
     get_num_articles.short_description = "Nombre d'articles"
-
-    class Meta:  # noqa
-        model = Category
 
 
 @admin.register(Testimony)
@@ -49,3 +45,8 @@ class TestimonyAdmin(admin.ModelAdmin):
             return obj.content[:100] + ' […]'
         return obj.content
     get_preview.short_description = 'Aperçu'
+
+
+@admin.register(KeyFigure)
+class KeyFigureAdmin(SortableAdminMixin, admin.ModelAdmin):
+    pass

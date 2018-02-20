@@ -5,9 +5,11 @@ from dry_rest_permissions.generics import DRYPermissions
 from .serializers import ArticleSerializer
 from .serializers import CategorySerializer
 from .serializers import TestimonySerializer
+from .serializers import KeyFigureSerializer
 from .models import Article
 from .models import Category
 from .models import Testimony
+from .models import KeyFigure
 
 # Create your views here.
 
@@ -41,3 +43,13 @@ class TestimonyViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = TestimonySerializer
     queryset = Testimony.objects.all()
+
+
+class KeyFigureViewSet(viewsets.ReadOnlyModelViewSet):
+    """API endpoint to view key figures.
+
+    Actions: list, retrieve
+    """
+
+    serializer_class = KeyFigureSerializer
+    queryset = KeyFigure.objects.all()

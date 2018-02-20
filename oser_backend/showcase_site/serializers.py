@@ -1,7 +1,7 @@
 """Showcase site API serializers."""
 
 from rest_framework import serializers
-from .models import Article, Category, Testimony
+from .models import Article, Category, Testimony, KeyFigure
 
 
 class CategoryField(serializers.RelatedField):
@@ -62,3 +62,11 @@ class TestimonySerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Testimony
         fields = ('id', 'author', 'created', 'content',)
+
+
+class KeyFigureSerializer(serializers.ModelSerializer):
+    """Serializer for KeyFigure."""
+
+    class Meta:  # noqa
+        model = KeyFigure
+        fields = ('order', 'figure', 'description',)

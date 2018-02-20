@@ -28,5 +28,6 @@ router.register(r'tutoring/sessions', tutoring_views.TutoringSessionViewSet,
 router.register(r'articles', showcase_site_views.ArticleViewSet)
 router.register(r'categories', showcase_site_views.CategoryViewSet)
 router.register(r'testimonies', showcase_site_views.TestimonyViewSet)
+router.register(r'keyfigures', showcase_site_views.KeyFigureViewSet)
 
 urlpatterns = router.urls

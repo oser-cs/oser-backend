@@ -3,6 +3,7 @@
 from django.utils.text import slugify
 from django.db import models
 from django.shortcuts import reverse
+from django.core.validators import integer_validator
 from dry_rest_permissions.generics import authenticated_users
 from markdownx.models import MarkdownxField
 
@@ -120,3 +121,31 @@ class Testimony(models.Model):
 
     def __str__(self):
         return self.author
+
+
+class KeyFigure(models.Model):
+    """A key figure about the association."""
+
+    figure = models.PositiveIntegerField(
+        'chiffre',
+        help_text='Un nombre entier positif. Exemple : 60')
+    description = models.CharField(
+        max_length=100,
+        help_text=(
+            "Une courte description du chiffre "
+            "(sera convertie en minuscules). "
+            "Exemple : millions d'amis."))
+    order = models.PositiveIntegerField('ordre', default=0)
+
+    class Meta:  # noqa
+        verbose_name = 'chiffre clé'
+        verbose_name_plural = 'chiffres clés'
+        ordering = ('order',)
+
+    def save(self, *args, **kwargs):
+        # Always save description as lowercase
+        self.description = self.description.lower()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return '{} {}'.format(self.figure, self.description.lower())

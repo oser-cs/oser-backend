@@ -65,7 +65,8 @@ class HyperlinkedAPITestCase(APITestCase):
             self.client.force_login(user)
         response = perform_request()
         self._check_response(perform_request, response)
-        self.assertEqual(response.status_code, expected_status_code)
+        self.assertEqual(response.status_code, expected_status_code,
+                         response.data)
 
     def assertUserRequestResponse(self, perform_request,
                                   expected_status_code):
