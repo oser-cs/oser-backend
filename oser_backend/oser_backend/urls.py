@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^api/auth/get-token/$', obtain_auth_token, name='get-auth-token'),
     url(r'^$', RedirectView.as_view(url='api/docs/', permanent=True),
         name='index'),
+    url(r'^markdownx/', include('markdownx.urls')),
 ]
 
 # Serve static and media files with Django during development

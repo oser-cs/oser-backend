@@ -11,10 +11,13 @@ from .models import Testimony
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     """Article admin panel."""
+
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('published',)
 
     list_display = ('title', 'published', 'pinned',)
+    # reorganize fields
+    fields = ('title', 'slug', 'categories', 'pinned', 'image', 'content',)
 
     class Meta:  # noqa
         model = Article

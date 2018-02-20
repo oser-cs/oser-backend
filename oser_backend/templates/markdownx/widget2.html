@@ -1,0 +1,27 @@
+<!--
+From :
+http://neutronx.github.io/django-markdownx/customization.html#templates
+-->
+<div class="markdownx">
+  <div>
+    {% include 'django/forms/widgets/textarea.html' %}
+  </div>
+  <div class="form-row">
+    <strong>Aperçu : </strong>
+    <h1 id="preview-title"></h1>
+    <div class="markdownx-preview"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+// Update the preview's title according to the article's title
+document.addEventListener('DOMContentLoaded',function() {
+  var previewTitle = document.getElementById('preview-title');
+  var formTitle = document.querySelector('input[name="title"]');
+  function update() {
+    previewTitle.innerHTML = formTitle.value;
+  }
+  update();
+  formTitle.oninput = function(event) {update();};
+}, false);
+</script>

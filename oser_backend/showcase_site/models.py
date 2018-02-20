@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.db import models
 from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
+from markdownx.models import MarkdownxField
 
 # Create your models here.
 
@@ -48,9 +49,9 @@ class Article(models.Model):
     title = models.CharField('titre', max_length=300,
                              help_text="Titre de l'article")
     slug = models.SlugField(max_length=100, unique=True)
-    content = models.TextField(
+    content = MarkdownxField(
         'contenu',
-        help_text="Contenu complet de l'article")  # TODO add Markdown support
+        help_text="Contenu complet de l'article")
     published = models.DateTimeField('date de publication', auto_now_add=True)
     image = models.ImageField('illustration', blank=True, null=True)
     pinned = models.BooleanField('épinglé', default=False, blank=True)

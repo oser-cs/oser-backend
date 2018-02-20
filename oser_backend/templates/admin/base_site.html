@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+<!-- Django's default
+{{ title }} | {{ site_title|default:_('Django site admin') }}
+-->
+{% block title %}
+{{ title }} | oser-cs.fr
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "css/admin-extra.css" %}" />
+{% endblock %}
+
+<!--{{ site_header|default:_('Django administration') }}-->
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">
+  Administration de oser-cs.fr
+</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

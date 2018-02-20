@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700,900');
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700,900');
+
+:root {
+  --font: 'Nunito', "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
+  --title-font: 'Raleway';
+}
+
+/* REPLACE FONTS */
+
+body {
+  font-family: var(--font);
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--title-font);
+  font-weight: bold;
+}
+
+td, th {
+  font-family: var(--font);
+}
+
+input, textarea, select, .form-row p, form .button {
+  font-family: var(--font);
+}
