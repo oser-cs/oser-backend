@@ -1,10 +1,12 @@
 """Users API serializers."""
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import reverse
 from rest_framework import serializers
-
 from .models import Tutor, Student, SchoolStaffMember
 from tutoring.models import School, TutoringGroup
+from visits.models import Visit
+from visits.serializers import VisitSerializer
 
 User = get_user_model()
 
@@ -110,17 +112,22 @@ class StudentSerializer(ProfileSerializer,
 
     tutoring_group = serializers.HyperlinkedRelatedField(
         queryset=TutoringGroup.objects.all(),
-        view_name='api:tutoring_group-detail',
+        view_name='api:student-tutoringgroup',
     )
     school = serializers.HyperlinkedRelatedField(
         queryset=School.objects.all(),
         view_name='api:school-detail',
     )
+    visits = serializers.HyperlinkedRelatedField(
+        source='visit_set',
+        many=True,
+        view_name='api:visit-detail',
+        read_only=True)
 
     class Meta:  # noqa
         model = Student
-        fields = ('user_id', 'user', 'address', 'tutoring_group',
-                  'school', 'url')
+        fields = ('user_id', 'url', 'user', 'address', 'tutoring_group',
+                  'school', 'visits',)
         extra_kwargs = {
             'url': {'view_name': 'api:student-detail'},
         }

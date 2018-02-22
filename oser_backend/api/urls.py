@@ -10,7 +10,13 @@ app_name = 'api'
 
 # Register API routes here
 
+urlpatterns = []
+
 router = routers.DefaultRouter()
+
+# Visits views
+router.register('visits', visits_views.VisitViewSet)
+router.register('visit-participants', visits_views.VisitParticipantViewSet)
 
 # Users views
 router.register(r'users', users_views.UserViewSet)
@@ -31,7 +37,4 @@ router.register(r'categories', showcase_site_views.CategoryViewSet)
 router.register(r'testimonies', showcase_site_views.TestimonyViewSet)
 router.register(r'keyfigures', showcase_site_views.KeyFigureViewSet)
 
-# Visits views
-router.register(r'visits', visits_views.VisitViewSet)
-
-urlpatterns = router.urls
+urlpatterns += router.urls

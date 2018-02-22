@@ -36,6 +36,10 @@ class RegistrationsOpenFilter(admin.SimpleListFilter):
 class VisitForm(forms.ModelForm):
     """Custom admin form for Visit."""
 
+    class Meta:  # noqa
+        model = Visit
+        fields = '__all__'
+
     def clean(self):
         """Validate that the deadline is before the date date."""
         cleaned_data = super().clean()
@@ -49,12 +53,21 @@ class VisitForm(forms.ModelForm):
             self.add_error('deadline', error)
 
 
+class VisitParticipantInline(admin.TabularInline):
+    """Inline for VisitParticipant."""
+
+    model = Visit.participants.through
+    extra = 0
+
+
 @admin.register(Visit)
 class VisitAdmin(admin.ModelAdmin):
     """Admin panel for visits."""
 
     form = VisitForm
+    inlines = (VisitParticipantInline,)
     list_display = ('__str__', 'place', 'date', 'deadline',
                     '_registrations_open', 'fact_sheet')
     list_filter = ('date', RegistrationsOpenFilter)
     search_fields = ('title', 'place',)
+    exclude = ('participants',)

@@ -6,6 +6,8 @@ from django.contrib.auth.admin import UserAdmin
 
 from .models import User, Tutor, Student, SchoolStaffMember
 from tutoring.admin import TutoringGroupMembershipInline
+from visits.admin import VisitParticipantInline
+
 
 # Register your models here.
 
@@ -49,17 +51,31 @@ class CustomUserAdmin(UserAdmin):
 class TutorAdmin(admin.ModelAdmin):
     """Tutor admin panel."""
 
-    inlines = [
-        TutoringGroupMembershipInline
-    ]
+    inlines = (TutoringGroupMembershipInline,)
 
     class Meta:  # noqa
         model = Tutor
 
 
+class StudentVisitParticipantInline(VisitParticipantInline):
+    """Inline for VisitParticipant on the Student admin panel.
+
+    All fields are read-only.
+    """
+
+    readonly_fields = ('student', 'visit', 'present')
+    verbose_name = 'Participation aux sorties'
+    verbose_name_plural = 'Participation aux sorties'
+
+    def has_add_permission(self, request):
+        return False
+
+
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     """Student admin panel."""
+
+    inlines = (StudentVisitParticipantInline, )
 
     class Meta:  # noqa
         model = Student

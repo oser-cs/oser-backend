@@ -267,3 +267,29 @@ class VisitWithClosedRegistrationsFactory(VisitFactory):
 
     date_random_range = (0, 5)
     deadline_random_range = (-10, -6)  # guaranteed to be before today
+
+
+class VisitParticipantFactory(factory.DjangoModelFactory):
+    """Visit participant object factory.
+
+    Student and visit are picked from pre-existing students and visits,
+    instead of being created from scratch.
+    This means the database must have at least one student and one visit to
+    create a VisitParticipant object.
+    """
+
+    class Meta:  # noqa
+        model = visits.models.VisitParticipant
+
+    @factory.lazy_attribute
+    def student(self):
+        return random.choice(users.models.Student.objects.all())
+
+    @factory.lazy_attribute
+    def visit(self):
+        visits_without_participants = (
+            visits.models.Visit.objects.filter(participants=None)
+        )
+        return random.choice(visits_without_participants)
+
+    present = factory.LazyFunction(lambda: random.choice([None, False, True]))

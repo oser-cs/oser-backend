@@ -35,6 +35,51 @@ class VisitQuerySet(models.QuerySet):
             return self.filter(deadline__lt=now)
 
 
+class VisitParticipant(models.Model):
+    """Through-model for visit participants.
+
+    Allows to store whether the student was present to the visit.
+    """
+
+    student = models.ForeignKey('users.Student', verbose_name='lycéen',
+                                on_delete=models.CASCADE)
+    visit = models.ForeignKey('Visit', verbose_name='sortie',
+                              on_delete=models.CASCADE)
+    present = models.NullBooleanField('présent')
+
+    class Meta:  # noqa
+        verbose_name = 'participant à la sortie'
+        verbose_name_plural = 'participants à la sortie'
+        # prevent a student from participating visit multiple times
+        unique_together = (('student', 'visit'),)
+
+    def get_absolute_url(self):
+        return reverse('api:visitparticipant-detail', args=[str(self.pk)])
+
+    # Permissions
+
+    @staticmethod
+    @authenticated_users
+    def has_read_permission(request):
+        return True
+
+    @authenticated_users
+    def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    @authenticated_users
+    def has_write_permission(request):
+        return True
+
+    @authenticated_users
+    def has_object_write_permission(self, request):
+        return True
+
+    def __str__(self):
+        return '{} participates in {}'.format(self.student, self.visit)
+
+
 class Visit(models.Model):
     """Represents a visit that students can attend."""
 
@@ -83,6 +128,8 @@ class Visit(models.Model):
     fact_sheet = models.FileField(
         'fiche sortie', blank=True, null=True,
         help_text="Formats supportés : PDF")
+    participants = models.ManyToManyField('users.Student',
+                                          through='VisitParticipant')
 
     def _registrations_open(self):
         return timezone.now() < self.deadline
@@ -105,6 +152,15 @@ class Visit(models.Model):
 
     @authenticated_users
     def has_object_read_permission(self, request):
+        return True
+
+    @staticmethod
+    @authenticated_users
+    def has_write_permission(request):
+        return True
+
+    @authenticated_users
+    def has_object_write_permission(self, request):
         return True
 
     def get_absolute_url(self):

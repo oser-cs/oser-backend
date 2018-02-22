@@ -34,4 +34,7 @@ class StudentTestCase(ProfileTestMixin, ModelTestCase):
         self.assertEqual(TutoringGroup.objects.get(), self.obj.tutoring_group)
         self.assertIn(self.obj, TutoringGroup.objects.get().students.all())
 
+    def test_visits_relationship(self):
+        self.assertEqual(self.obj.visit_set.all().count(), 0)
+
     # TODO test 1-n relationship with tutoring group

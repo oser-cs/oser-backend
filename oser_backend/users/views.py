@@ -7,6 +7,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from tutoring.serializers import TutoringGroupSerializer
+from visits.serializers import VisitSerializer
 
 from .models import SchoolStaffMember, Student, Tutor
 from .serializers import (SchoolStaffMembersSerializer, StudentSerializer,
@@ -124,6 +125,15 @@ class StudentViewSet(ProfileViewSet):
         tutoring_group = student.tutoring_group
         serializer = TutoringGroupSerializer(tutoring_group,
                                              context={'request': request})
+        return Response(serializer.data)
+
+    @detail_route()
+    def visits(self, request, pk=None):
+        """List detailed info about the visits a student participates in."""
+        student = self.get_object()
+        visits = student.visit_set.all()
+        serializer = VisitSerializer(visits, many=True,
+                                     context={'request': request})
         return Response(serializer.data)
 
 
