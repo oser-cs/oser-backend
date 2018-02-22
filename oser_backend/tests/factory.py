@@ -3,13 +3,15 @@
 FactoryBoy docs: http://factoryboy.readthedocs.io/en/latest/index.html
 """
 
-import datetime
+from datetime import timedelta
+import pytz
 import random
 from string import printable
 
 import factory
 import factory.django
 
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
@@ -17,10 +19,12 @@ from django.db.models.signals import post_save
 import tutoring.models
 import users.models
 import showcase_site.models
+import visits.models
 from tutoring.utils import random_uai_code
 from users.permissions import Groups
 
 User = get_user_model()
+utc = pytz.UTC
 
 
 # Create test objects factories here
@@ -165,9 +169,9 @@ class TutoringSessionFactory(factory.DjangoModelFactory):
 
     # random date 30 days ahead in time
     date = factory.Faker('future_date', end_date='+30d')
-    start_time = factory.LazyFunction(datetime.datetime.now)
+    start_time = factory.LazyFunction(timezone.now)
     end_time = factory.LazyAttribute(
-        lambda o: o.start_time + datetime.timedelta(hours=2))
+        lambda o: o.start_time + timedelta(hours=2))
     tutoring_group = factory.SubFactory(TutoringGroupFactory)
 
 
@@ -224,3 +228,42 @@ class KeyFigureFactory(factory.DjangoModelFactory):
     figure = factory.LazyFunction(lambda: random.randint(10, 500))
     description = factory.Faker('text', max_nb_chars=100)
     order = factory.Sequence(lambda n: n)
+
+
+class VisitFactory(factory.DjangoModelFactory):
+    """Visit object factory."""
+
+    date_random_range = (-20, 30)
+    deadline_random_range = (-5, -1)
+
+    class Meta:  # noqa
+        model = visits.models.Visit
+        exclude = ('date_random_range', 'deadline_random_range',)
+
+    title = factory.Faker('sentence', locale='fr')
+    summary = factory.Faker('sentences', nb=2, locale='fr')
+    description = factory.Faker('paragraphs', nb=2, locale='fr')
+    place = factory.Faker('address', locale='fr')
+
+    @factory.lazy_attribute
+    def date(self):
+        return timezone.now() + timezone.timedelta(
+            days=random.randint(*self.date_random_range))
+
+    @factory.lazy_attribute
+    def deadline(self):
+        return self.date + timezone.timedelta(
+            days=random.randint(*self.deadline_random_range))
+
+
+class VisitWithOpenRegistrationsFactory(VisitFactory):
+    """Visit with open registrations object factory."""
+
+    date_random_range = (10, 30)
+
+
+class VisitWithClosedRegistrationsFactory(VisitFactory):
+    """Visit with closed registrations object factory."""
+
+    date_random_range = (0, 5)
+    deadline_random_range = (-10, -6)  # guaranteed to be before today

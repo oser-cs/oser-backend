@@ -14,10 +14,11 @@ from .models import KeyFigure
 class ArticleAdmin(admin.ModelAdmin):
     """Article admin panel."""
 
-    prepopulated_fields = {'slug': ('title',)}
-    readonly_fields = ('published',)
+    readonly_fields = ('slug', 'published',)
 
     list_display = ('title', 'published', 'pinned',)
+    list_filter = ('published', 'pinned', 'categories')
+    autocomplete_fields = ('categories',)
     # reorganize fields
     fields = ('title', 'slug', 'categories', 'pinned', 'image', 'content',)
 
@@ -27,6 +28,7 @@ class CategoryAdmin(admin.ModelAdmin):
     """Category admin panel."""
 
     list_display = ('title', 'get_num_articles',)
+    search_fields = ('title',)
 
     def get_num_articles(self, obj):
         return obj.article_set.count()
@@ -39,10 +41,13 @@ class TestimonyAdmin(admin.ModelAdmin):
 
     list_display = ('__str__', 'get_preview', 'created',)
     list_filter = ('created',)
+    preview_length = 100
+    preview_truncated_symbol = ' […]'
 
     def get_preview(self, obj):
-        if len(obj.content) > 100:
-            return obj.content[:100] + ' […]'
+        if len(obj.content) > self.preview_length:
+            return (obj.content[:self.preview_length] +
+                    self.preview_truncated_symbol)
         return obj.content
     get_preview.short_description = 'Aperçu'
 

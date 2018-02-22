@@ -27,6 +27,9 @@ class ArticleTest(ModelTestCase):
         'pinned': {
             'verbose_name': 'épinglé',
             'default': False,
+        },
+        'categories': {
+            'verbose_name': 'catégories',
         }
     }
     model_tests = {

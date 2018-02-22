@@ -50,6 +50,7 @@ PROJECT_APPS = [
     'tutoring.apps.TutoringConfig',
     'api.apps.ApiConfig',
     'showcase_site.apps.ShowcaseSiteConfig',
+    'visits.apps.VisitsConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -142,7 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'fr-fr'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

@@ -3,7 +3,6 @@
 from django.utils.text import slugify
 from django.db import models
 from django.shortcuts import reverse
-from django.core.validators import integer_validator
 from dry_rest_permissions.generics import authenticated_users
 from markdownx.models import MarkdownxField
 
@@ -49,7 +48,11 @@ class Article(models.Model):
 
     title = models.CharField('titre', max_length=300,
                              help_text="Titre de l'article")
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(
+        max_length=100, unique=True,
+        help_text=(
+            "Un court identifiant généré après la création de l'article."
+        ))
     content = MarkdownxField(
         'contenu',
         help_text="Contenu complet de l'article")
@@ -61,7 +64,8 @@ class Article(models.Model):
     # see: https://docs.djangoproject.com/fr/2.0/ref/forms/fields/#booleanfield
     categories = models.ManyToManyField(
         'Category', blank=True,
-        help_text="Catégories auxquelles rattacher l'article")
+        help_text="Catégories auxquelles rattacher l'article",
+        verbose_name='catégories')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -99,6 +103,7 @@ class Article(models.Model):
 
 
 class Testimony(models.Model):
+    """Represents a testimony of a person on the association."""
 
     content = models.TextField('contenu')
     author_name = models.CharField('auteur', max_length=300,
