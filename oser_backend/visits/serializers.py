@@ -1,20 +1,27 @@
 """Visits serializers."""
 
+from django.utils.timezone import now
 from rest_framework import serializers
-from .models import Visit, VisitParticipant
+
 from users.models import Student
+
+from .models import Visit, VisitParticipant
 
 
 class VisitSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for Visit."""
 
     participants = serializers.StringRelatedField(many=True)
+    passed = serializers.SerializerMethodField()
+
+    def get_passed(self, obj):
+        return obj.date < now()
 
     class Meta:  # noqa
         model = Visit
-        fields = ('id', 'url', 'title', 'summary', 'description',
-                  'place', 'date', 'deadline',
-                  'registrations_open',
+        fields = ('id', 'url', 'title', 'summary', 'description', 'place',
+                  'date', 'passed',
+                  'deadline', 'registrations_open',
                   'participants',
                   'image', 'fact_sheet',)
         extra_kwargs = {

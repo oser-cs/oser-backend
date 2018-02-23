@@ -64,10 +64,17 @@ class VisitParticipantInline(admin.TabularInline):
 class VisitAdmin(admin.ModelAdmin):
     """Admin panel for visits."""
 
+    # IDEA create a dashboard using:
+    # https://medium.com/@hakibenita/how-to-turn-django-admin-into-a-lightweight-dashboard-a0e0bbf609ad
+
     form = VisitForm
     inlines = (VisitParticipantInline,)
     list_display = ('__str__', 'place', 'date', 'deadline',
-                    '_registrations_open', 'fact_sheet')
+                    '_registrations_open', 'num_participants')
     list_filter = ('date', RegistrationsOpenFilter)
     search_fields = ('title', 'place',)
     exclude = ('participants',)
+
+    def num_participants(self, obj):
+        return obj.participants.count()
+    num_participants.short_description = 'Participants'

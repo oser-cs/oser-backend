@@ -1,10 +1,9 @@
 import os
 
 from django.apps import apps
-from django.db.models import Q
-from django.db.models import FileField
 from django.conf import settings
 from django.core.management import BaseCommand
+from django.db.models import FileField, Q
 
 
 class Command(BaseCommand):
@@ -39,11 +38,11 @@ class Command(BaseCommand):
                     filters &= Q(**is_null) | Q(**is_empty)
             # only retrieve the models which have non-empty, non-null file
             # fields
-            if file_fields:
-                files = (model.objects.exclude(filters)
-                         .values_list(*file_fields, flat=True)
-                         .distinct())
-                db_files.update(files)
+            for field in file_fields:
+                field_files = (model.objects.exclude(filters)
+                               .values_list(field, flat=True)
+                               .distinct())
+                db_files.update(field_files)
 
         return db_files
 
@@ -76,7 +75,8 @@ class Command(BaseCommand):
 
         if deletables:
             unused = len(deletables)
-            self.stdout.write('Unused media files were detected:')
+            self.stdout.write(
+                self.style.NOTICE('Unused media files were detected:'))
             self.stdout.write('\n'.join(f_ for f_ in deletables))
 
             for file_ in deletables:

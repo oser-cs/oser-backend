@@ -3,22 +3,21 @@
 FactoryBoy docs: http://factoryboy.readthedocs.io/en/latest/index.html
 """
 
-from datetime import timedelta
-import pytz
 import random
+from datetime import timedelta
 from string import printable
 
 import factory
 import factory.django
-
-from django.utils import timezone
+import pytz
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
+from django.utils import timezone
 
+import showcase_site.models
 import tutoring.models
 import users.models
-import showcase_site.models
 import visits.models
 from tutoring.utils import random_uai_code
 from users.permissions import Groups
@@ -225,8 +224,8 @@ class KeyFigureFactory(factory.DjangoModelFactory):
     class Meta:  # noqa
         model = showcase_site.models.KeyFigure
 
-    figure = factory.LazyFunction(lambda: random.randint(10, 500))
-    description = factory.Faker('text', max_nb_chars=100)
+    figure = factory.LazyFunction(lambda: random.randint(10, 200))
+    description = factory.Faker('text', max_nb_chars=60, locale='fr')
     order = factory.Sequence(lambda n: n)
 
 
@@ -238,11 +237,14 @@ class VisitFactory(factory.DjangoModelFactory):
 
     class Meta:  # noqa
         model = visits.models.Visit
-        exclude = ('date_random_range', 'deadline_random_range',)
+        exclude = ('date_random_range', 'deadline_random_range',
+                   '_summary', '_description')
 
     title = factory.Faker('sentence', locale='fr')
-    summary = factory.Faker('sentences', nb=2, locale='fr')
-    description = factory.Faker('paragraphs', nb=2, locale='fr')
+    _summary = factory.Faker('sentences', nb=2, locale='fr')
+    summary = factory.LazyAttribute(lambda o: ' '.join(o._summary))
+    _description = factory.Faker('paragraphs', nb=5, locale='fr')
+    description = factory.LazyAttribute(lambda o: '\n'.join(o._description))
     place = factory.Faker('address', locale='fr')
 
     @factory.lazy_attribute
