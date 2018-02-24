@@ -52,16 +52,18 @@ class VisitParticipantReadSerializer(serializers.HyperlinkedModelSerializer):
 class VisitParticipantWriteSerializer(serializers.HyperlinkedModelSerializer):
     """Writable serializer for visit participants."""
 
-    student = serializers.PrimaryKeyRelatedField(
-        write_only=True,
-        queryset=Student.objects.all())
-    visit = serializers.PrimaryKeyRelatedField(
-        write_only=True,
-        queryset=Visit.objects.all())
+    student_id = serializers.PrimaryKeyRelatedField(
+        source='student',
+        queryset=Student.objects.all(),
+        help_text='Identifier for the student')
+    visit_id = serializers.PrimaryKeyRelatedField(
+        source='visit',
+        queryset=Visit.objects.all(),
+        help_text='Identifier for the visit')
 
     class Meta:  # noqa
         model = VisitParticipant
-        fields = ('id', 'student', 'visit', 'present')
+        fields = ('id', 'student_id', 'visit_id', 'present')
 
 
 class VisitParticipantDetailSerializer(serializers.ModelSerializer):

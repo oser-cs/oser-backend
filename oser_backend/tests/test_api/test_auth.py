@@ -3,6 +3,7 @@
 from rest_framework.test import APITestCase, RequestsClient
 from rest_framework import status
 from tests.factory import UserFactory
+from users.serializers import UserSerializer
 
 
 class TestTokenAuth(APITestCase):
@@ -39,6 +40,16 @@ class TestTokenAuth(APITestCase):
         self.assertIn('token', response.json())
         token = response.json().get('token')
         self.assertIsNotNone(token)
+
+    def test_response_contains_user(self):
+        """Test response from auth token view also returns user."""
+        response = self.perform_get_token()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = response.json().get('user')
+        self.assertIsNotNone(user)
+        # try to pass the returned user data through a UserSerializer
+        serializer = UserSerializer(data=user)
+        self.assertTrue(serializer.is_valid())
 
     def test_request_using_token(self):
         """Test once authenticated, the token can be used in the API."""

@@ -1,16 +1,23 @@
 """API routers."""
+from django.conf.urls import url
+from django.urls import include
 from rest_framework import routers
 
-from users import views as users_views
-from tutoring import views as tutoring_views
+from api.auth import obtain_auth_token
 from showcase_site import views as showcase_site_views
+from tutoring import views as tutoring_views
+from users import views as users_views
 from visits import views as visits_views
 
 app_name = 'api'
 
 # Register API routes here
 
-urlpatterns = []
+urlpatterns = [
+    url(r'^auth/', include('rest_framework.urls',
+                           namespace='rest_framework')),
+    url(r'^auth/get-token/$', obtain_auth_token, name='get-auth-token'),
+]
 
 router = routers.DefaultRouter()
 

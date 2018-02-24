@@ -20,16 +20,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import RedirectView
 from rest_framework.documentation import include_docs_urls
-from rest_framework.authtoken.views import obtain_auth_token
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('api.urls')),
-    url(r'^api/docs/', include_docs_urls(title='OSER_CS API', public=False)),
-    url(r'^api/auth/', include('rest_framework.urls',
-                               namespace='rest_framework')),
-    url(r'^api/auth/get-token/$', obtain_auth_token, name='get-auth-token'),
+    url(r'^api/docs/', include_docs_urls(title='OSER_CS API', public=True)),
     url(r'^$', RedirectView.as_view(url='api/docs/', permanent=True),
         name='index'),
     url(r'^markdownx/', include('markdownx.urls')),
