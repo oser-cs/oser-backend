@@ -84,8 +84,13 @@ class VisitAdmin(admin.ModelAdmin):
 class PlaceAdmin(admin.ModelAdmin):
     """Admin panel for places."""
 
-    list_display = ('id', '__str__', 'address', 'num_visits')
+    list_display = ('name', 'address', 'num_visits', 'last_visit')
+    list_display_links = ('name', 'last_visit')
 
     def num_visits(self, obj):
         return obj.visit_set.count()
-    num_visits.short_description = 'Sorties ici'
+    num_visits.short_description = 'Nombre de sorties'
+
+    def last_visit(self, obj):
+        return obj.visit_set.passed().order_by('date').first()
+    last_visit.short_description = 'Dernière sortie'

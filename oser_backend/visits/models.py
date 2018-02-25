@@ -1,6 +1,6 @@
 """Visits models."""
 import pytz
-from django.utils import timezone
+from django.utils.timezone import now
 from django.db import models
 from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
@@ -28,11 +28,14 @@ class VisitQuerySet(models.QuerySet):
             True corresponds to open registrations,
             False to closed registrations.
         """
-        now = timezone.now()
+        dt_now = now()
         if state:
-            return self.filter(deadline__gte=now)
+            return self.filter(deadline__gte=dt_now)
         else:
-            return self.filter(deadline__lt=now)
+            return self.filter(deadline__lt=dt_now)
+
+    def passed(self):
+        return self.filter(date__gt=now())
 
 
 class VisitParticipant(models.Model):
@@ -130,7 +133,7 @@ class Visit(models.Model):
                                           through='VisitParticipant')
 
     def _registrations_open(self):
-        return timezone.now() < self.deadline
+        return now() < self.deadline
     # to display fancy icon instead of True/False
     _registrations_open.boolean = True
     # don't define property directly because prop.fget.boolean doesn't work
