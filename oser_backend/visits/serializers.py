@@ -45,11 +45,11 @@ class VisitParticipantReadSerializer(serializers.HyperlinkedModelSerializer):
         model = VisitParticipant
         fields = ('id', 'url', 'student', 'visit', 'present')
         extra_kwargs = {
-            'url': {'view_name': 'api:visitparticipant-detail'}
+            'url': {'view_name': 'api:visit-participants-detail'},
         }
 
 
-class VisitParticipantWriteSerializer(serializers.HyperlinkedModelSerializer):
+class VisitParticipantWriteSerializer(serializers.ModelSerializer):
     """Writable serializer for visit participants."""
 
     student_id = serializers.PrimaryKeyRelatedField(
@@ -86,3 +86,13 @@ class VisitParticipantDetailSerializer(serializers.ModelSerializer):
         model = VisitParticipant
         fields = ('student_id', 'first_name', 'last_name',
                   'phone_number', 'email', 'present',)
+
+
+class VisitParticipantIdentifySerializer(serializers.ModelSerializer):
+
+    student_id = serializers.IntegerField()
+    visit_id = serializers.IntegerField()
+
+    class Meta:  # noqa
+        model = VisitParticipant
+        fields = ('student_id', 'visit_id',)

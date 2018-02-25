@@ -54,7 +54,7 @@ class VisitParticipant(models.Model):
         unique_together = (('student', 'visit'),)
 
     def get_absolute_url(self):
-        return reverse('api:visitparticipant-detail', args=[str(self.pk)])
+        return reverse('api:visit-participants-detail', args=[str(self.pk)])
 
     # Permissions
 

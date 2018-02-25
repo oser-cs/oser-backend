@@ -19,16 +19,18 @@ urlpatterns = [
     url(r'^auth/get-token/$', obtain_auth_token, name='get-auth-token'),
 ]
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 
 # Visits views
 router.register('visits', visits_views.VisitViewSet)
-router.register('visit-participants', visits_views.VisitParticipantViewSet)
+router.register('visit-participants', visits_views.VisitParticipantsViewSet,
+                base_name='visit-participants')
 
 # Users views
 router.register(r'users', users_views.UserViewSet)
 router.register(r'tutors', users_views.TutorViewSet)
 router.register(r'students', users_views.StudentViewSet)
+# router.register('student-visits', users_views.StudentVisitsViewSet)
 router.register(r'schoolstaffmembers', users_views.SchoolStaffMemberViewSet)
 
 # Tutoring views

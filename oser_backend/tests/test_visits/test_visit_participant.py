@@ -50,7 +50,7 @@ class VisitParticipantTest(ModelTestCase):
     def test_get_absolute_url(self):
         self.client.force_login(UserFactory.create())
         url = self.obj.get_absolute_url()
-        expected = '/api/visit-participants/{}/'.format(self.obj.pk)
+        expected = '/api/visit-participants/{}/'.format(self.obj.visit.pk)
         self.assertEqual(url, expected)
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)
