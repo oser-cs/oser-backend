@@ -25,6 +25,7 @@ router = routers.SimpleRouter()
 router.register('visits', visits_views.VisitViewSet)
 router.register('visit-participants', visits_views.VisitParticipantsViewSet,
                 base_name='visit-participants')
+router.register(r'places', visits_views.PlaceViewSet)
 
 # Users views
 router.register(r'users', users_views.UserViewSet)

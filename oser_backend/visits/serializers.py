@@ -5,7 +5,14 @@ from rest_framework import serializers
 
 from users.models import Student
 
-from .models import Visit, VisitParticipant
+from .models import Visit, VisitParticipant, Place
+
+
+class PlaceSerializer(serializers.ModelSerializer):
+
+    class Meta:  # noqa
+        model = Place
+        fields = ('id', 'name', 'address')
 
 
 class VisitSerializer(serializers.HyperlinkedModelSerializer):
@@ -13,6 +20,7 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
 
     participants = serializers.StringRelatedField(many=True)
     passed = serializers.SerializerMethodField()
+    place = PlaceSerializer(read_only=True)
 
     def get_passed(self, obj):
         return obj.date < now()

@@ -28,7 +28,6 @@ class VisitTest(ModelTestCase):
         },
         'place': {
             'verbose_name': 'lieu',
-            'max_length': 100,
         },
         'deadline': {
             'verbose_name': "date limite d'inscription",

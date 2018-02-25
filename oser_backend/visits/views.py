@@ -7,12 +7,12 @@ from rest_framework.response import Response
 from rest_framework import mixins
 from rest_framework.decorators import list_route
 from dry_rest_permissions.generics import DRYPermissions
-from .serializers import VisitSerializer
+from .serializers import VisitSerializer, PlaceSerializer
 from .serializers import VisitParticipantReadSerializer
 from .serializers import VisitParticipantWriteSerializer
 from .serializers import VisitParticipantIdentifySerializer
 from .serializers import VisitParticipantDetailSerializer
-from .models import Visit, VisitParticipant
+from .models import Visit, VisitParticipant, Place
 from users.models import Student
 
 
@@ -77,3 +77,9 @@ class VisitParticipantsViewSet(mixins.CreateModelMixin,
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+
+    queryset = Place.objects.all()
+    serializer_class = PlaceSerializer

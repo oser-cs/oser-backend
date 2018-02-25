@@ -229,6 +229,16 @@ class KeyFigureFactory(factory.DjangoModelFactory):
     order = factory.Sequence(lambda n: n)
 
 
+class PlaceFactory(factory.DjangoModelFactory):
+    """Place object factory."""
+
+    class Meta:  # noqa
+        model = visits.models.Place
+
+    name = factory.Faker('company', locale='fr')
+    address = factory.Faker('address', locale='fr')
+
+
 class VisitFactory(factory.DjangoModelFactory):
     """Visit object factory."""
 
@@ -245,7 +255,15 @@ class VisitFactory(factory.DjangoModelFactory):
     summary = factory.LazyAttribute(lambda o: ' '.join(o._summary))
     _description = factory.Faker('paragraphs', nb=5, locale='fr')
     description = factory.LazyAttribute(lambda o: '\n'.join(o._description))
-    place = factory.Faker('address', locale='fr')
+
+    @factory.lazy_attribute
+    def place(self):
+        places = visits.models.Place.objects.all()
+        # return an existing place in 30% of cases
+        if places and random.random() < .3:
+            return random.choice(places)
+        # otherwise create a new place
+        return PlaceFactory.create()
 
     @factory.lazy_attribute
     def date(self):

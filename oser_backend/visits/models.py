@@ -103,13 +103,11 @@ class Visit(models.Model):
             "la sortie. Ce champ supporte Markdown."
         ))
     # TODO Place model
-    place = models.CharField(
-        'lieu', max_length=100,
-        help_text=(
-            "Indiquer simplement le nom du lieu où se déroule la "
-            "sortie. L'adresse exacte de rendez-vous devrait plutôt"
-            "être précisé dans la fiche sortie."
-        ))
+    place = models.ForeignKey(
+        'Place',
+        verbose_name='lieu',
+        on_delete=models.SET_NULL,
+        null=True)
     date = models.DateTimeField(
         help_text="Heure de début de la sortie. Format de l'heure : hh:mm.")
     deadline = models.DateTimeField(
@@ -168,3 +166,21 @@ class Visit(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+
+class Place(models.Model):
+    """Represents a place a visit happens at."""
+
+    name = models.CharField('nom', max_length=200)
+    address = models.CharField('adresse', max_length=200)
+
+    class Meta:  # noqa
+        verbose_name = 'lieu'
+        verbose_name_plural = 'lieux'
+        ordering = ('name',)
+
+    def get_absolute_url(self):
+        return reverse('api:place-detail', args=[str(self.pk)])
+
+    def __str__(self):
+        return str(self.name)

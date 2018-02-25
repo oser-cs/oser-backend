@@ -2,7 +2,7 @@
 
 from django import forms
 from django.contrib import admin
-from .models import Visit
+from .models import Visit, Place
 
 # Register your models here.
 
@@ -78,3 +78,14 @@ class VisitAdmin(admin.ModelAdmin):
     def num_participants(self, obj):
         return obj.participants.count()
     num_participants.short_description = 'Participants'
+
+
+@admin.register(Place)
+class PlaceAdmin(admin.ModelAdmin):
+    """Admin panel for places."""
+
+    list_display = ('id', '__str__', 'address', 'num_visits')
+
+    def num_visits(self, obj):
+        return obj.visit_set.count()
+    num_visits.short_description = 'Sorties ici'

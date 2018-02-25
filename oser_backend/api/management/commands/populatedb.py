@@ -6,7 +6,8 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from tests.factory import (ArticleFactory, CategoryFactory, KeyFigureFactory,
-                           StudentFactory, TestimonyFactory, VisitFactory)
+                           StudentFactory, TestimonyFactory, VisitFactory,
+                           PlaceFactory)
 
 from showcase_site.models import Category
 
@@ -22,7 +23,7 @@ class Command(BaseCommand):
             get_model,
             (StudentFactory, CategoryFactory, ArticleFactory,
              TestimonyFactory, KeyFigureFactory,
-             VisitFactory)
+             VisitFactory, PlaceFactory)
         ))
 
     def add_arguments(self, parser):
