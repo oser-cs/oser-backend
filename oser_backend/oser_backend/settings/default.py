@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = [
     'adminsortable2',
 ]
 PROJECT_APPS = [
+    'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'tutoring.apps.TutoringConfig',
     'api.apps.ApiConfig',

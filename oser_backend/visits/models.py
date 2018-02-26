@@ -176,8 +176,18 @@ class Place(models.Model):
     """Represents a place a visit happens at."""
 
     name = models.CharField('nom', max_length=200)
-    address = models.CharField('adresse', max_length=200)
-    description = MarkdownxField(default='', blank=True)
+    address = models.CharField(
+        'adresse', max_length=200,
+        help_text=(
+            "L'adresse complète de ce lieu : "
+            "numéro, rue ou voie, code postal, ville, pays si pertinent."
+        ))
+    description = MarkdownxField(
+        default='', blank=True,
+        help_text=(
+            "Une description de ce lieu : de quoi s'agit-il ? "
+            "Ce champ supporte Markdown."
+        ))
 
     class Meta:  # noqa
         verbose_name = 'lieu'
