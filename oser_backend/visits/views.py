@@ -55,7 +55,7 @@ class VisitParticipantsViewSet(mixins.CreateModelMixin,
                                          context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @list_route(methods=['put'])
+    @list_route(methods=['put'], url_path='get-id')
     def get_id(self, request):
         """Special endpoint to get ID of participant from student and visit.
 

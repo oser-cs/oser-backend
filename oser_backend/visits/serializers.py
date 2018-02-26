@@ -97,6 +97,7 @@ class VisitParticipantDetailSerializer(serializers.ModelSerializer):
 
 
 class VisitParticipantIdentifySerializer(serializers.ModelSerializer):
+    """Serializer for the specialized get_id() view."""
 
     student_id = serializers.IntegerField()
     visit_id = serializers.IntegerField()

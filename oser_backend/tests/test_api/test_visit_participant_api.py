@@ -5,7 +5,8 @@ from rest_framework import status
 from tests.factory import VisitParticipantFactory
 from tests.factory import VisitFactory, StudentFactory, UserFactory
 from tests.utils import HyperlinkedAPITestCase
-from visits.serializers import VisitParticipantWriteSerializer
+from visits.serializers import (
+    VisitParticipantWriteSerializer, VisitParticipantIdentifySerializer)
 from visits.models import VisitParticipant
 
 
@@ -23,14 +24,14 @@ class VisitParticipantEndpointsTest(HyperlinkedAPITestCase):
         VisitFactory.create_batch(10)
         cls.factory.create_batch(5)
 
-    # def perform_list(self):
-    #     url = '/api/visit-participants/'
-    #     response = self.client.get(url)
-    #     return response
-    #
-    # def test_list_authentication_required(self):
-    #     self.assertRequiresAuth(
-    #         self.perform_list, expected_status_code=status.HTTP_200_OK)
+    def perform_list(self):
+        url = '/api/visit-participants/'
+        response = self.client.get(url)
+        return response
+
+    def test_list_authentication_required(self):
+        self.assertRequiresAuth(
+            self.perform_list, expected_status_code=status.HTTP_200_OK)
 
     def perform_retrieve(self, obj=None):
         if obj is None:
@@ -58,19 +59,48 @@ class VisitParticipantEndpointsTest(HyperlinkedAPITestCase):
         return response
 
     def test_create_authentication_required(self):
+        self.assertRequiresAuth(self.perform_create,
+                                expected_status_code=status.HTTP_201_CREATED)
+
+    def perform_get_id(self, obj=None):
+        if obj is None:
+            obj = self.factory.create()
+        url = '/api/visit-participants/get-id/'
+        serializer = VisitParticipantIdentifySerializer(obj)
+        data = serializer.data
+        response = self.client.put(url, data, format='json')
+        return response
+
+    def test_get_id_authentication_required(self):
+        self.assertRequiresAuth(self.perform_get_id,
+                                expected_status_code=status.HTTP_200_OK)
+
+    def perform_delete(self):
+        obj = self.factory.create()
+        url = '/api/visit-participants/{obj.pk}/'.format(obj=obj)
+        response = self.client.delete(url, format='json')
+        return response
+
+    def test_delete_authentication_required(self):
         self.assertRequiresAuth(
-            self.perform_create, expected_status_code=status.HTTP_201_CREATED)
+            self.perform_delete,
+            expected_status_code=status.HTTP_204_NO_CONTENT)
 
 
-class WriteSerializerTest(TestCase):
+class VisitParticipantWriteSerializerTest(TestCase):
     """Test the write serializer for VisitParticipant."""
 
-    def test_id_fields_sources_are_defined(self):
-        """Test that student and visit fields define a source parameter.
+    def setUp(self):
+        self.serializer = VisitParticipantWriteSerializer()
 
-        This is mostly a regression test. Without it, serialization will
-        fail.
-        """
-        serializer = VisitParticipantWriteSerializer()
-        self.assertEqual(serializer.fields['student_id'].source, 'student')
-        self.assertEqual(serializer.fields['visit_id'].source, 'visit')
+    # Following 2 tests = regression tests. The source needs to be defined
+    # otherwise DRF will not convert them to Student and Visit objects.
+    # As a result, deserialization will fail.
+
+    def test_student_id_source_is_defined(self):
+        self.assertEqual(self.serializer.fields['student_id'].source,
+                         'student')
+
+    def test_visit_id_source_is_defined(self):
+        self.assertEqual(self.serializer.fields['visit_id'].source,
+                         'visit')
