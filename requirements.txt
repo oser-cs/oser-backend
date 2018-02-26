@@ -9,3 +9,4 @@ sphinx_rtd_theme==0.2.4
 django-cors-headers
 Pillow
 django-markdownx
+dry_rest_permissions>=0.1.10
