@@ -6,7 +6,8 @@ from django.conf import settings
 from django.core.management import BaseCommand
 from django.db.models import FileField, Q
 from markdownx.models import MarkdownxField
-from core.management.file_utils import find_file, extract_md_file_refs
+from core.file_utils import find_file
+from core.markdown import extract_md_file_refs
 
 
 class Command(BaseCommand):
@@ -56,7 +57,8 @@ class Command(BaseCommand):
                 lambda f: isinstance(f, MarkdownxField), model._meta.fields)
             for field in model_markdown_fields:
                 for md in model.objects.values_list(field.name, flat=True):
-                    db_files.update(extract_md_file_refs(md))
+                    file_refs = extract_md_file_refs(md)
+                    db_files.update(ref.filename for ref in file_refs)
 
         return db_files
 

@@ -4,12 +4,15 @@ from django.utils.timezone import now
 from rest_framework import serializers
 
 from users.models import Student
+from core.markdown import MarkdownField
 
 from .models import Visit, VisitParticipant, Place
 
 
 class PlaceSerializer(serializers.ModelSerializer):
     """Serializer for Place."""
+
+    description = MarkdownField()
 
     class Meta:  # noqa
         model = Place

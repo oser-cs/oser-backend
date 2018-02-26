@@ -1,6 +1,7 @@
 """Showcase site API serializers."""
 
 from rest_framework import serializers
+from core.markdown import MarkdownField
 from .models import Article, Category, Testimony, KeyFigure
 
 
@@ -43,6 +44,7 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     Suited for: list, retrieve, update, partial_update, delete
     """
 
+    content = MarkdownField()
     categories = CategoryField(many=True, required=False)
 
     class Meta:  # noqa

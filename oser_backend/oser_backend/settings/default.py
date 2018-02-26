@@ -31,6 +31,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
     'django.forms',
 ]
+
 THIRD_PARTY_APPS = [
     # Markdown integration
     'markdownx',

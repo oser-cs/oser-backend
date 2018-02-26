@@ -1,6 +1,6 @@
 import os
 from django.test import TestCase
-from core.management.file_utils import extract_md_file_refs
+from core.markdown import extract_md_file_refs
 
 
 class ExtractFileRefsTest(TestCase):
@@ -12,8 +12,9 @@ class ExtractFileRefsTest(TestCase):
     ]
 
     def assertExtracts(self, text, expected):
-        extracted = list(extract_md_file_refs(text))
-        self.assertListEqual(extracted, list(expected))
+        extracted = extract_md_file_refs(text)
+        extracted_filenames = [ref.filename for ref in extracted]
+        self.assertListEqual(extracted_filenames, list(expected))
 
     def test_empty_text(self):
         self.assertExtracts('', [])
@@ -30,3 +31,9 @@ class ExtractFileRefsTest(TestCase):
     def test_does_not_mind_urls(self):
         md = 'You can find it [here](http://www.findithere.com)'
         self.assertExtracts(md, ['www.findithere.com'])
+
+
+# TODO test MdFileRef class
+# TODO test extract_image_refs
+# TODO test add_domain_to_image_files
+# TODO test _get_domain
