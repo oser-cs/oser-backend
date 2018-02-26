@@ -33,11 +33,21 @@ class VisitParticipantsViewSet(mixins.CreateModelMixin,
     permission_classes = (DRYPermissions,)
 
     def get_queryset(self):
-        if self.action in ['retrieve']:
+        """Determine, among other things, what get_object() will return.
+
+        Return all visits for the retrieve action as the <pk> identifies
+        a visit there.
+        Otherwise return all visit participants.
+        """
+        if self.action == 'retrieve':
             return Visit.objects.all()
         return VisitParticipant.objects.all()
 
     def get_serializer_class(self):
+        """Return the right serializer class for each action.
+
+        Allows DRF to display arguments/parameters in the generated docs.
+        """
         if self.action == 'list':
             return VisitParticipantReadSerializer
         elif self.action == 'retrieve':
@@ -80,6 +90,7 @@ class VisitParticipantsViewSet(mixins.CreateModelMixin,
 
 
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+    """Simple read-only view set for places."""
 
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer

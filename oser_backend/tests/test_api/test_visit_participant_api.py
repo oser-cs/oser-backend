@@ -3,7 +3,7 @@
 from django.test import TestCase
 from rest_framework import status
 from tests.factory import VisitParticipantFactory
-from tests.factory import VisitFactory, StudentFactory, UserFactory
+from tests.factory import VisitFactory, StudentFactory
 from tests.utils import HyperlinkedAPITestCase
 from visits.serializers import (
     VisitParticipantWriteSerializer, VisitParticipantIdentifySerializer)

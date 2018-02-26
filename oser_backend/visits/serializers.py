@@ -9,10 +9,11 @@ from .models import Visit, VisitParticipant, Place
 
 
 class PlaceSerializer(serializers.ModelSerializer):
+    """Serializer for Place."""
 
     class Meta:  # noqa
         model = Place
-        fields = ('id', 'name', 'address')
+        fields = ('id', 'name', 'address', 'description')
 
 
 class VisitSerializer(serializers.HyperlinkedModelSerializer):

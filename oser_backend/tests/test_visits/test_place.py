@@ -18,6 +18,10 @@ class PlaceTest(ModelTestCase):
             'verbose_name': 'adresse',
             'max_length': 200,
         },
+        'description': {
+            'default': '',
+            'blank': True,
+        }
     }
     model_tests = {
         'verbose_name': 'lieu',

@@ -12,10 +12,7 @@ utc = pytz.UTC
 
 
 class VisitQuerySet(models.QuerySet):
-    """Custom Visit queryset.
-
-    Allow filtering by whether registrations are open or closed.
-    """
+    """Custom Visit queryset."""
 
     def registrations_open(self, state):
         """Filter visits whose registrations are open or closed.
@@ -28,13 +25,17 @@ class VisitQuerySet(models.QuerySet):
             True corresponds to open registrations,
             False to closed registrations.
         """
-        dt_now = now()
+        today = now()
         if state:
-            return self.filter(deadline__gte=dt_now)
+            return self.filter(deadline__gte=today)
         else:
-            return self.filter(deadline__lt=dt_now)
+            return self.filter(deadline__lt=today)
 
     def passed(self):
+        """Return a queryset containing only passed visits.
+
+        A visit is passed if its date is strictly after today.
+        """
         return self.filter(date__gt=now())
 
 
@@ -176,6 +177,7 @@ class Place(models.Model):
 
     name = models.CharField('nom', max_length=200)
     address = models.CharField('adresse', max_length=200)
+    description = MarkdownxField(default='', blank=True)
 
     class Meta:  # noqa
         verbose_name = 'lieu'
