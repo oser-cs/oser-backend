@@ -1,8 +1,8 @@
-"""
+'''
 Django settings for oser_backend project.
 
 Base settings common to all environments.
-"""
+'''
 
 import os
 from django.contrib.messages import constants as messages
@@ -107,6 +107,32 @@ REST_FRAMEWORK = {
     ],
     'DATE_FORMAT': '%d/%m/%Y',
     'DATE_INPUT_FORMATS': ['%d/%m/%Y'],
+}
+
+# Pymdown-extensions Emoji configuration
+import pymdownx.emoji
+
+extension_configs = {
+    'emoji_index': pymdownx.emoji.twemoji,
+    'emoji_generator': pymdownx.emoji.to_png,
+    'alt': 'short',
+    'options': {
+        'attributes': {
+            'align': 'absmiddle',
+            'height': '20px',
+            'width': '20px'
+        },
+        'image_path': 'https://assets-cdn.github.com/images/icons/emoji/unicode/',
+        'non_standard_image_path': 'https://assets-cdn.github.com/images/icons/emoji/'
+    }
+}
+
+# Markdownx settings
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'pymdownx.emoji',
+]
+MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
+    'pymdownx.emoji': extension_configs,
 }
 
 # Database

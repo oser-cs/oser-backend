@@ -7,8 +7,9 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from tests.factory import (ArticleFactory, CategoryFactory, KeyFigureFactory,
                            StudentFactory, TestimonyFactory, VisitFactory,
-                           PlaceFactory)
+                           PlaceFactory, UserFactory)
 
+from users.models import Student, User
 from showcase_site.models import Category
 
 from .utils import DataLoader, get_model, watcher
@@ -25,6 +26,13 @@ class Command(BaseCommand):
              TestimonyFactory, KeyFigureFactory,
              VisitFactory, PlaceFactory)
         ))
+
+    known_student = {
+        'user__first_name': 'Jean',
+        'user__last_name': 'Durant',
+        'user__email': 'jean.durant@example.com',
+        'user__password': 'test1234',
+    }
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -48,6 +56,11 @@ class Command(BaseCommand):
 
     def create_students(self):
         StudentFactory.create_batch(5)
+        # create a known student
+        user = User.objects.filter(
+            email=self.known_student['user__email']).first()
+        if not user:
+            StudentFactory.create(**self.known_student)
 
     def create_categories(self):
         category_titles = [
@@ -99,6 +112,7 @@ class Command(BaseCommand):
     def _clean(self):
         for model in self.affected:
             model.objects.all().delete()
+        User.objects.filter(email=self.known_student['user__email']).delete()
 
     def clean(self):
         self._clean()

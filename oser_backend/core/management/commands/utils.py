@@ -109,7 +109,7 @@ def watcher(*watched):
     watched = list(map(get_model, watched))
 
     def get_counts():
-        return [(model._meta.verbose_name, model.objects.all().count())
+        return [(model._meta.verbose_name_plural, model.objects.all().count())
                 for model in watched]
 
     def decorator(func):
@@ -122,13 +122,12 @@ def watcher(*watched):
                      for (name, after), (name, before)
                      in zip(counts_after, counts_before))
             for name, diff in diffs:
-                pluralized = name + pluralize(abs(diff))
                 if diff > 0:
                     self.stdout.write(
-                        'Created {} {}'.format(diff, pluralized))
+                        'Created {} {}'.format(diff, name))
                 elif diff < 0:
                     self.stdout.write(
-                        'Deleted {} {}'.format(-diff, pluralized))
+                        'Deleted {} {}'.format(-diff, name))
             return rv
         return watched_func
     return decorator

@@ -234,9 +234,12 @@ class PlaceFactory(factory.DjangoModelFactory):
 
     class Meta:  # noqa
         model = visits.models.Place
+        exclude = ('_description',)
 
     name = factory.Faker('company', locale='fr')
     address = factory.Faker('address', locale='fr')
+    _description = factory.Faker('paragraphs', nb=3, locale='fr')
+    description = factory.LazyAttribute(lambda o: '\n'.join(o._description))
 
 
 class VisitFactory(factory.DjangoModelFactory):
