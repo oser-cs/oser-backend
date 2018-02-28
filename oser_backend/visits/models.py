@@ -132,6 +132,10 @@ class Visit(models.Model):
         help_text="Formats supportés : PDF")
     participants = models.ManyToManyField('users.Student',
                                           through='VisitParticipant')
+    organizers_group = models.OneToOneField('auth.Group',
+                                            on_delete=models.CASCADE,
+                                            null=True,
+                                            verbose_name='organisateurs')
 
     def _registrations_open(self):
         return now() < self.deadline
@@ -141,9 +145,16 @@ class Visit(models.Model):
     registrations_open = property(_registrations_open)
     registrations_open.fget.short_description = 'Inscriptions ouvertes'
 
+    @property
+    def organizers_group_name(self):
+        return 'Organisateurs - {} : {}'.format(self.id, self.title)
+
     class Meta:  # noqa
         ordering = ('date',)
         verbose_name = 'sortie'
+        permissions = (
+            ('manage_visit', 'Can manage visit'),
+        )
 
     # Read-only permissions
 

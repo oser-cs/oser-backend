@@ -30,7 +30,7 @@ class TestProfile(ModelTestCase):
                                          user__last_name='Dylan')
 
     def test_one_to_one_relationship(self):
-        user = User.objects.get()
+        user = User.objects.get(first_name='Bob')
         self.assertEqual(user, self.obj.user)
         # user.profile_object is the raw Profile object
         self.assertEqual(user.profile_object, self.obj)
@@ -71,9 +71,9 @@ class TestCreateProfileForUserSignal(TestCase):
     """Test a new user instance gets a profile based on the profile_type."""
 
     def test_create_user_assigns_a_profile_according_to_profile_type(self):
-        UserFactory.create(profile_type='student')
+        UserFactory.create(first_name='Bob', profile_type='student')
         # A signal was triggered and user received a Student profile
-        user = User.objects.get()
+        user = User.objects.get(first_name='Bob')
         # user.profile is a property that dynamically finds the Profile
         # object corresponding to (profile.user == user)
         self.assertIsInstance(user.profile, Student)

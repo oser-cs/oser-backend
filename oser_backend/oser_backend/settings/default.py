@@ -39,12 +39,15 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     # DRY REST permissions (rules-based API permissions)
-    # See: https://github.com/dbkaplan/dry-rest-permissions
+    # https://github.com/dbkaplan/dry-rest-permissions
     'dry_rest_permissions',
-    # Frontend integration
+    # CORS headers for Frontend integration
     'corsheaders',
     # Sortable models in Admin
     'adminsortable2',
+    # Django Guardian: per object permissions
+    # https://github.com/django-guardian/django-guardian
+    'guardian',
 ]
 PROJECT_APPS = [
     'core.apps.CoreConfig',
@@ -148,6 +151,10 @@ DATABASES = {
 # Authentication
 
 AUTH_USER_MODEL = 'users.User'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # default
+    'guardian.backends.ObjectPermissionBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

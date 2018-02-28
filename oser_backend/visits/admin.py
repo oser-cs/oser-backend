@@ -2,6 +2,8 @@
 
 from django import forms
 from django.contrib import admin
+from guardian.admin import GuardedModelAdmin
+from guardian.shortcuts import get_objects_for_user
 from .models import Visit, Place
 
 # Register your models here.
@@ -61,7 +63,7 @@ class VisitParticipantInline(admin.TabularInline):
 
 
 @admin.register(Visit)
-class VisitAdmin(admin.ModelAdmin):
+class VisitAdmin(GuardedModelAdmin):
     """Admin panel for visits."""
 
     # IDEA create a dashboard using:
@@ -73,7 +75,13 @@ class VisitAdmin(admin.ModelAdmin):
                     '_registrations_open', 'num_participants')
     list_filter = ('date', RegistrationsOpenFilter)
     search_fields = ('title', 'place',)
-    exclude = ('participants',)
+    exclude = ('participants', 'organizers_group',)
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super().get_queryset(request)
+        # show only visits that user can manage
+        return get_objects_for_user(request.user, 'visits.manage_visit')
 
     def num_participants(self, obj):
         return obj.participants.count()

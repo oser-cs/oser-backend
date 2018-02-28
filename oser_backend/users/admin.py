@@ -3,6 +3,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import UserAdmin
+from guardian.admin import GuardedModelAdminMixin
 
 from .models import User, Tutor, Student, SchoolStaffMember
 from tutoring.admin import TutoringGroupMembershipInline
@@ -13,7 +14,7 @@ from visits.admin import VisitParticipantInline
 
 
 @admin.register(User)
-class CustomUserAdmin(UserAdmin):
+class CustomUserAdmin(GuardedModelAdminMixin, UserAdmin):
     """Customized user admin panel."""
 
     # The fields to be used in displaying the User model.

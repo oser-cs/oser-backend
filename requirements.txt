@@ -10,3 +10,4 @@ django-cors-headers
 Pillow
 django-markdownx
 dry_rest_permissions>=0.1.10
+django-guardian>=1.4.9

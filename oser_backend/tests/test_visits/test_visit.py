@@ -68,6 +68,12 @@ class VisitTest(ModelTestCase):
         visit = VisitWithClosedRegistrationsFactory.create()
         self.assertFalse(visit.registrations_open)
 
+    def test_organizers_group_name_contains_visit_id(self):
+        self.assertIn(str(self.obj.id), self.obj.organizers_group_name)
+
+    def test_organizers_group_name_contains_visit_title(self):
+        self.assertIn(self.obj.title, self.obj.organizers_group_name)
+
     def test_str_is_title(self):
         self.assertEqual(str(self.obj), str(self.obj.title))
 
