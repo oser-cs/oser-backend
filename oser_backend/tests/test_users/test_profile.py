@@ -67,19 +67,19 @@ class TestProfileTypes(TestCase):
         self.assertNotIn('Profile', Profile.get_profile_type_choices())
 
 
-class TestCreateProfileForUserSignal(TestCase):
-    """Test a new user instance gets a profile based on the profile_type."""
-
-    def test_create_user_assigns_a_profile_according_to_profile_type(self):
-        UserFactory.create(first_name='Bob', profile_type='student')
-        # A signal was triggered and user received a Student profile
-        user = User.objects.get(first_name='Bob')
-        # user.profile is a property that dynamically finds the Profile
-        # object corresponding to (profile.user == user)
-        self.assertIsInstance(user.profile, Student)
-        # The "raw" Profile object is accessible through user.profile_object
-        self.assertIsInstance(user.profile_object, Profile)
-        self.assertNotIsInstance(user.profile_object, Student)
+# class TestCreateProfileForUserSignal(TestCase):
+#     """Test a new user instance gets a profile based on the profile_type."""
+#
+#     def test_create_user_assigns_a_profile_according_to_profile_type(self):
+#         UserFactory.create(first_name='Bob', profile_type='student')
+#         # A signal was triggered and user received a Student profile
+#         user = User.objects.get(first_name='Bob')
+#         # user.profile is a property that dynamically finds the Profile
+#         # object corresponding to (profile.user == user)
+#         self.assertIsInstance(user.profile, Student)
+#         # The "raw" Profile object is accessible through user.profile_object
+#         self.assertIsInstance(user.profile_object, Profile)
+#         self.assertNotIsInstance(user.profile_object, Student)
 
 
 class ProfilePrimaryKeyIsUserTest(TestCase):
@@ -87,24 +87,24 @@ class ProfilePrimaryKeyIsUserTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = UserFactory(profile_type='student')
-        cls.student = cls.user.profile
+        cls.profile = ProfileFactory.create()
+        cls.user = cls.profile.user
 
     def test_profile_user_field(self):
-        self.assertEqual(self.student.user, self.user)
+        self.assertEqual(self.profile.user, self.user)
 
     def test_profile_user_id_field(self):
-        self.assertEqual(self.student.user_id, self.user.id)
+        self.assertEqual(self.profile.user_id, self.user.id)
 
     def test_profile_pk_is_user_id(self):
-        self.assertEqual(self.student.pk, self.student.user_id)
+        self.assertEqual(self.profile.pk, self.profile.user_id)
 
     def test_profile_has_no_proper_id_field(self):
         with self.assertRaises(FieldDoesNotExist):
-            self.student._meta.get_field('id')
+            self.profile._meta.get_field('id')
 
     def test_profile_has_id_property(self):
-        self.assertEqual(self.student.id, self.student.user_id)
+        self.assertEqual(self.profile.id, self.profile.user_id)
 
     def test_reverse_relationship_on_user_object(self):
-        self.assertEqual(self.user.profile, self.student)
+        self.assertEqual(self.user.profile, self.profile)

@@ -74,7 +74,7 @@ class TutoringGroup(models.Model):
     @allow_staff_or_superuser
     def has_write_permission(request):
         """Can only be created or destroyed by admin or VP Tutorat."""
-        return is_in_group(request.user, Groups.VP_TUTORAT)
+        return is_in_group(request.user, Groups.G_VP_TUTORAT)
 
     @allow_staff_or_superuser
     def has_object_write_permission(self, request):
@@ -83,7 +83,7 @@ class TutoringGroup(models.Model):
                      .filter(user_id=request.user.id,
                              tutortutoringgroup__is_leader=True)
                      .exists())
-        is_vp_tutorat = is_in_group(request.user, Groups.VP_TUTORAT)
+        is_vp_tutorat = is_in_group(request.user, Groups.G_VP_TUTORAT)
         return is_leader or is_vp_tutorat
 
     def __str__(self):
@@ -157,12 +157,12 @@ class School(models.Model):
     @authenticated_users
     @allow_staff_or_superuser
     def has_write_permission(request):
-        return is_in_group(request.user, Groups.VP_TUTORAT)
+        return is_in_group(request.user, Groups.G_VP_TUTORAT)
 
     @authenticated_users
     @allow_staff_or_superuser
     def has_object_write_permission(self, request):
-        return is_in_group(request.user, Groups.VP_TUTORAT)
+        return is_in_group(request.user, Groups.G_VP_TUTORAT)
 
     def __str__(self):
         return str(self.name)

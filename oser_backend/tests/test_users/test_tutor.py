@@ -21,5 +21,8 @@ class TutorTestCase(ProfileTestMixin, ModelTestCase):
     }
 
     @classmethod
-    def setUpTestData(self):
-        self.obj = TutorFactory.create()
+    def setUpTestData(cls):
+        cls.obj = TutorFactory.create()
+
+    def test_make_staff_signal(self):
+        self.assertTrue(self.obj.user.is_staff)

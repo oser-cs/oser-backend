@@ -1,6 +1,6 @@
 """Student model tests."""
 
-from tests.factory import StudentFactory
+from tests.factory import StudentInTutoringGroupFactory
 from tests.test_users.mixins import ProfileTestMixin
 from tests.utils import ModelTestCase
 
@@ -24,7 +24,7 @@ class StudentTestCase(ProfileTestMixin, ModelTestCase):
 
     @classmethod
     def setUpTestData(self):
-        self.obj = StudentFactory.create()
+        self.obj = StudentInTutoringGroupFactory.create()
 
     def test_school_relationship(self):
         self.assertEqual(School.objects.get(), self.obj.school)
@@ -33,8 +33,5 @@ class StudentTestCase(ProfileTestMixin, ModelTestCase):
     def test_tutoring_group_relationship(self):
         self.assertEqual(TutoringGroup.objects.get(), self.obj.tutoring_group)
         self.assertIn(self.obj, TutoringGroup.objects.get().students.all())
-
-    def test_visits_relationship(self):
-        self.assertEqual(self.obj.visit_set.all().count(), 0)
 
     # TODO test 1-n relationship with tutoring group

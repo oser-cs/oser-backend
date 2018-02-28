@@ -1,5 +1,5 @@
 """SchoolStaffMember API tests."""
-from tests.factory import SchoolFactory, SchoolStaffMemberFactory
+from tests.factory import SchoolFactory, SchoolStaffMemberFactory, UserFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
 
@@ -30,7 +30,9 @@ class SchoolStaffMemberEndpointsTest(ProfileEndpointsTestMixin,
     def perform_create(self):
         url = '/api/schoolstaffmembers/'
         school = SchoolFactory.create()
-        obj = self.factory.build(school=school)
+        user = UserFactory.create()
+        obj = self.factory.build(user=user)
+        obj = self.factory.build(user=user, school=school)
         data = self.serialize(obj, 'post', url)
         response = self.client.post(url, data, format='json')
         return response

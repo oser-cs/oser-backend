@@ -13,7 +13,7 @@ from .serializers import VisitParticipantWriteSerializer
 from .serializers import VisitParticipantIdentifySerializer
 from .serializers import VisitParticipantDetailSerializer
 from .models import Visit, VisitParticipant, Place
-from users.models import Student
+from users.models import User
 
 
 class VisitViewSet(viewsets.ReadOnlyModelViewSet):
@@ -67,21 +67,19 @@ class VisitParticipantsViewSet(mixins.CreateModelMixin,
 
     @list_route(methods=['put'], url_path='get-id')
     def get_id(self, request):
-        """Special endpoint to get ID of participant from student and visit.
+        """Special endpoint to get ID of participant from user and visit.
 
         Useful to perform a DELETE request afterwards (which only accepts
         a participant ID).
         """
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            student = get_object_or_404(
-                Student,
-                pk=serializer.validated_data['student_id'])
+            user = get_object_or_404(
+                User, pk=serializer.validated_data['user_id'])
             visit = get_object_or_404(
-                Visit,
-                pk=serializer.validated_data['visit_id'])
+                Visit, pk=serializer.validated_data['visit_id'])
             participant = get_object_or_404(VisitParticipant,
-                                            student=student,
+                                            user=user,
                                             visit=visit)
             return Response({'id': participant.id}, status=status.HTTP_200_OK)
         else:

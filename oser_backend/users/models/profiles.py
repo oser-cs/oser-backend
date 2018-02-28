@@ -12,6 +12,15 @@ from ..utils import get_promotion_range
 
 # Generic profile
 
+
+def get_profile_type(model):
+    return model._meta.model_name
+
+
+def get_natural_profile_type(model):
+    return model._meta.verbose_name.capitalize()
+
+
 class ProfileMeta(models.base.ModelBase):
     """Extended metaclass for the Profile model.
 
@@ -29,10 +38,10 @@ class ProfileMeta(models.base.ModelBase):
     def __new__(metacls, name, bases, namespace):
         cls = super().__new__(metacls, name, bases, namespace)
         if name != 'Profile':  # don't add the base profile model
-            lowercase = name.lower()
-            natural = cls._meta.verbose_name.capitalize()
+            profile_type = get_profile_type(cls)
+            natural = get_natural_profile_type(cls)
             metacls.PROFILE_TYPES.append(
-                (lowercase, natural))
+                (profile_type, natural))
         return cls
 
 

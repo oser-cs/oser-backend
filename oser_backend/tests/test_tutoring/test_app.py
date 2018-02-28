@@ -9,4 +9,4 @@ class TutoringTest(TestCase):
     """General tests on the tutoring app."""
 
     def test_VP_TUTORAT_exists(self):
-        self.assertTrue(group_exists(Groups.VP_TUTORAT))
+        self.assertTrue(group_exists(Groups.G_VP_TUTORAT))

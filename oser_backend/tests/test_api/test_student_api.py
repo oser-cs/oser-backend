@@ -1,6 +1,7 @@
 """Student API tests."""
 from rest_framework import status
-from tests.factory import StudentFactory, TutoringGroupFactory, UserFactory
+from tests.factory import (
+    StudentInTutoringGroupFactory, TutoringGroupFactory, UserFactory)
 from tests.test_api.mixins import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
 
@@ -13,7 +14,7 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
     Regular actions tests are provided by the ProfileEndpointsTestMixin.
     """
 
-    factory = StudentFactory
+    factory = StudentInTutoringGroupFactory
     serializer_class = StudentSerializer
 
     def perform_list(self):

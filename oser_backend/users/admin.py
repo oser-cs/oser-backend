@@ -1,16 +1,30 @@
 """Users admin panel configuration."""
 
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.admin import UserAdmin
+from django.utils.translation import ugettext_lazy as _
 from guardian.admin import GuardedModelAdminMixin
 
-from .models import User, Tutor, Student, SchoolStaffMember
 from tutoring.admin import TutoringGroupMembershipInline
 from visits.admin import VisitParticipantInline
 
+from .models import SchoolStaffMember, Student, Tutor, User
+
 
 # Register your models here.
+
+class UserVisitParticipantInline(VisitParticipantInline):
+    """Inline for VisitParticipant on the User admin panel.
+
+    All fields are read-only.
+    """
+
+    readonly_fields = ('user', 'visit', 'present')
+    verbose_name = 'Participation aux sorties'
+    verbose_name_plural = 'Participation aux sorties'
+
+    def has_add_permission(self, request):
+        return False
 
 
 @admin.register(User)
@@ -47,6 +61,8 @@ class CustomUserAdmin(GuardedModelAdminMixin, UserAdmin):
          ),
     )
 
+    inlines = (UserVisitParticipantInline, )
+
 
 @admin.register(Tutor)
 class TutorAdmin(admin.ModelAdmin):
@@ -58,25 +74,9 @@ class TutorAdmin(admin.ModelAdmin):
         model = Tutor
 
 
-class StudentVisitParticipantInline(VisitParticipantInline):
-    """Inline for VisitParticipant on the Student admin panel.
-
-    All fields are read-only.
-    """
-
-    readonly_fields = ('student', 'visit', 'present')
-    verbose_name = 'Participation aux sorties'
-    verbose_name_plural = 'Participation aux sorties'
-
-    def has_add_permission(self, request):
-        return False
-
-
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     """Student admin panel."""
-
-    inlines = (StudentVisitParticipantInline, )
 
     class Meta:  # noqa
         model = Student

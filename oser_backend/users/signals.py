@@ -1,14 +1,13 @@
 """App signals."""
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import User, Profile
+from .models import Tutor
 
 
 # Create your signals here.
 
-@receiver(post_save, sender=User)
-def create_profile_for_new_user(sender, created, instance, **kwargs):
-    """Automatically creates a new profile for a newly created user."""
-    if created and instance.profile_type:
-        model = Profile.get_model(instance.profile_type)
-        model.objects.create(user=instance)
+@receiver(post_save, sender=Tutor)
+def add_created_tutor_to_staff(sender, instance, created, **kwargs):
+    if created:
+        instance.user.is_staff = True
+        instance.user.save()

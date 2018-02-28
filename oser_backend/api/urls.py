@@ -1,6 +1,5 @@
 """API routers."""
 from django.conf.urls import url
-from django.urls import include
 from rest_framework import routers
 
 from api.auth import obtain_auth_token
@@ -14,8 +13,6 @@ app_name = 'api'
 # Register API routes here
 
 urlpatterns = [
-    url(r'^auth/', include('rest_framework.urls',
-                           namespace='rest_framework')),
     url(r'^auth/get-token/$', obtain_auth_token, name='get-auth-token'),
 ]
 

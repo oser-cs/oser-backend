@@ -1,6 +1,6 @@
 """Visits signals."""
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import Group
 from django.db import transaction
@@ -19,9 +19,10 @@ def sync_organizers_group(sender, instance, **kwargs):
         with transaction.atomic():
             group_name = visit.organizers_group_name
             group = Group.objects.create(name=group_name)
-            group.save()
             visit.organizers_group = group
             assign_perm('manage_visit', group, visit)
+            group.save()
+            visit.save()
     elif visit.organizers_group.name != visit.organizers_group_name:
         with transaction.atomic():
             # update group name
@@ -31,3 +32,10 @@ def sync_organizers_group(sender, instance, **kwargs):
             group.save()
             # delete old group
             Group.objects.filter(name=old_name).delete()
+
+
+@receiver(post_delete, sender=Visit)
+def remove_organizers_group(sender, instance, **kwargs):
+    """Remove visit's organizers group when visit is deleted."""
+    if instance.organizers_group:
+        instance.organizers_group.delete()

@@ -1,8 +1,8 @@
 """Visits models."""
 import pytz
-from django.utils.timezone import now
 from django.db import models
 from django.shortcuts import reverse
+from django.utils.timezone import now
 from dry_rest_permissions.generics import authenticated_users
 from markdownx.models import MarkdownxField
 
@@ -42,11 +42,11 @@ class VisitQuerySet(models.QuerySet):
 class VisitParticipant(models.Model):
     """Through-model for visit participants.
 
-    Allows to store whether the student was present to the visit.
+    Allows to store whether the user was present to the visit.
     """
 
-    student = models.ForeignKey('users.Student', verbose_name='lycéen',
-                                on_delete=models.CASCADE)
+    user = models.ForeignKey('users.User', verbose_name='utilisateur',
+                             on_delete=models.CASCADE, null=True)
     visit = models.ForeignKey('Visit', verbose_name='sortie',
                               on_delete=models.CASCADE)
     present = models.NullBooleanField('présent')
@@ -54,8 +54,8 @@ class VisitParticipant(models.Model):
     class Meta:  # noqa
         verbose_name = 'participant à la sortie'
         verbose_name_plural = 'participants à la sortie'
-        # prevent a student from participating visit multiple times
-        unique_together = (('student', 'visit'),)
+        # prevent a user from participating visit multiple times
+        unique_together = (('user', 'visit'),)
 
     def get_absolute_url(self):
         return reverse('api:visit-participants-detail', args=[str(self.pk)])
@@ -81,11 +81,11 @@ class VisitParticipant(models.Model):
         return True
 
     def __str__(self):
-        return '{} participates in {}'.format(self.student, self.visit)
+        return '{} participates in {}'.format(self.user, self.visit)
 
 
 class Visit(models.Model):
-    """Represents a visit that students can attend."""
+    """Represents a visit that users can attend."""
 
     objects = VisitQuerySet.as_manager()
 
@@ -130,10 +130,10 @@ class Visit(models.Model):
     fact_sheet = models.FileField(
         'fiche sortie', blank=True, null=True,
         help_text="Formats supportés : PDF")
-    participants = models.ManyToManyField('users.Student',
+    participants = models.ManyToManyField('users.User',
                                           through='VisitParticipant')
     organizers_group = models.OneToOneField('auth.Group',
-                                            on_delete=models.CASCADE,
+                                            on_delete=models.SET_NULL,
                                             null=True,
                                             verbose_name='organisateurs')
 

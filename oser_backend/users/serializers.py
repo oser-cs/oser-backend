@@ -83,7 +83,7 @@ class ProfileSerializer(serializers.Serializer):
     """Base hyperlinked serializer for profile models."""
 
     user = serializers.HyperlinkedRelatedField(
-        read_only=True,
+        queryset=User.objects.all(),
         view_name='api:user-detail',
     )
 
@@ -119,7 +119,7 @@ class StudentSerializer(ProfileSerializer,
         view_name='api:school-detail',
     )
     visits = serializers.HyperlinkedRelatedField(
-        source='visit_set',
+        source='user.visit_set',
         many=True,
         view_name='api:visit-detail',
         read_only=True)

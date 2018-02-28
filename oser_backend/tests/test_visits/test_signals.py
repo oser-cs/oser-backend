@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from tests.factory import VisitFactory
 
 
-class CreateOrganizersGroupTest(TestCase):
+class OrganizersGroupSignalsTest(TestCase):
     """Test the post_save create_organizers_group signal."""
 
     def test_creates_group_using_organizers_group_name_property(self):
@@ -28,3 +28,9 @@ class CreateOrganizersGroupTest(TestCase):
         self.assertNotEqual(visit.organizers_group_name, initial_name)
         self.assertEqual(visit.organizers_group.name,
                          visit.organizers_group_name)
+
+    def test_group_is_deleted_after_visit_is_deleted(self):
+        visit = VisitFactory.create()
+        visit.delete()
+        self.assertFalse(
+            Group.objects.filter(name=visit.organizers_group_name).exists())

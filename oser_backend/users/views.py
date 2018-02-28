@@ -130,8 +130,9 @@ class StudentViewSet(ProfileViewSet):
     @detail_route()
     def visits(self, request, pk=None):
         """List detailed info about the visits a student participates in."""
-        student = self.get_object()
-        visits = student.visit_set.all()
+        # NOTE: Only available for student users for now.
+        user = User.objects.get(pk=pk)
+        visits = user.visit_set.all()
         serializer = VisitSerializer(visits, many=True,
                                      context={'request': request})
         return Response(serializer.data)

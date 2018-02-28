@@ -3,7 +3,7 @@
 from django.test import TestCase
 from rest_framework import status
 from tests.factory import VisitParticipantFactory
-from tests.factory import VisitFactory, StudentFactory
+from tests.factory import VisitFactory, UserFactory
 from tests.utils import HyperlinkedAPITestCase
 from visits.serializers import (
     VisitParticipantWriteSerializer, VisitParticipantIdentifySerializer)
@@ -19,8 +19,8 @@ class VisitParticipantEndpointsTest(HyperlinkedAPITestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # create a bunch of students and visits to choose from
-        StudentFactory.create_batch(10)
+        # create a bunch of users and visits to choose from
+        UserFactory.create_batch(10)
         VisitFactory.create_batch(10)
         cls.factory.create_batch(5)
 
@@ -94,12 +94,12 @@ class VisitParticipantWriteSerializerTest(TestCase):
         self.serializer = VisitParticipantWriteSerializer()
 
     # Following 2 tests = regression tests. The source needs to be defined
-    # otherwise DRF will not convert them to Student and Visit objects.
+    # otherwise DRF will not convert them to User and Visit objects.
     # As a result, deserialization will fail.
 
-    def test_student_id_source_is_defined(self):
-        self.assertEqual(self.serializer.fields['student_id'].source,
-                         'student')
+    def test_user_id_source_is_defined(self):
+        self.assertEqual(self.serializer.fields['user_id'].source,
+                         'user')
 
     def test_visit_id_source_is_defined(self):
         self.assertEqual(self.serializer.fields['visit_id'].source,

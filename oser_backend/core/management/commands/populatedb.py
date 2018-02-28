@@ -5,12 +5,14 @@ import random
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from tests.factory import (ArticleFactory, CategoryFactory, KeyFigureFactory,
-                           StudentFactory, TestimonyFactory, VisitFactory,
-                           PlaceFactory, UserFactory)
 
-from users.models import Student, User
-from showcase_site.models import Category
+import showcase_site.models
+import users.models
+import visits.models
+from users.permissions import Groups
+from tests.factory import (ArticleFactory, CategoryFactory, KeyFigureFactory,
+                           PlaceFactory, StudentFactory, TestimonyFactory,
+                           TutorFactory, TutorInGroupFactory, VisitFactory)
 
 from .utils import DataLoader, get_model, watcher
 
@@ -24,15 +26,32 @@ class Command(BaseCommand):
             get_model,
             (StudentFactory, CategoryFactory, ArticleFactory,
              TestimonyFactory, KeyFigureFactory,
-             VisitFactory, PlaceFactory)
+             VisitFactory, PlaceFactory, TutorFactory)
         ))
 
-    known_student = {
+    known_student_data = {
         'user__first_name': 'Jean',
         'user__last_name': 'Durant',
         'user__email': 'jean.durant@example.com',
         'user__password': 'test1234',
     }
+    known_tutor_data = {
+        'user__first_name': 'Martin',
+        'user__last_name': 'Bond',
+        'user__email': 'martin.bond@example.com',
+        'user__password': 'test1234',
+        'group_names': [Groups.G_SECTEUR_SORTIES]
+    }
+
+    @property
+    def known_student(self):
+        return users.models.Student.objects.filter(
+            user__email=self.known_student_data['user__email']).first()
+
+    @property
+    def known_tutor(self):
+        return users.models.Tutor.objects.filter(
+            user__email=self.known_tutor_data['user__email']).first()
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -57,15 +76,19 @@ class Command(BaseCommand):
     def create_students(self):
         StudentFactory.create_batch(5)
         # create a known student
-        user = User.objects.filter(
-            email=self.known_student['user__email']).first()
-        if not user:
-            StudentFactory.create(**self.known_student)
+        if not self.known_student:
+            StudentFactory.create(**self.known_student_data)
+
+    def create_tutors(self):
+        TutorFactory.create_batch(5)
+        # create a known tutor
+        if not self.known_tutor:
+            TutorInGroupFactory.create(**self.known_tutor_data)
 
     def create_categories(self):
         category_titles = [
             title for title in ('Annonces', 'Sorties', 'Focus Europe')
-            if not Category.objects.filter(title=title)
+            if not showcase_site.models.Category.objects.filter(title=title)
         ]
         if not category_titles:
             return
@@ -73,10 +96,12 @@ class Command(BaseCommand):
             CategoryFactory.create(title=title)
 
     def add_random_categories(self, article):
-        ids = tuple(Category.objects.values_list('id', flat=True))
+        ids = tuple(showcase_site.models.Category.objects
+                    .values_list('id', flat=True))
         amount = min(len(ids), random.randint(0, 3))
         rand_ids = random.sample(ids, amount)
-        categories = Category.objects.filter(id__in=rand_ids)
+        categories = showcase_site.models.Category.objects.filter(
+            id__in=rand_ids)
         for category in categories:
             article.categories.add(category)
         else:
@@ -99,20 +124,33 @@ class Command(BaseCommand):
         for image in DataLoader('visit-{i}.jpg', 8):
             VisitFactory.create(image=image)
 
+    def add_visit_organizers(self):
+        tutors = users.models.Tutor.objects.all()
+        for visit in visits.models.Visit.objects.all():
+            # add 2 organizers to each visit
+            for tutor in random.choices(tutors, k=2):
+                visit.organizers_group.user_set.add(tutor.user)
+        # add known tutor to organizers of first visit
+        visit = visits.models.Visit.objects.first()
+        if visit.organizers_group not in self.known_tutor.user.groups.all():
+            visit.organizers_group.user_set.add(self.known_tutor.user)
+
     @watcher(*affected)
     def create(self):
         self.create_students()
+        self.create_tutors()
         self.create_categories()
         self.create_articles()
         self.create_testimonies()
         self.create_key_figures()
         self.create_visits()
+        self.add_visit_organizers()
 
     @watcher(*affected)
     def _clean(self):
         for model in self.affected:
             model.objects.all().delete()
-        User.objects.filter(email=self.known_student['user__email']).delete()
+        users.models.User.objects.filter(is_superuser=False).delete()
 
     def clean(self):
         self._clean()

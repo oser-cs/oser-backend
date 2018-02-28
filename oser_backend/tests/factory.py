@@ -12,7 +12,6 @@ import factory.django
 import pytz
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.db.models.signals import post_save
 from django.utils import timezone
 
 import showcase_site.models
@@ -29,18 +28,7 @@ utc = pytz.UTC
 # Create test objects factories here
 
 class UserFactory(factory.DjangoModelFactory):
-    """User object factory.
-
-    Usage
-    -----
-    user = UserFactory()
-    user.first_name  # 'John'
-    user.last_name  # 'Doe'
-    user.email  # 'john.doe@example.net'
-    user.date_of_birth  # '2011-04-01'
-    user.phone_number  # '05 00 05 40 61'
-    user.profile  # '<Student object...>'
-    """
+    """User object factory."""
 
     class Meta:  # noqa
         model = User
@@ -56,6 +44,7 @@ class UserFactory(factory.DjangoModelFactory):
 
     @factory.lazy_attribute
     def email(self):
+        """Generate email for user."""
         # email can only contain printable characters,
         # i.e. not "ç", no "é", ...
         def printable_only(s):
@@ -67,7 +56,7 @@ class UserFactory(factory.DjangoModelFactory):
             self.uid)
 
     # this is a default, override by passing `profile_type='...'` in create()
-    profile_type = 'student'
+    profile_type = None
     date_of_birth = factory.Faker('date_this_century',
                                   before_today=True, after_today=False,
                                   locale='fr')
@@ -82,7 +71,7 @@ class UserFactory(factory.DjangoModelFactory):
         return manager.create_user(*args, **kwargs)
 
 
-@factory.django.mute_signals(post_save)
+# @factory.django.mute_signals(post_save)
 class ProfileFactory(factory.DjangoModelFactory):
     """Profile object factory."""
 
@@ -90,6 +79,15 @@ class ProfileFactory(factory.DjangoModelFactory):
         model = users.models.Profile
 
     user = factory.SubFactory(UserFactory)
+
+
+class StudentFactory(ProfileFactory):
+    """Student object factory. Not assigned to a tutoring group."""
+
+    class Meta:  # noqa
+        model = users.models.Student
+
+    address = factory.Faker('address', locale='fr')
 
 
 class TutorFactory(ProfileFactory):
@@ -101,6 +99,16 @@ class TutorFactory(ProfileFactory):
     promotion = factory.Iterator([2019, 2020, 2021])
 
 
+class TutorInGroupFactory(TutorFactory):
+
+    @factory.post_generation
+    def group_names(obj, created, extracted, **kwargs):
+        """Add groups using the group_names=... passed at instance creation."""
+        for group_name in extracted:
+            group = Group.objects.get(name=group_name)
+            group.user_set.add(obj.user)
+
+
 class VpTutoratTutorFactory(TutorFactory):
     """VP Tutorat tutor object factory."""
 
@@ -109,7 +117,7 @@ class VpTutoratTutorFactory(TutorFactory):
         """Override the default ``_create`` with our custom call."""
         manager = cls._get_manager(model_class)
         obj = manager.create(*args, **kwargs)
-        Group.objects.get(name=Groups.VP_TUTORAT).user_set.add(obj.user)
+        Group.objects.get(name=Groups.G_VP_TUTORAT).user_set.add(obj.user)
         return obj
 
 
@@ -132,6 +140,7 @@ class SchoolStaffMemberFactory(ProfileFactory):
     class Meta:  # noqa
         model = users.models.SchoolStaffMember
 
+    # user = factory.SubFactory(UserFactory, profile_type='schoolstaffmember')
     school = factory.SubFactory(SchoolFactory)
     role = 'directeur'
 
@@ -160,6 +169,21 @@ class TutorTutoringGroupFactory(factory.DjangoModelFactory):
     is_leader = False
 
 
+class StudentInTutoringGroupFactory(StudentFactory):
+    """Student object factory, member of a tutoring group."""
+
+    @factory.lazy_attribute
+    def tutoring_group(self):
+        """Return an existing tutoring group in 70% of cases."""
+        groups = tutoring.models.TutoringGroup.objects.all()
+        if groups and random.random() > .3:
+            return random.choice(groups)
+        return TutoringGroupFactory.create()
+
+    # student's school is the same as the student's tutoring group's
+    school = factory.SelfAttribute('tutoring_group.school')
+
+
 class TutoringSessionFactory(factory.DjangoModelFactory):
     """Tutoring session object factory."""
 
@@ -172,18 +196,6 @@ class TutoringSessionFactory(factory.DjangoModelFactory):
     end_time = factory.LazyAttribute(
         lambda o: o.start_time + timedelta(hours=2))
     tutoring_group = factory.SubFactory(TutoringGroupFactory)
-
-
-class StudentFactory(ProfileFactory):
-    """Student object factory, member of a tutoring group."""
-
-    class Meta:  # noqa
-        model = users.models.Student
-
-    address = factory.Faker('address', locale='fr')
-    tutoring_group = factory.SubFactory(TutoringGroupFactory)
-    # student's school is the same as the student's tutoring group's
-    school = factory.SelfAttribute('tutoring_group.school')
 
 
 class ArticleFactory(factory.DjangoModelFactory):
@@ -295,9 +307,9 @@ class VisitWithClosedRegistrationsFactory(VisitFactory):
 class VisitParticipantFactory(factory.DjangoModelFactory):
     """Visit participant object factory.
 
-    Student and visit are picked from pre-existing students and visits,
+    Users and visit are picked from pre-existing objects,
     instead of being created from scratch.
-    This means the database must have at least one student and one visit to
+    This means the database must have at least one user and one visit to
     create a VisitParticipant object.
     """
 
@@ -305,8 +317,8 @@ class VisitParticipantFactory(factory.DjangoModelFactory):
         model = visits.models.VisitParticipant
 
     @factory.lazy_attribute
-    def student(self):
-        return random.choice(users.models.Student.objects.all())
+    def user(self):
+        return random.choice(users.models.User.objects.all())
 
     @factory.lazy_attribute
     def visit(self):

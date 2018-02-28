@@ -3,7 +3,7 @@
 from django.utils.timezone import now
 from rest_framework import serializers
 
-from users.models import Student
+from users.models import User
 from core.markdown import MarkdownField
 
 from .models import Visit, VisitParticipant, Place
@@ -44,8 +44,8 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
 class VisitParticipantReadSerializer(serializers.HyperlinkedModelSerializer):
     """Readable serializer for visit participants."""
 
-    student = serializers.HyperlinkedRelatedField(
-        'api:student-detail',
+    user = serializers.HyperlinkedRelatedField(
+        'api:user-detail',
         read_only=True,
     )
     visit = serializers.HyperlinkedRelatedField(
@@ -55,7 +55,7 @@ class VisitParticipantReadSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = VisitParticipant
-        fields = ('id', 'url', 'student', 'visit', 'present')
+        fields = ('id', 'url', 'user', 'visit', 'present')
         extra_kwargs = {
             'url': {'view_name': 'api:visit-participants-detail'},
         }
@@ -64,10 +64,10 @@ class VisitParticipantReadSerializer(serializers.HyperlinkedModelSerializer):
 class VisitParticipantWriteSerializer(serializers.ModelSerializer):
     """Writable serializer for visit participants."""
 
-    student_id = serializers.PrimaryKeyRelatedField(
-        source='student',
-        queryset=Student.objects.all(),
-        help_text='Identifier for the student')
+    user_id = serializers.PrimaryKeyRelatedField(
+        source='user',
+        queryset=User.objects.all(),
+        help_text='Identifier for the user')
     visit_id = serializers.PrimaryKeyRelatedField(
         source='visit',
         queryset=Visit.objects.all(),
@@ -75,37 +75,37 @@ class VisitParticipantWriteSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = VisitParticipant
-        fields = ('id', 'student_id', 'visit_id', 'present')
+        fields = ('id', 'user_id', 'visit_id', 'present')
 
 
 class VisitParticipantDetailSerializer(serializers.ModelSerializer):
     """Serializer with detailed information about visit participants."""
 
-    student_id = serializers.PrimaryKeyRelatedField(
-        source='student.id',
-        queryset=Student.objects.all(),
-        label='Lycéen')
+    user_id = serializers.PrimaryKeyRelatedField(
+        source='user.id',
+        queryset=User.objects.all(),
+        label='Utilisateur')
     first_name = serializers.CharField(
-        source='student.user.first_name', read_only=True)
+        source='user.first_name', read_only=True)
     last_name = serializers.CharField(
-        source='student.user.last_name', read_only=True)
+        source='user.last_name', read_only=True)
     phone_number = serializers.CharField(
-        source='student.user.phone_number', read_only=True)
-    email = serializers.EmailField(source='student.user.email',
+        source='user.phone_number', read_only=True)
+    email = serializers.EmailField(source='user.email',
                                    read_only=True)
 
     class Meta:  # noqa
         model = VisitParticipant
-        fields = ('student_id', 'first_name', 'last_name',
+        fields = ('user_id', 'first_name', 'last_name',
                   'phone_number', 'email', 'present',)
 
 
 class VisitParticipantIdentifySerializer(serializers.ModelSerializer):
     """Serializer for the specialized get_id() view."""
 
-    student_id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
     visit_id = serializers.IntegerField()
 
     class Meta:  # noqa
         model = VisitParticipant
-        fields = ('student_id', 'visit_id',)
+        fields = ('user_id', 'visit_id',)

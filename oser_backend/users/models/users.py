@@ -108,13 +108,11 @@ class User(AbstractUser):
         Example: if profile_type is 'student', user.profile will be a
         Student object.
         """
-        if not self.profile_type:
-            raise AttributeError('User has no profile')
-        model = Profile.get_model(self.profile_type)
-        try:
-            return model.objects.get(user_id=self.id)
-        except ObjectDoesNotExist:
-            raise AttributeError('User has no profile')
+        return self.profile_object
+        # if not self.profile_type:
+        #     raise AttributeError('User has no profile')
+        # model = Profile.get_model(self.profile_type)
+        # return model.objects.get(user_id=self.id)
     profile.fget.short_description = 'profil'
 
     def get_absolute_url(self):

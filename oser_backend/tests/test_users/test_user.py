@@ -94,3 +94,6 @@ class UserModelTest(ModelTestCase):
         with self.assertRaises(IntegrityError):
             UserFactory.create(email=same_email)
             UserFactory.create(email=same_email)
+
+    def test_visits_relationship(self):
+        self.assertEqual(self.obj.visit_set.all().count(), 0)

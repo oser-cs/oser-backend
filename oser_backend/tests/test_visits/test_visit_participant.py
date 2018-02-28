@@ -3,7 +3,7 @@
 from django.db.utils import IntegrityError
 from visits.models import VisitParticipant
 from tests.utils import ModelTestCase
-from tests.factory import StudentFactory, VisitFactory, UserFactory
+from tests.factory import VisitFactory, UserFactory
 
 
 class VisitParticipantTest(ModelTestCase):
@@ -11,8 +11,8 @@ class VisitParticipantTest(ModelTestCase):
 
     model = VisitParticipant
     field_tests = {
-        'student': {
-            'verbose_name': 'lycéen',
+        'user': {
+            'verbose_name': 'utilisateur',
         },
         'visit': {
             'verbose_name': 'sortie',
@@ -25,24 +25,24 @@ class VisitParticipantTest(ModelTestCase):
     model_tests = {
         'verbose_name': 'participant à la sortie',
         'verbose_name_plural': 'participants à la sortie',
-        'unique_together': (('student', 'visit'),),
+        'unique_together': (('user', 'visit'),),
     }
 
     def create(self):
-        return VisitParticipant.objects.create(student=self.student,
+        return VisitParticipant.objects.create(user=self.user,
                                                visit=self.visit)
 
     def setUp(self):
-        self.student = StudentFactory.create()
+        self.user = UserFactory.create()
         self.visit = VisitFactory.create()
         self.obj = self.create()
 
-    def test_student_cannot_participate_more_than_once(self):
+    def test_user_cannot_participate_more_than_once(self):
         with self.assertRaises(IntegrityError):
             self.create()
 
-    def test_str_contains_student(self):
-        self.assertIn(str(self.student), str(self.obj))
+    def test_str_contains_user(self):
+        self.assertIn(str(self.user), str(self.obj))
 
     def test_str_contains_visit(self):
         self.assertIn(str(self.visit), str(self.obj))

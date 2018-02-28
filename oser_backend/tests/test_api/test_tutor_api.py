@@ -1,6 +1,6 @@
 """Tutor API tests."""
 from rest_framework import status
-from tests.factory import TutorFactory, TutorTutoringGroupFactory
+from tests.factory import TutorFactory, TutorTutoringGroupFactory, UserFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
 
@@ -28,7 +28,8 @@ class TutorEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
 
     def perform_create(self):
         url = '/api/tutors/'
-        obj = self.factory.build()
+        user = UserFactory.create()
+        obj = self.factory.build(user=user)
         data = self.serialize(obj, 'post', url)
         response = self.client.post(url, data, format='json')
         return response
