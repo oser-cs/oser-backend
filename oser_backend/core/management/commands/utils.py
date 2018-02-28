@@ -4,10 +4,10 @@ import os
 import re
 import string
 from itertools import cycle
+from contextlib import contextmanager
 
 from django.core.files import File
 from django.db.models.base import ModelBase
-from django.template.defaultfilters import pluralize
 from factory.base import FactoryMetaClass
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +26,29 @@ assert format_keys('Hi {person}. Eat {food}? {}') == ('person', 'food', '')
 
 
 class DataLoader:
+    """Simple utility class to load data files."""
+
+    def __init__(self, path=None):
+        if path is None:
+            path = os.path.join(HERE, 'data')
+        self.path = path
+
+    @contextmanager
+    def load(self, filename):
+        """Load a single file and return it as a Django File object."""
+        path = os.path.join(self.path, filename)
+        f = open(path, 'rb')
+        try:
+            wrapped_file = File(f)
+            # Default name of the file is the full path to file.
+            # Use only the filename.
+            wrapped_file.name = filename
+            yield wrapped_file
+        finally:
+            f.close()
+
+
+class SeqDataLoader(DataLoader):
     """Iterable that yields filenames to a given amount of resources.
 
     Resources are cycled through if the required amount exceeds
@@ -38,13 +61,9 @@ class DataLoader:
             print(text)
     """
 
-    data_path = os.path.join(HERE, 'data')
-
-    def __init__(self, resource_format, amount, path=None):
-        if path is None:
-            path = os.path.join(HERE, 'data')
+    def __init__(self, resource_format, amount, **kwargs):
+        super().__init__(**kwargs)
         self.pattern = self._make_pattern(resource_format)
-        self.path = path
         self.amount = amount
         self.resources = self._find_resources()
 
@@ -63,13 +82,8 @@ class DataLoader:
         resources = cycle(self.resources)
         for _ in range(self.amount):
             filename = next(resources)
-            path = os.path.join(self.path, filename)
-            with open(path, 'rb') as f:
-                wrapped_file = File(f)
-                # Default name of the file is the full path to file.
-                # Use only the filename.
-                wrapped_file.name = filename
-                yield wrapped_file
+            with self.load(filename) as file_:
+                yield file_
 
 
 def get_model(element):

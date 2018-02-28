@@ -14,7 +14,7 @@ from tests.factory import (ArticleFactory, CategoryFactory, KeyFigureFactory,
                            PlaceFactory, StudentFactory, TestimonyFactory,
                            TutorFactory, TutorInGroupFactory, VisitFactory)
 
-from .utils import DataLoader, get_model, watcher
+from .utils import DataLoader, SeqDataLoader, get_model, watcher
 
 
 class Command(BaseCommand):
@@ -109,7 +109,7 @@ class Command(BaseCommand):
                               .format(categories.count(), article))
 
     def create_articles(self):
-        for image in DataLoader('article-{i}.jpg', 5):
+        for image in SeqDataLoader('article-{i}.jpg', 5):
             article = ArticleFactory.create(image=image)
             self.add_random_categories(article)
             article.save()
@@ -121,8 +121,9 @@ class Command(BaseCommand):
         KeyFigureFactory.create_batch(4)
 
     def create_visits(self):
-        for image in DataLoader('visit-{i}.jpg', 8):
-            VisitFactory.create(image=image)
+        with DataLoader().load('visit-factsheet.pdf') as fact_sheet:
+            for image in SeqDataLoader('visit-{i}.jpg', 8):
+                VisitFactory.create(image=image, fact_sheet=fact_sheet)
 
     def add_visit_organizers(self):
         tutors = users.models.Tutor.objects.all()

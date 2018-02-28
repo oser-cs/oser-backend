@@ -46,7 +46,8 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
                   'deadline', 'registrations_open',
                   'participants',
                   'organizers',
-                  'image', 'fact_sheet',)
+                  'image',
+                  'fact_sheet',)
         extra_kwargs = {
             'url': {'view_name': 'api:visit-detail'},
         }
