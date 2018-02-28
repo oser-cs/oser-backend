@@ -3,10 +3,10 @@
 from django.utils.timezone import now
 from rest_framework import serializers
 
-from users.models import User
 from core.markdown import MarkdownField
+from users.models import User
 
-from .models import Visit, VisitParticipant, Place
+from .models import Place, Visit, VisitParticipant
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -19,12 +19,22 @@ class PlaceSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'address', 'description')
 
 
+class VisitOrganizerSerializer(serializers.ModelSerializer):
+
+    class Meta:  # noqa
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'gender', 'phone_number')
+
+
 class VisitSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for Visit."""
 
     participants = serializers.StringRelatedField(many=True)
     passed = serializers.SerializerMethodField()
     place = PlaceSerializer(read_only=True)
+    organizers = VisitOrganizerSerializer(source='organizers_group.user_set',
+                                          read_only=True,
+                                          many=True)
 
     def get_passed(self, obj):
         return obj.date < now()
@@ -35,6 +45,7 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
                   'date', 'passed',
                   'deadline', 'registrations_open',
                   'participants',
+                  'organizers',
                   'image', 'fact_sheet',)
         extra_kwargs = {
             'url': {'view_name': 'api:visit-detail'},
