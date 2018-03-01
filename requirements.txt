@@ -7,3 +7,5 @@ Pillow
 django-markdownx
 dry_rest_permissions>~0.1.10
 django-guardian>~1.4.9
+django-admin-sortable2>=0.6.19
+pymdown-extensions>=4.8

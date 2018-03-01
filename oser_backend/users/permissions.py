@@ -36,9 +36,12 @@ def setup_groups():
         # add permisions to group if defined
         perms = Groups.perms.get(groupname, [])
         for perm in perms:
-            perm_object = Permission.objects.get(codename=perm)
-            if perm_object not in group.permissions.all():
-                group.permissions.add(perm_object)
+            try:
+                perm_object = Permission.objects.get(codename=perm)
+                if perm_object not in group.permissions.all():
+                    group.permissions.add(perm_object)
+            except Permission.DoesNotExist as e:
+                raise ValueError(e)
         else:
             group.save()
         created_groups[groupname] = created
