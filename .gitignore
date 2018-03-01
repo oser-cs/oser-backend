@@ -1,27 +1,19 @@
 # dependencies
 env/
-node_modules/
 
 # build
 *.pyc
 __pycache__/
-oser_cs/*/migrations/*
-!oser_cs/users/migrations/__init__.py
-!oser_cs/tutoring/migrations/__init__.py
-!oser_cs/api/migrations/__init__.py
-docs/_build/
-oser_cs/frontend/build/
 
 # databases
 *.db
 *.sqlite3
 
-# misc
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # media files
 oser_backend/media/
 
-migrations/
+# Migrations
+# Ignore generated migrations
+oser_backend/*/migrations/*.py
+# But keep migrations folders with their __init__.py files in VCS
+!oser_backend/*/migrations/__init__.py
