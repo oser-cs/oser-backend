@@ -9,8 +9,9 @@ __pycache__/
 *.db
 *.sqlite3
 
-# media files
+# media and collected static files
 oser_backend/media/
+oser_backend/www/
 
 # Migrations
 # Ignore generated migrations
