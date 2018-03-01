@@ -11,9 +11,9 @@ Plus d'informations sur leur site : http://shields.io
 -->
 [![Python](https://img.shields.io/badge/python-3.6-blue.svg)](https://docs.python.org/3/)
 [![Django](https://img.shields.io/badge/django-2.0-blue.svg)](https://www.djangoproject.com)
-[![Docs status](https://readthedocs.org/projects/oser-website/badge/?version=latest)](http://oser-website.readthedocs.io/fr/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/oser-tech-docs/badge/?version=latest)](http://oser-tech-docs.readthedocs.io/en/latest/?badge=latest)
 
-Bienvenue ! Ce dépôt est le lieu de développement du backend du site internet de l'association OSER, site site a pour objectif de soutenir l'association dans son action quotidienne.
+Bienvenue ! Ce dépôt est le lieu de développement du backend du site internet de l'association OSER, site qui a pour objectif de soutenir l'association dans son action quotidienne.
 
 Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien démarrer. :+1:
 
@@ -28,17 +28,17 @@ Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien dém
 
 ## Documentation
 
-La documentation complète du backend est hébergée sur [ReadTheDocs](http://oser-website.readthedocs.io/fr/latest/).
+La documentation complète du backend est disponible dans la documentation technique hébergée sur [ReadTheDocs](http://oser-tech-docs.readthedocs.io/fr/latest/). Toutes les instructions d'installation y sont notamment recensées.
 
-En supplément, la documentation de l'API générée par Django est accessible à l'endpoint `/api/docs/`. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/api/docs`](http://localhost:8000/api/docs). Vous pouvez aussi librement parcourir l'API à l'adresse [`http://localhost:8000/api/`](http://localhost:8000/api/).
+#### Documentation de l'API
+
+En supplément, la documentation de l'API est accessible à la racine du serveur Django. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/`](http://localhost:8000/). Vous pouvez aussi librement parcourir l'API à l'adresse [`http://localhost:8000/api/`](http://localhost:8000/api/).
 
 ![API Docs](media/api-docs.png)
 
 #### Authentification
 
-> Remarque : actuellement, certaines ressources (les articles par exemple) sont accessibles sans authentification. Cela ne sera plus le cas dans de futures versions.
-
-Pour communiquer avec l'API, un client doit être authentifié. La méthode standard de la [*token authentication*](https://auth0.com/learn/token-based-authentication-made-easy/) est employée ici.
+Pour communiquer avec l'API, un client doit être authentifié. La méthode standard de la [token authentication](https://auth0.com/learn/token-based-authentication-made-easy/) est employée ici.
 
 Le principe est le suivant :
 
@@ -54,7 +54,7 @@ L'avantage est de pouvoir stocker ce token dans un cookie ou dans le stockage lo
 
 Du point de vue d'un client, la procédure d'authentification se fait en 2 étapes :
 
-A. Récupération du token en envoyant une requête POST à l'endpoint `/api/auth/get-token` avec `username` et le `password` fournis par l'utilisateur.
+A. Récupération du token en envoyant une requête POST à l'endpoint `/api/auth/get-token` avec le `username` et le `password` fournis par l'utilisateur.
 
 ```
 $ curl -X POST -d "username=user&password=pass" localhost:8000/api/auth/get-token/
@@ -72,23 +72,21 @@ $ curl -X GET "localhost:8000/api/articles/" -H "Authorization: Token b6302cebe7
 
 ### Django
 
-[Django](https://www.djangoproject.com) est un framework de développement web pour Python.
+[Django](https://www.djangoproject.com) est un framework de développement web pour Python. Le site d'OSER utilise Django en version 2.0.
 
-Le site d'OSER utilise Django en version 2.0.
-
-> À l'heure actuelle, peu de tutoriels Django se basent sur la version 2.0, mais il y a en fait très peu de changements non-rétro-compatibles par rapport à la version 1.11, et aucun changement n'est réellement critique. Les améliorations apportées par la version 2.0 sont intéressantes, on peut notamment citer le système d'écriture des URLs qui est grandement simplifié. Pour plus d'infos, lire la [release news](https://www.djangoproject.com/weblog/2017/dec/02/django-20-released/) associée.
+> Note aux devs : il y a quelques changements non-rétrocompatibles de Django 2.0 par rapport à la version précédente 1.11. Faites attention à vérifier la version de Django supportée par des bibliothèques tierces que vous voudriez utiliser.
 
 ### Django REST Framework
 
 Le [Django REST Framework](http://www.django-rest-framework.org) (DRF) permet d'écrire facilement des API REST avec Django.
 
-Le site d'OSER utilise le DRF en version 3.7.3. Cette version est entièrement compatible avec Django 2.0.
+Le site d'OSER utilise le DRF en version 3.7.3+. Cette version est entièrement compatible avec Django 2.0+.
 
 ## Contribuer
 
 Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/site-internet-backlog).
 
-Consultez le guide du développeur de la [documentation backend](http://oser-website.readthedocs.io/fr/latest/) pour plus d'informations sur le développement du site.
+Consultez la [documentation technique](http://oser-tech-docs.readthedocs.io/fr/latest/) pour plus d'informations sur le développement du site.
 
 ## À propos d'OSER
 

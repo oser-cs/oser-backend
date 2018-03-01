@@ -1,6 +1,0 @@
-============
-Introduction
-============
-
-.. note:: 
-  En construction
