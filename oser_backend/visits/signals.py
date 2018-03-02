@@ -21,6 +21,9 @@ def sync_organizers_group(sender, instance, **kwargs):
             group = Group.objects.create(name=group_name)
             visit.organizers_group = group
             assign_perm('manage_visit', group, visit)
+            # Organizers group can change all visit participants,
+            # but only those of the visits they manage will be visible.
+            assign_perm('visits.change_visitparticipant', group)
             group.save()
             visit.save()
     elif visit.organizers_group.name != visit.organizers_group_name:

@@ -20,7 +20,11 @@ class VisitParticipantTest(ModelTestCase):
         'present': {
             'verbose_name': 'présent',
             'null': True,
-        }
+        },
+        'accepted': {
+            'verbose_name': 'dossier validé',
+            'null': True,
+        },
     }
     model_tests = {
         'verbose_name': 'participant à la sortie',

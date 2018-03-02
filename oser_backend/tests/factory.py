@@ -328,3 +328,4 @@ class VisitParticipantFactory(factory.DjangoModelFactory):
         return random.choice(visits_without_participants)
 
     present = factory.LazyFunction(lambda: random.choice([None, False, True]))
+    accepted = factory.LazyFunction(lambda: random.choice([None, False, True]))

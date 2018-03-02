@@ -49,7 +49,15 @@ class VisitParticipant(models.Model):
                              on_delete=models.CASCADE, null=True)
     visit = models.ForeignKey('Visit', verbose_name='sortie',
                               on_delete=models.CASCADE)
-    present = models.NullBooleanField('présent')
+    accepted = models.NullBooleanField(
+        'dossier validé',
+        help_text="Cocher si les pièces jointes envoyées sont valides.")
+    present = models.NullBooleanField(
+        'présent',
+        help_text=(
+            "Une fois la sortie passée, indiquer si le lycéen était présent."
+        )
+    )
 
     class Meta:  # noqa
         verbose_name = 'participant à la sortie'

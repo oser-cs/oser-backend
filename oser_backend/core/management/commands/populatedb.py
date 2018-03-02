@@ -1,10 +1,12 @@
 """Populate the database with fake data."""
 
 import random
+import logging
 
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.contrib.auth.models import Group
 
 import showcase_site.models
 import users.models
@@ -127,14 +129,22 @@ class Command(BaseCommand):
 
     def add_visit_organizers(self):
         tutors = users.models.Tutor.objects.all()
+        visits_group = Group.objects.get(name=Groups.G_SECTEUR_SORTIES)
+
+        def add_to_organizers(visit, user):
+            if user not in visits_group.user_set.all():
+                visits_group.user_set.add(user)
+            visit.organizers_group.user_set.add(user)
+
         for visit in visits.models.Visit.objects.all():
             # add 2 organizers to each visit
             for tutor in random.choices(tutors, k=2):
-                visit.organizers_group.user_set.add(tutor.user)
-        # add known tutor to organizers of first visit
-        visit = visits.models.Visit.objects.first()
+                add_to_organizers(visit, tutor.user)
+        # add known tutor to organizers of a visit.
+        # use last visit so to be sure it will have open registrations.
+        visit = visits.models.Visit.objects.last()
         if visit.organizers_group not in self.known_tutor.user.groups.all():
-            visit.organizers_group.user_set.add(self.known_tutor.user)
+            add_to_organizers(visit, self.known_tutor.user)
 
     @watcher(*affected)
     def create(self):

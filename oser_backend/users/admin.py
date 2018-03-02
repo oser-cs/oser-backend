@@ -19,7 +19,7 @@ class UserVisitParticipantInline(VisitParticipantInline):
     All fields are read-only.
     """
 
-    readonly_fields = ('user', 'visit', 'present')
+    readonly_fields = ('user', 'visit', 'accepted', 'present',)
     verbose_name = 'Participation aux sorties'
     verbose_name_plural = 'Participation aux sorties'
 

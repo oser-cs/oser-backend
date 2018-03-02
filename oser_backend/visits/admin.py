@@ -55,7 +55,7 @@ class VisitForm(forms.ModelForm):
             self.add_error('deadline', error)
 
 
-class VisitParticipantInline(admin.TabularInline):
+class VisitParticipantInline(admin.StackedInline):
     """Inline for VisitParticipant."""
 
     model = Visit.participants.through
