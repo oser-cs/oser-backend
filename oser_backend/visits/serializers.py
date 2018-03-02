@@ -6,7 +6,7 @@ from rest_framework import serializers
 from core.markdown import MarkdownField
 from users.models import User
 
-from .models import Place, Visit, VisitParticipant
+from .models import Place, Visit, VisitAttachedFile, VisitParticipant
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -26,6 +26,13 @@ class VisitOrganizerSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'gender', 'phone_number')
 
 
+class VisitAttachedFileSerializer(serializers.ModelSerializer):
+
+    class Meta:  # noqa
+        model = VisitAttachedFile
+        fields = ('id', 'name', 'required')
+
+
 class VisitSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for Visit."""
 
@@ -35,6 +42,7 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
     organizers = VisitOrganizerSerializer(source='organizers_group.user_set',
                                           read_only=True,
                                           many=True)
+    attached_files = VisitAttachedFileSerializer(read_only=True, many=True)
 
     def get_passed(self, obj):
         return obj.date < now()
@@ -46,6 +54,7 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
                   'deadline', 'registrations_open',
                   'participants',
                   'organizers',
+                  'attached_files',
                   'image',
                   'fact_sheet',)
         extra_kwargs = {

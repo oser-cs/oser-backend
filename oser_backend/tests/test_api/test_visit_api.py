@@ -1,8 +1,9 @@
 """Visit API tests."""
 
+from django.test import TestCase
 from rest_framework import status
-from tests.factory import VisitFactory, UserFactory
-from tests.utils import HyperlinkedAPITestCase
+from tests.factory import VisitFactory
+from tests.utils import HyperlinkedAPITestCase, SerializerTestCaseMixin
 from visits.serializers import VisitSerializer
 
 
@@ -37,3 +38,18 @@ class VisitEndpointsTest(HyperlinkedAPITestCase):
         url = '/api/visits/{obj.pk}/participants/'.format(obj=obj)
         response = self.client.get(url)
         return response
+
+
+class VisitSerializerTestCase(SerializerTestCaseMixin, TestCase):
+    """Test the VisitSerializer."""
+
+    serializer_class = VisitSerializer
+    factory_class = VisitFactory
+
+    expected_fields = (
+        'id', 'url',
+        'title', 'summary', 'description',
+        'place', 'date', 'passed', 'deadline', 'registrations_open',
+        'participants', 'organizers',
+        'attached_files', 'image', 'fact_sheet',
+    )

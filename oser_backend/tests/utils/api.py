@@ -2,9 +2,10 @@
 
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
+
 from tests.factory import UserFactory
 
-__all__ = ('HyperlinkedAPITestCase',)
+__all__ = ('HyperlinkedAPITestCase', 'SerializerTestCaseMixin')
 
 
 class HyperlinkedAPITestCase(APITestCase):
@@ -115,3 +116,36 @@ class HyperlinkedAPITestCase(APITestCase):
         self.assertRequestResponse(
             perform_request, user=UserFactory.create(),
             expected_status_code=status.HTTP_403_FORBIDDEN)
+
+
+class SerializerTestCaseMixin:
+    """Base test case for serializers."""
+
+    serializer_class = None
+    factory_class = None
+    request_url = '/api/'
+    expected_fields = ()
+
+    def setUp(self):
+        factory = APIRequestFactory()
+        self.request = factory.get(self.request_url)
+        self.obj = self.get_object()
+        self.serializer = self.get_serializer(self.obj)
+
+    def get_object(self):
+        if self.factory_class:
+            return self.factory_class.create()
+        else:
+            raise ValueError(
+                'If factory_class is not specified, you must '
+                'override get_object()')
+
+    def get_serializer(self, obj, request=None):
+        if request is None:
+            request = self.request
+        return self.serializer_class(instance=obj,
+                                     context={'request': request})
+
+    def test_contains_expected_fields(self):
+        data = self.serializer.data
+        self.assertEqual(set(data), set(self.expected_fields))
