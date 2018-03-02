@@ -92,6 +92,32 @@ class VisitParticipant(models.Model):
         return '{} participates in {}'.format(self.user, self.visit)
 
 
+class VisitAttachedFile(models.Model):
+    """Represents a file that a visit requires a participant to provide.
+
+    This is only used to manage required files for a visit.
+    => This model does not contain an actual file field.
+
+    Actual files will be given through
+    VisitParticipantAttachedFile objects when a user participates in a visit.
+    """
+
+    name = models.CharField('nom', max_length=200)
+    required = models.BooleanField('requis', default=True)
+    visit = models.ForeignKey('Visit',
+                              on_delete=models.CASCADE,
+                              related_name='attached_files',
+                              verbose_name='sortie')
+
+    class Meta:  # noqa
+        verbose_name = 'pièce jointe'
+        verbose_name_plural = 'pièces jointes'
+        ordering = ('visit',)
+
+    def __str__(self):
+        return str(self.name)
+
+
 class Visit(models.Model):
     """Represents a visit that users can attend."""
 

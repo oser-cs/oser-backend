@@ -4,7 +4,7 @@ from django import forms
 from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
 from guardian.shortcuts import get_objects_for_user
-from .models import Visit, Place
+from .models import Visit, Place, VisitAttachedFile
 
 # Register your models here.
 
@@ -62,6 +62,13 @@ class VisitParticipantInline(admin.StackedInline):
     extra = 0
 
 
+class VisitAttachedFileInline(admin.TabularInline):
+    """Inline for VisitAttachedFile."""
+
+    model = VisitAttachedFile
+    extra = 0
+
+
 @admin.register(Visit)
 class VisitAdmin(GuardedModelAdmin):
     """Admin panel for visits."""
@@ -70,7 +77,7 @@ class VisitAdmin(GuardedModelAdmin):
     # https://medium.com/@hakibenita/how-to-turn-django-admin-into-a-lightweight-dashboard-a0e0bbf609ad
 
     form = VisitForm
-    inlines = (VisitParticipantInline,)
+    inlines = (VisitParticipantInline, VisitAttachedFileInline,)
     list_display = ('__str__', 'place', 'date', 'deadline',
                     '_registrations_open', 'num_participants')
     list_filter = ('date', RegistrationsOpenFilter)

@@ -41,7 +41,7 @@ class VisitTest(ModelTestCase):
             'verbose_name': 'fiche sortie',
             'blank': True,
             'null': True,
-        }
+        },
     }
     model_tests = {
         'verbose_name': 'sortie',
@@ -73,6 +73,9 @@ class VisitTest(ModelTestCase):
 
     def test_organizers_group_name_contains_visit_title(self):
         self.assertIn(self.obj.title, self.obj.organizers_group_name)
+
+    def test_attched_files_relationship(self):
+        self.assertIsNotNone(getattr(self.obj, 'attached_files', None))
 
     def test_str_is_title(self):
         self.assertEqual(str(self.obj), str(self.obj.title))
