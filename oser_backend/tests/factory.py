@@ -250,7 +250,12 @@ class PartnerFactory(factory.DjangoModelFactory):
     name = factory.Faker('company', locale='fr')
     website = factory.Faker('url')
     logo = factory.Faker('image_url', height=320)
-    premium = factory.LazyFunction(lambda: random.choice([True, False]))
+    # 40% of partnerships will be premium on average
+    premium = factory.LazyFunction(
+        lambda: random.choices([True, False], weights=[.4, .6])[0])
+    # 90% of partnerships will be active on average
+    active = factory.LazyFunction(
+        lambda: random.choices([True, False], weights=[.9, .1])[0])
 
 
 class PlaceFactory(factory.DjangoModelFactory):

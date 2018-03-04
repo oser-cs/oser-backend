@@ -60,8 +60,10 @@ class KeyFigureViewSet(viewsets.ReadOnlyModelViewSet):
 class PartnerViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint to view partners.
 
+    Only active partners are visible in the API.
+
     Actions: list, retrieve
     """
 
     serializer_class = PartnerSerializer
-    queryset = Partner.objects.all()
+    queryset = Partner.objects.filter(active=True)

@@ -25,10 +25,14 @@ class PartnerTest(ModelTestCase):
             'verbose_name': 'partenaire privilégié',
             'default': False,
         },
+        'active': {
+            'verbose_name': 'actif',
+            'default': True,
+        }
     }
     model_tests = {
         'verbose_name': 'partenaire',
-        'ordering': ('name',),
+        'ordering': ('active', 'name',),
     }
 
     def setUp(self):

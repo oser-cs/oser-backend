@@ -1,9 +1,12 @@
 """Partner API tests."""
 
+from django.test import TestCase
 from rest_framework import status
 from tests.factory import PartnerFactory
 from tests.utils import HyperlinkedAPITestCase
 from showcase_site.serializers import PartnerSerializer
+from showcase_site.views import PartnerViewSet
+from showcase_site.models import Partner
 
 
 class PartnerEndpointsTest(HyperlinkedAPITestCase):
@@ -34,3 +37,12 @@ class PartnerEndpointsTest(HyperlinkedAPITestCase):
             self.perform_retrieve,
             user=None,
             expected_status_code=status.HTTP_200_OK)
+
+
+class PartnerViewSetTest(TestCase):
+    """Test partners viewset."""
+
+    def test_queryset_is_active_partners_only(self):
+        self.assertQuerysetEqual(
+            PartnerViewSet().get_queryset(),
+            Partner.objects.filter(active=True))

@@ -179,7 +179,15 @@ class Partner(models.Model):
             "sera davantage mis en avant sur le site. Exemple : les "
             "organismes de subventions peuvent être des partenaires "
             "secondaires et les entreprises des partenaires principaux."
-        ))
+        )
+    )
+    active = models.BooleanField(
+        'actif', default=True,
+        help_text=(
+            "Cocher si le partenariat est actif. Les partenariats inactifs "
+            "ne seront pas affichés sur le site."
+        )
+    )
 
     class Meta:  # noqa
         verbose_name = 'partenaire'

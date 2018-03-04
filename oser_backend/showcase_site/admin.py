@@ -71,8 +71,8 @@ class KeyFigureAdmin(SortableAdminMixin, admin.ModelAdmin):
 class PartnerAdmin(admin.ModelAdmin):
     """Partner admin panel."""
 
-    list_display = ('__str__', 'thumbnail', 'get_website', 'premium')
-    list_filter = ('premium', )
+    list_display = ('__str__', 'thumbnail', 'get_website', 'premium', 'active')
+    list_filter = ('active', 'premium',)
 
     def get_website(self, obj):
         """Return safe link to partner's website."""
