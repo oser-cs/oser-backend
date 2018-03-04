@@ -191,7 +191,7 @@ class Partner(models.Model):
 
     class Meta:  # noqa
         verbose_name = 'partenaire'
-        ordering = ('name',)
+        ordering = ('active', 'name',)
 
     def __str__(self):
         return str(self.name)
