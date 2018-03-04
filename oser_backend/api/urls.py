@@ -22,26 +22,27 @@ router = routers.DefaultRouter()
 router.register('visits', visits_views.VisitViewSet)
 router.register('visit-participants', visits_views.VisitParticipantsViewSet,
                 base_name='visit-participants')
-router.register(r'places', visits_views.PlaceViewSet)
+router.register('places', visits_views.PlaceViewSet)
 
 # Users views
-router.register(r'users', users_views.UserViewSet)
-router.register(r'tutors', users_views.TutorViewSet)
-router.register(r'students', users_views.StudentViewSet)
+router.register('users', users_views.UserViewSet)
+router.register('tutors', users_views.TutorViewSet)
+router.register('students', users_views.StudentViewSet)
 # router.register('student-visits', users_views.StudentVisitsViewSet)
-router.register(r'schoolstaffmembers', users_views.SchoolStaffMemberViewSet)
+router.register('schoolstaffmembers', users_views.SchoolStaffMemberViewSet)
 
 # Tutoring views
-router.register(r'schools', tutoring_views.SchoolViewSet)
-router.register(r'tutoring/groups', tutoring_views.TutoringGroupViewSet,
+router.register('schools', tutoring_views.SchoolViewSet)
+router.register('tutoring/groups', tutoring_views.TutoringGroupViewSet,
                 base_name='tutoring_group')
-router.register(r'tutoring/sessions', tutoring_views.TutoringSessionViewSet,
+router.register('tutoring/sessions', tutoring_views.TutoringSessionViewSet,
                 base_name='tutoring_session')
 
 # Showcase site views
-router.register(r'articles', showcase_site_views.ArticleViewSet)
-router.register(r'categories', showcase_site_views.CategoryViewSet)
-router.register(r'testimonies', showcase_site_views.TestimonyViewSet)
-router.register(r'keyfigures', showcase_site_views.KeyFigureViewSet)
+router.register('articles', showcase_site_views.ArticleViewSet)
+router.register('categories', showcase_site_views.CategoryViewSet)
+router.register('testimonies', showcase_site_views.TestimonyViewSet)
+router.register('keyfigures', showcase_site_views.KeyFigureViewSet)
+router.register('partners', showcase_site_views.PartnerViewSet)
 
 urlpatterns += router.urls

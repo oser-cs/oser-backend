@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 from core.markdown import MarkdownField
-from .models import Article, Category, Testimony, KeyFigure
+from .models import Article, Category, Testimony, KeyFigure, Partner
 
 
 class CategoryField(serializers.RelatedField):
@@ -72,3 +72,11 @@ class KeyFigureSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = KeyFigure
         fields = ('order', 'figure', 'description',)
+
+
+class PartnerSerializer(serializers.ModelSerializer):
+    """Serializer for Partner."""
+
+    class Meta:  # noqa
+        model = Partner
+        fields = ('id', 'name', 'website', 'logo', 'premium')

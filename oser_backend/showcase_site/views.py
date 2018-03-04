@@ -6,10 +6,12 @@ from .serializers import ArticleSerializer
 from .serializers import CategorySerializer
 from .serializers import TestimonySerializer
 from .serializers import KeyFigureSerializer
+from .serializers import PartnerSerializer
 from .models import Article
 from .models import Category
 from .models import Testimony
 from .models import KeyFigure
+from .models import Partner
 
 # Create your views here.
 
@@ -53,3 +55,13 @@ class KeyFigureViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = KeyFigureSerializer
     queryset = KeyFigure.objects.all()
+
+
+class PartnerViewSet(viewsets.ReadOnlyModelViewSet):
+    """API endpoint to view partners.
+
+    Actions: list, retrieve
+    """
+
+    serializer_class = PartnerSerializer
+    queryset = Partner.objects.all()
