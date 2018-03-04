@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^api/auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
     url(r'^api/docs/', include_docs_urls(title='OSER_CS API', public=False)),
-    url(r'^$', RedirectView.as_view(url='api/docs/', permanent=True),
+    url(r'^$', RedirectView.as_view(url='admin/', permanent=True),
         name='index'),
     url(r'^markdownx/', include('markdownx.urls')),
 ]
