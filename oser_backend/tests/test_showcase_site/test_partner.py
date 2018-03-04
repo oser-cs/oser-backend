@@ -32,7 +32,7 @@ class PartnerTest(ModelTestCase):
     }
     model_tests = {
         'verbose_name': 'partenaire',
-        'ordering': ('active', 'name',),
+        'ordering': ('-active', 'name',),
     }
 
     def setUp(self):
