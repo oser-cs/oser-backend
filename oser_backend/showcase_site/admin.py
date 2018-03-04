@@ -1,11 +1,12 @@
 """Showcase site admin panel configuration."""
 
 from django.contrib import admin
+from django.utils.html import format_html
+
 from adminsortable2.admin import SortableAdminMixin
-from .models import Article
-from .models import Category
-from .models import Testimony
-from .models import KeyFigure
+
+from .models import Article, Category, KeyFigure, Partner, Testimony
+
 
 # Register your models here.
 
@@ -31,6 +32,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
     def get_num_articles(self, obj):
+        """Get number of articles in this category."""
         return obj.article_set.count()
     get_num_articles.short_description = "Nombre d'articles"
 
@@ -45,6 +47,10 @@ class TestimonyAdmin(admin.ModelAdmin):
     preview_truncated_symbol = ' […]'
 
     def get_preview(self, obj):
+        """Return a preview of the testimony.
+
+        Max length of preview is preview_length.
+        """
         if len(obj.content) > self.preview_length:
             return (obj.content[:self.preview_length] +
                     self.preview_truncated_symbol)
@@ -54,4 +60,29 @@ class TestimonyAdmin(admin.ModelAdmin):
 
 @admin.register(KeyFigure)
 class KeyFigureAdmin(SortableAdminMixin, admin.ModelAdmin):
-    pass
+    """Key figure admin panel.
+
+    Key figures can be sorted through a drag'n'drop interface (thanks
+    to django-admin-sortable2).
+    """
+
+
+@admin.register(Partner)
+class PartnerAdmin(admin.ModelAdmin):
+    """Partner admin panel."""
+
+    list_display = ('__str__', 'thumbnail', 'get_website', 'premium')
+    list_filter = ('premium', )
+
+    def get_website(self, obj):
+        """Return safe link to partner's website."""
+        return format_html('<a target="_blank" href="{}">{}</a>',
+                           obj.website, obj.website)
+    get_website.short_description = 'Site internet'
+
+    def thumbnail(self, obj):
+        """Return thumbnail of partner's logo."""
+        return format_html(
+            '<img src="{}" alt="{}" style="max-width: 100px; height: auto;">',
+            obj.logo.url, obj.name)
+    thumbnail.short_description = 'Logo'

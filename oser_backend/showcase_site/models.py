@@ -154,3 +154,36 @@ class KeyFigure(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.figure, self.description.lower())
+
+
+class Partner(models.Model):
+    """Represents a partner of the association.
+
+    Basic model but could be extended to store further
+    information about the partnership.
+    """
+
+    name = models.CharField('nom', max_length=200)
+    website = models.URLField('site internet', null=True)
+    logo = models.ImageField(
+        help_text=(
+            "Image PNG avec arrière-plan transparent. "
+            "Dimensions recommandées : hauteur = 320px. "
+        ),
+        null=True,
+    )
+    premium = models.BooleanField(
+        'partenaire privilégié', default=False,
+        help_text=(
+            "Cocher si ce partenaire est un partenaire privilégié. Il "
+            "sera davantage mis en avant sur le site. Exemple : les "
+            "organismes de subventions peuvent être des partenaires "
+            "secondaires et les entreprises des partenaires principaux."
+        ))
+
+    class Meta:  # noqa
+        verbose_name = 'partenaire'
+        ordering = ('name',)
+
+    def __str__(self):
+        return str(self.name)

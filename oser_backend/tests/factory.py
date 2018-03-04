@@ -241,6 +241,18 @@ class KeyFigureFactory(factory.DjangoModelFactory):
     order = factory.Sequence(lambda n: n)
 
 
+class PartnerFactory(factory.DjangoModelFactory):
+    """Partner object factory."""
+
+    class Meta:  # noqa
+        model = showcase_site.models.Partner
+
+    name = factory.Faker('company', locale='fr')
+    website = factory.Faker('url')
+    logo = factory.Faker('image_url', height=320)
+    premium = factory.LazyFunction(lambda: random.choice([True, False]))
+
+
 class PlaceFactory(factory.DjangoModelFactory):
     """Place object factory."""
 

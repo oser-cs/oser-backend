@@ -1,20 +1,23 @@
 """Populate the database with fake data."""
 
-import random
 import logging
+import random
 
+from django.contrib.auth.models import Group
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.contrib.auth.models import Group
 
 import showcase_site.models
 import users.models
 import visits.models
+from tests.factory import (
+    StudentFactory, TutorFactory, TutorInGroupFactory,
+    CategoryFactory, ArticleFactory, TestimonyFactory,
+    KeyFigureFactory, PartnerFactory,
+    VisitFactory, PlaceFactory,
+)
 from users.permissions import Groups
-from tests.factory import (ArticleFactory, CategoryFactory, KeyFigureFactory,
-                           PlaceFactory, StudentFactory, TestimonyFactory,
-                           TutorFactory, TutorInGroupFactory, VisitFactory)
 
 from .utils import DataLoader, SeqDataLoader, get_model, watcher
 
@@ -26,9 +29,12 @@ class Command(BaseCommand):
     affected = list(
         map(
             get_model,
-            (StudentFactory, CategoryFactory, ArticleFactory,
-             TestimonyFactory, KeyFigureFactory,
-             VisitFactory, PlaceFactory, TutorFactory)
+            (
+                StudentFactory, TutorFactory,
+                CategoryFactory, ArticleFactory, TestimonyFactory,
+                KeyFigureFactory, PartnerFactory,
+                VisitFactory, PlaceFactory,
+            )
         ))
 
     known_student_data = {
@@ -122,6 +128,9 @@ class Command(BaseCommand):
     def create_key_figures(self):
         KeyFigureFactory.create_batch(4)
 
+    def create_partners(self):
+        PartnerFactory.create_batch(6)
+
     def create_visits(self):
         with DataLoader().load('visit-factsheet.pdf') as fact_sheet:
             for image in SeqDataLoader('visit-{i}.jpg', 8):
@@ -154,6 +163,7 @@ class Command(BaseCommand):
         self.create_articles()
         self.create_testimonies()
         self.create_key_figures()
+        self.create_partners()
         self.create_visits()
         self.add_visit_organizers()
 
