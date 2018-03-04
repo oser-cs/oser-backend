@@ -14,6 +14,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.utils import timezone
 
+import core.models
 import showcase_site.models
 import tutoring.models
 import users.models
@@ -346,3 +347,14 @@ class VisitParticipantFactory(factory.DjangoModelFactory):
 
     present = factory.LazyFunction(lambda: random.choice([None, False, True]))
     accepted = factory.LazyFunction(lambda: random.choice([None, False, True]))
+
+
+class LinkFactory(factory.DjangoModelFactory):
+    """Link object factory."""
+
+    class Meta:  # noqa
+        model = core.models.Link
+
+    slug = factory.Faker('slug')
+    url = factory.Faker('url')
+    description = factory.Faker('sentence', locale='fr')
