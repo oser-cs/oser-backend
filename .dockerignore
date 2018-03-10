@@ -3,7 +3,7 @@
 .gitignore
 .idea
 .travis.yml
-media/
+./media/
 README.md
 LICENSE
 
@@ -12,13 +12,13 @@ LICENSE
 **/*.sqlite3
 
 # Static files (will be collected inside container)
-static/
+./static/
 
 # Compiled files
 **/*.pyc
 
 # Migrations
 # Ignore generated migrations
-oser_backend/*/migrations/*.py
+**/migrations/*.py
 # But keep migrations folders with their __init__.py files
-!oser_backend/*/migrations/__init__.py
+!**/migrations/__init__.py

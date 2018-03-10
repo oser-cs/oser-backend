@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # Collect static files
-exec python3 manage.py collectstatic
+python manage.py collectstatic
 
 # Initialize database
-exec python3 manage.py makemigrations
-exec python3 manage.py migrate
+python manage.py makemigrations
+python manage.py migrate
 
 # Initialize admin users
-exec python3 manage.py initadmin
+python manage.py initadmin
 
 # Run server
 exec gunicorn oser_backend.wsgi:application \
