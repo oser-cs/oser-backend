@@ -1,19 +1,10 @@
-sudo: required
-
 language: python
 
 python:
   - "3.6"
 
-services:
-  - docker
-
-before_install:
-  # run Docker image in detached mode to be able to issue further commands
-  - docker-compose up -d
-  - docker exec -it oserbackend_app_1 bash
-
 before_script:
+  - cd oser_backend
   - python manage.py makemigrations
   - python manage.py migrate
 
