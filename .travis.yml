@@ -13,16 +13,3 @@ script:
   - docker ps | grep django_01
   # Run the tests inside the Django container
   - docker exec django_01 python manage.py test
-
-before_deploy:
-  - echo "Ready to deploy."
-
-deploy:
-  provider: elasticbeanstalk
-  access_key_id: "AKIAJTJSRVUDQS2UYMSQ"
-  secret_access_key:
-    secure: "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"
-  region: "us-east-2"
-  app: "oser-backend"
-  env: "oserBackend-env"
-  bucket-name: "elasticbeanstalk-us-east-2-148170347108"
