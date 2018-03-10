@@ -18,4 +18,5 @@ script:
   - docker ps | grep nginx_01
   - docker ps | grep django_01
   # Run the tests
+  - cd oser_backend/
   - python manage.py test
