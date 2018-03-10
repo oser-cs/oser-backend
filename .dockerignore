@@ -1,0 +1,19 @@
+.git
+.gitignore
+.idea
+
+# Databases
+**/*.sqlite
+**/*.sqlite3
+
+# Static files (will be collected inside container)
+static/
+
+# Compiled files
+**/*.pyc
+
+# Migrations
+# Ignore generated migrations
+oser_backend/*/migrations/*.py
+# But keep migrations folders with their __init__.py files
+!oser_backend/*/migrations/__init__.py

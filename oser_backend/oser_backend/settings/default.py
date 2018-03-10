@@ -18,7 +18,12 @@ BASE_DIR = dn(dn(dn(os.path.abspath(__file__))))
 # One way to do this is to store it in an environment variable on the server
 SECRET_KEY = 'i^08u==e5++$g(9a#^b46i@xsstxnf9j2rn(%g5nbe@#xu*5#c'
 DEBUG = False
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', 'gunicorn']
+
+ADMINS = (
+    ('admin', 'admin@oser-cs.fr'),
+)
+ADMIN_INITIAL_PASSWORD = 'admin'  # to be changed after first login
 
 # Application definition
 
@@ -191,7 +196,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'www')
+STATIC_ROOT = os.path.join(dn(BASE_DIR), 'static')
 
 # User-uploaded media files
 
