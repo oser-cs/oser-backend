@@ -1,9 +1,8 @@
 """Tutor model tests."""
 
-from tests.factory import TutorFactory
 from tests.test_users.mixins import ProfileTestMixin
 from tests.utils import ModelTestCase
-
+from users.factory import TutorFactory
 from users.models import Tutor
 
 

@@ -2,11 +2,12 @@
 
 from django.test import TestCase
 from rest_framework import status
-from tests.factory import PartnerFactory
-from tests.utils import HyperlinkedAPITestCase
+
+from showcase_site.factory import PartnerFactory
+from showcase_site.models import Partner
 from showcase_site.serializers import PartnerSerializer
 from showcase_site.views import PartnerViewSet
-from showcase_site.models import Partner
+from tests.utils import HyperlinkedAPITestCase
 
 
 class PartnerEndpointsTest(HyperlinkedAPITestCase):

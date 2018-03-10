@@ -1,9 +1,10 @@
 """Category API tests."""
 
 from rest_framework import status
-from tests.factory import CategoryFactory
-from tests.utils import HyperlinkedAPITestCase
+
+from showcase_site.factory import CategoryFactory
 from showcase_site.serializers import CategorySerializer
+from tests.utils import HyperlinkedAPITestCase
 
 
 class CategoryEndpointsTest(HyperlinkedAPITestCase):

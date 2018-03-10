@@ -1,8 +1,7 @@
 """KeyFigure model tests."""
-from tests.factory import KeyFigureFactory
-from tests.utils import ModelTestCase
-
 import showcase_site.models
+from showcase_site.factory import KeyFigureFactory
+from tests.utils import ModelTestCase
 
 
 class KeyFigureTest(ModelTestCase):

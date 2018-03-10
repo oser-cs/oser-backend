@@ -1,7 +1,7 @@
 """Partner model tests."""
 
+from showcase_site.factory import PartnerFactory
 from showcase_site.models import Partner
-from tests.factory import PartnerFactory
 from tests.utils import ModelTestCase
 
 

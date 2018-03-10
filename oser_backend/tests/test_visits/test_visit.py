@@ -1,10 +1,11 @@
 """Visit model tests."""
 from django.test import TestCase
-from visits.models import Visit, VisitQuerySet
-from tests.factory import UserFactory, VisitFactory
-from tests.factory import VisitWithOpenRegistrationsFactory
-from tests.factory import VisitWithClosedRegistrationsFactory
+
 from tests.utils import ModelTestCase
+from users.factory import UserFactory
+from visits.factory import (VisitFactory, VisitWithClosedRegistrationsFactory,
+                            VisitWithOpenRegistrationsFactory)
+from visits.models import Visit, VisitQuerySet
 
 
 class VisitTest(ModelTestCase):

@@ -1,7 +1,7 @@
 """Student API tests."""
 from rest_framework import status
-from tests.factory import (
-    StudentInTutoringGroupFactory, TutoringGroupFactory, UserFactory)
+from users.factory import StudentInTutoringGroupFactory, UserFactory
+from tutoring.factory import TutoringGroupFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
 

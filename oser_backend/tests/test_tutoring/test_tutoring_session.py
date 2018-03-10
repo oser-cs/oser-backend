@@ -2,7 +2,7 @@
 
 import tutoring.models
 from tests.utils import ModelTestCase
-from tests.factory import TutoringSessionFactory
+from tutoring.factory import TutoringSessionFactory
 
 
 class TutoringSessionTest(ModelTestCase):

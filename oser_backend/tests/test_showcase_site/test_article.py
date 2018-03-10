@@ -1,6 +1,6 @@
 """Article model tests."""
 from showcase_site.models import Article
-from tests.factory import ArticleFactory
+from showcase_site.factory import ArticleFactory
 from tests.utils import ModelTestCase
 
 import showcase_site.models

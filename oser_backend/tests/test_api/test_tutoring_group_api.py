@@ -1,8 +1,8 @@
 """Tutoring group API tests."""
 
 from rest_framework import status
-from tests.factory import (SchoolFactory, TutoringGroupFactory,
-                           VpTutoratTutorFactory)
+from tutoring.factory import SchoolFactory, TutoringGroupFactory
+from users.factory import VpTutoratTutorFactory
 from tests.utils.api import HyperlinkedAPITestCase
 
 from tutoring.serializers import TutoringGroupSerializer

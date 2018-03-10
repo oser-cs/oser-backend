@@ -1,9 +1,10 @@
 """Link API tests."""
 
 from rest_framework import status
-from tests.factory import LinkFactory
-from tests.utils import HyperlinkedAPITestCase
+
+from core.factory import LinkFactory
 from core.serializers import LinkSerializer
+from tests.utils import HyperlinkedAPITestCase
 
 
 class LinkEndpointsTest(HyperlinkedAPITestCase):

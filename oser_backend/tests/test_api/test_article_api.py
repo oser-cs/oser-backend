@@ -2,9 +2,10 @@
 
 from django.test import TestCase
 from rest_framework import status
-from tests.factory import ArticleFactory, CategoryFactory
-from tests.utils import HyperlinkedAPITestCase, SerializerTestCaseMixin
+
+from showcase_site.factory import ArticleFactory, CategoryFactory
 from showcase_site.serializers import ArticleSerializer
+from tests.utils import HyperlinkedAPITestCase, SerializerTestCaseMixin
 
 
 class ArticleEndpointsTest(HyperlinkedAPITestCase):

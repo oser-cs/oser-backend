@@ -1,6 +1,5 @@
 """Populate the database with fake data."""
 
-import logging
 import random
 
 from django.contrib.auth.models import Group
@@ -11,11 +10,15 @@ from django.db import transaction
 import showcase_site.models
 import users.models
 import visits.models
-from tests.factory import (
+from users.factory import (
     StudentFactory, TutorFactory, TutorInGroupFactory,
+)
+from visits.factory import (
+    VisitFactory, PlaceFactory,
+)
+from showcase_site.factory import (
     CategoryFactory, ArticleFactory, TestimonyFactory,
     KeyFigureFactory, PartnerFactory,
-    VisitFactory, PlaceFactory,
 )
 from users.permissions import Groups
 

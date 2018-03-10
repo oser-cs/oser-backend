@@ -3,7 +3,7 @@
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase
 
-from tests.factory import UserFactory
+from users.factory import UserFactory
 
 __all__ = ('HyperlinkedAPITestCase', 'SerializerTestCaseMixin')
 

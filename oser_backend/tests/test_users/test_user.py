@@ -1,12 +1,11 @@
 """Users tests."""
-from django.test import TestCase
-from django.db import IntegrityError
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
+from django.test import TestCase
 
-from users.models import Profile
 from tests.utils import ModelTestCase
-from tests.factory import UserFactory
-
+from users.factory import UserFactory
+from users.models import Profile
 
 User = get_user_model()
 

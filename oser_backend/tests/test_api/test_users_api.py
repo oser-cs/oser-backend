@@ -1,9 +1,9 @@
 """Users API tests."""
 
 from rest_framework import status
-from tests.factory import UserFactory
-from tests.utils.api import HyperlinkedAPITestCase
 
+from tests.utils.api import HyperlinkedAPITestCase
+from users.factory import UserFactory
 from users.serializers import UserCreateSerializer, UserSerializer
 
 

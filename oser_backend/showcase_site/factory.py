@@ -1,0 +1,71 @@
+"""Showcase site factories."""
+
+import random
+import factory
+import factory.django
+import pytz
+from django.contrib.auth import get_user_model
+from . import models
+
+User = get_user_model()
+utc = pytz.UTC
+
+
+class ArticleFactory(factory.DjangoModelFactory):
+    """Article object factory."""
+
+    class Meta:  # noqa
+        model = models.Article
+
+    title = factory.Faker('sentence', locale='fr')
+    content = factory.Faker('text', max_nb_chars=2000, locale='fr')
+    published = factory.Faker('date')
+    pinned = factory.Iterator((True, False, False, False))
+
+
+class CategoryFactory(factory.DjangoModelFactory):
+    """Category object factory."""
+
+    class Meta:  # noqa
+        model = models.Category
+
+    title = factory.Faker('word')
+
+
+class TestimonyFactory(factory.DjangoModelFactory):
+    """Testimony object factory."""
+
+    class Meta:  # noqa
+        model = models.Testimony
+
+    author_name = factory.Faker('name', locale='fr')
+    author_position = factory.Faker('job', locale='fr')
+    content = factory.Faker('text', max_nb_chars=200, locale='fr')
+
+
+class KeyFigureFactory(factory.DjangoModelFactory):
+    """Key figure object factory."""
+
+    class Meta:  # noqa
+        model = models.KeyFigure
+
+    figure = factory.LazyFunction(lambda: random.randint(10, 200))
+    description = factory.Faker('text', max_nb_chars=60, locale='fr')
+    order = factory.Sequence(lambda n: n)
+
+
+class PartnerFactory(factory.DjangoModelFactory):
+    """Partner object factory."""
+
+    class Meta:  # noqa
+        model = models.Partner
+
+    name = factory.Faker('company', locale='fr')
+    website = factory.Faker('url')
+    logo = factory.Faker('image_url', height=320)
+    # 40% of partnerships will be premium on average
+    premium = factory.LazyFunction(
+        lambda: random.choices([True, False], weights=[.4, .6])[0])
+    # 90% of partnerships will be active on average
+    active = factory.LazyFunction(
+        lambda: random.choices([True, False], weights=[.9, .1])[0])

@@ -3,7 +3,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import FieldDoesNotExist
 from django.test import TestCase
-from tests.factory import ProfileFactory, UserFactory
+from users.factory import ProfileFactory
 from tests.utils import ModelTestCase
 
 from users.models import Profile, Student

@@ -1,8 +1,8 @@
 """SchoolStaffMember API tests."""
-from tests.factory import SchoolFactory, SchoolStaffMemberFactory, UserFactory
 from tests.test_api.mixins import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
-
+from tutoring.factory import SchoolFactory
+from users.factory import SchoolStaffMemberFactory, UserFactory
 from users.serializers import SchoolStaffMembersSerializer
 
 

@@ -1,6 +1,6 @@
 """VisitAttachedFile model tests."""
-from tests.factory import VisitFactory
 from tests.utils import ModelTestCase
+from visits.factory import VisitFactory
 from visits.models import VisitAttachedFile
 
 

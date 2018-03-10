@@ -3,7 +3,8 @@
 from django.db.utils import IntegrityError
 from visits.models import VisitParticipant
 from tests.utils import ModelTestCase
-from tests.factory import VisitFactory, UserFactory
+from visits.factory import VisitFactory
+from users.factory import UserFactory
 
 
 class VisitParticipantTest(ModelTestCase):

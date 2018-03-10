@@ -1,7 +1,8 @@
 """School model tests."""
 
 from django.contrib.auth import get_user_model
-from tests.factory import SchoolFactory, UserFactory
+from tutoring.factory import SchoolFactory
+from users.factory import UserFactory
 from tests.utils import ModelTestCase
 
 import tutoring.models

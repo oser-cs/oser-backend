@@ -1,8 +1,9 @@
 """Test the authentication mechanism used by the API."""
 
-from rest_framework.test import APITestCase, RequestsClient
 from rest_framework import status
-from tests.factory import UserFactory
+from rest_framework.test import APITestCase, RequestsClient
+
+from users.factory import UserFactory
 from users.serializers import UserSerializer
 
 

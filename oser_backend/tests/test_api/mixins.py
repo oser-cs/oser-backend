@@ -1,6 +1,5 @@
 """API test mixins."""
 from rest_framework import status
-from tests.factory import UserFactory
 
 
 class ProfileEndpointsTestMixin:

@@ -2,12 +2,13 @@
 
 from django.test import TestCase
 from rest_framework import status
-from tests.factory import VisitParticipantFactory
-from tests.factory import VisitFactory, UserFactory
+
 from tests.utils import HyperlinkedAPITestCase
-from visits.serializers import (
-    VisitParticipantWriteSerializer, VisitParticipantIdentifySerializer)
+from users.factory import UserFactory
+from visits.factory import VisitFactory, VisitParticipantFactory
 from visits.models import VisitParticipant
+from visits.serializers import (VisitParticipantIdentifySerializer,
+                                VisitParticipantWriteSerializer)
 
 
 class VisitParticipantEndpointsTest(HyperlinkedAPITestCase):

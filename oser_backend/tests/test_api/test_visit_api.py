@@ -2,8 +2,9 @@
 
 from django.test import TestCase
 from rest_framework import status
-from tests.factory import VisitFactory
+
 from tests.utils import HyperlinkedAPITestCase, SerializerTestCaseMixin
+from visits.factory import VisitFactory
 from visits.serializers import VisitSerializer
 
 

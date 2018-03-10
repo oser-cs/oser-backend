@@ -1,8 +1,8 @@
 """Place model tests."""
 
-from visits.models import Place
-from tests.factory import PlaceFactory
 from tests.utils import ModelTestCase
+from visits.factory import PlaceFactory
+from visits.models import Place
 
 
 class PlaceTest(ModelTestCase):

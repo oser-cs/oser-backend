@@ -1,12 +1,12 @@
 """Category model tests."""
 
 from django.test import TestCase
+
+import showcase_site.models
+from showcase_site.factory import ArticleFactory, CategoryFactory
 from showcase_site.models import Category
 from showcase_site.serializers import CategoryField
 from tests.utils import ModelTestCase
-from tests.factory import ArticleFactory, CategoryFactory
-
-import showcase_site.models
 
 
 class CategoryTest(ModelTestCase):

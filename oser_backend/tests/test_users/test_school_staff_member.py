@@ -1,10 +1,9 @@
 """SchoolStaffMember model tests."""
 
-from tests.factory import SchoolStaffMemberFactory
 from tests.test_users.mixins import ProfileTestMixin
 from tests.utils import ModelTestCase
-
 from tutoring.models import School
+from users.factory import SchoolStaffMemberFactory
 from users.models import SchoolStaffMember
 
 

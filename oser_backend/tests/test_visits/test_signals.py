@@ -1,9 +1,10 @@
 """Test visits signals."""
 
+from django.contrib.auth.models import Group
 from django.test import TestCase
 from guardian.shortcuts import get_group_perms
-from django.contrib.auth.models import Group
-from tests.factory import VisitFactory
+
+from visits.factory import VisitFactory
 
 
 class OrganizersGroupSignalsTest(TestCase):

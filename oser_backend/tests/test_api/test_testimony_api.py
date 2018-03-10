@@ -1,9 +1,10 @@
 """Testimony API tests."""
 
 from rest_framework import status
-from tests.factory import TestimonyFactory
-from tests.utils import HyperlinkedAPITestCase
+
+from showcase_site.factory import TestimonyFactory
 from showcase_site.serializers import TestimonySerializer
+from tests.utils import HyperlinkedAPITestCase
 
 
 class TestimonyEndpointsTest(HyperlinkedAPITestCase):

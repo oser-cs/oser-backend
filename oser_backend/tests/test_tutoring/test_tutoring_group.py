@@ -1,10 +1,9 @@
 """Tutoring group model tests."""
 
-from tests.factory import (TutoringGroupFactory, TutorTutoringGroupFactory,
-                           UserFactory)
 from tests.utils import ModelTestCase
-
+from tutoring.factory import TutoringGroupFactory, TutorTutoringGroupFactory
 from tutoring.models import TutoringGroup
+from users.factory import UserFactory, TutorFactory
 
 
 class TutoringGroupTest(ModelTestCase):
@@ -38,7 +37,9 @@ class TutoringGroupTest(ModelTestCase):
         self.assertEqual(200, response.status_code)
 
     def test_tutors_many_to_many_relationship(self):
+        tutor = TutorFactory.create()
         membership = TutorTutoringGroupFactory.create(
+            tutor=tutor,
             tutoring_group=self.obj)
         tutor = membership.tutor
         self.assertIn(tutor, self.obj.tutors.all())

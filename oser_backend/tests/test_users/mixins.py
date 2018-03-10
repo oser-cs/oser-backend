@@ -1,6 +1,6 @@
 """Users test mixins."""
 
-from tests.factory import UserFactory
+from users.factory import UserFactory
 
 
 class ProfileTestMixin:

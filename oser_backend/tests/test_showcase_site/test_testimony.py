@@ -1,8 +1,7 @@
 """Testimony model tests."""
-from tests.factory import TestimonyFactory
-from tests.utils import ModelTestCase
-
 import showcase_site.models
+from showcase_site.factory import TestimonyFactory
+from tests.utils import ModelTestCase
 
 
 class TestimonyTest(ModelTestCase):

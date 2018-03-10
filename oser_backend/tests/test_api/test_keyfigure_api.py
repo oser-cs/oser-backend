@@ -1,9 +1,10 @@
 """KeyFigure API tests."""
 
 from rest_framework import status
-from tests.factory import KeyFigureFactory
-from tests.utils import HyperlinkedAPITestCase
+
+from showcase_site.factory import KeyFigureFactory
 from showcase_site.serializers import KeyFigureSerializer
+from tests.utils import HyperlinkedAPITestCase
 
 
 class KeyFigureEndpointsTest(HyperlinkedAPITestCase):
