@@ -8,6 +8,8 @@ services:
     container_name: django_01
     expose:
       - "8000"  # port where the Django app runs
+    volumes:
+      - data:/oser-backend
     restart: on-failure
 
   # Nginx server
@@ -23,3 +25,7 @@ services:
     depends_on:
       - gunicorn
     restart: on-failure
+
+# create a volume to enable persisting data
+volumes:
+  data:
