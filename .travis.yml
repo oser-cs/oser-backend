@@ -1,0 +1,10 @@
+language: python
+
+python:
+  - "3.6"
+
+before_script:
+  - cd oser_backend
+
+script:
+  - python manage.py test
