@@ -17,5 +17,7 @@ script:
   # Check that docker images are running
   - docker ps | grep nginx_01
   - docker ps | grep django_01
+  # DEBUG: List files in Django container's WORKDIR
+  - docker exec django_01 ls
   # Run the tests inside the Django container
   - docker exec django_01 python manage.py test
