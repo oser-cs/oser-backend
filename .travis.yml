@@ -5,6 +5,8 @@ python:
 
 before_script:
   - cd oser_backend
+  - python manage.py makemigrations
+  - python manage.py migrate
 
 script:
   - python manage.py test
