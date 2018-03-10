@@ -27,7 +27,9 @@ class PartnerEndpointsTest(HyperlinkedAPITestCase):
             expected_status_code=status.HTTP_200_OK)
 
     def perform_retrieve(self):
-        obj = self.factory.create()
+        # Only active partners are exposed by API, so
+        # make sure to create an active one.
+        obj = self.factory.create(active=True)
         url = '/api/partners/{obj.pk}/'.format(obj=obj)
         response = self.client.get(url)
         return response
