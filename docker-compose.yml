@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  # Django web app on Gunicorn WSGI server
+  gunicorn:
+    build: .
+    container_name: django_01
+    expose:
+      - "8000"  # port where the Django app runs
+    volumes:
+      - data:/oser-backend
+    restart: on-failure
+
+  # Nginx server
+  nginx:
+    image: nginx:latest
+    container_name: nginx_01
+    ports:
+      - 8000:8000
+    volumes:
+      # copy files to the Docker container
+      - ./static/:/static  # static files
+      - ./nginx:/etc/nginx/conf.d  # nginx configuration file
+    depends_on:
+      - gunicorn
+    restart: on-failure
+
+# create a volume to enable persisting data
+volumes:
+  data:

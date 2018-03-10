@@ -11,7 +11,7 @@ __pycache__/
 
 # media and collected static files
 oser_backend/media/
-oser_backend/www/
+static/
 
 # Migrations
 # Ignore generated migrations

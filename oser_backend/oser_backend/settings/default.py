@@ -20,6 +20,11 @@ SECRET_KEY = 'i^08u==e5++$g(9a#^b46i@xsstxnf9j2rn(%g5nbe@#xu*5#c'
 DEBUG = False
 ALLOWED_HOSTS = ['localhost']
 
+ADMINS = (
+    ('admin', 'admin@oser-cs.fr'),
+)
+ADMIN_INITIAL_PASSWORD = 'admin'  # to be changed after first login
+
 # Application definition
 
 DJANGO_APPS = [
@@ -191,7 +196,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'www')
+STATIC_ROOT = os.path.join(dn(BASE_DIR), 'static')
 
 # User-uploaded media files
 
