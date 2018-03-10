@@ -18,7 +18,7 @@ BASE_DIR = dn(dn(dn(os.path.abspath(__file__))))
 # One way to do this is to store it in an environment variable on the server
 SECRET_KEY = 'i^08u==e5++$g(9a#^b46i@xsstxnf9j2rn(%g5nbe@#xu*5#c'
 DEBUG = False
-ALLOWED_HOSTS = ['localhost', 'gunicorn']
+ALLOWED_HOSTS = ['localhost']
 
 ADMINS = (
     ('admin', 'admin@oser-cs.fr'),

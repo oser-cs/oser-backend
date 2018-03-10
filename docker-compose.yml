@@ -6,6 +6,8 @@ services:
   gunicorn:
     build: .
     container_name: django_01
+    volumes:
+      - .:/oser-backend/
     expose:
       - "8000"  # port where the Django app runs
     restart: on-failure

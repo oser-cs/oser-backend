@@ -1,6 +1,11 @@
+# Repository files
 .git
 .gitignore
 .idea
+.travis.yml
+media/
+README.md
+LICENSE
 
 # Databases
 **/*.sqlite
