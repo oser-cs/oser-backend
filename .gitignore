@@ -4,13 +4,14 @@ env/
 # build
 *.pyc
 __pycache__/
+.build
 
 # databases
 *.db
 *.sqlite3
 
 # media and collected static files
-oser_backend/media/
+oser-backend/media/
 static/
 
 # Migrations
