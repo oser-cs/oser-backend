@@ -118,7 +118,7 @@ REST_FRAMEWORK = {
 }
 
 # Pymdown-extensions Emoji configuration
-import pymdownx.emoji
+import pymdownx.emoji  # noqa
 
 extension_configs = {
     'emoji_index': pymdownx.emoji.twemoji,
@@ -146,10 +146,19 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
@@ -193,9 +202,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
 STATIC_ROOT = os.path.join(dn(BASE_DIR), 'static')
 
 # User-uploaded media files

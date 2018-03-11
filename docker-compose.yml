@@ -4,20 +4,13 @@ version: '3'
 volumes:
   static:
   media:
-  data:
+  pgdata:
 
 services:
 
-  # Django web app on Gunicorn WSGI server
-  gunicorn:
-    restart: always
-    build: ./oser-backend
-    container_name: django_01
-    volumes:
-      - data:/oser-backend/
-      # Mount static and media file volumes
-      - static:/oser-backend/static
-      - media:/oser-backend/media
+  # NOTE: having volumes static and media both defined in nginx and
+  # gunicorn allows them to share the same data, i.e. it allows
+  # Nginx to access static and media files in the Django project's folder.
 
   # Nginx server
   nginx:
@@ -28,7 +21,35 @@ services:
       - 8000:8000
     volumes:
       - ./nginx/:/etc/nginx/conf.d
-      - static:/static/
-      - media:/media/
+      - static:/static/  # access static files
+      - media:/media/  # access media files
     depends_on:
+      # start Django container before this one
       - gunicorn
+
+  # Django web app on Gunicorn WSGI server
+  gunicorn:
+    restart: always
+    build: ./oser-backend
+    container_name: django_01
+    volumes:
+      # Sync local project folder to container's, allowing
+      # to see effects of code changes without need to rebuild image.
+      - ./oser-backend/:/oser-backend/
+      # Mount static and media file volumes
+      - static:/oser-backend/static  # expose static files
+      - media:/oser-backend/media  # expose media files
+    depends_on:
+      # start db container before this one
+      - db
+
+  # PostgreSQL database
+  db:
+    # default username/password is postgres/postgres
+    restart: always
+    image: postgres:9.6
+    container_name: ps_01
+    expose:
+      - "5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
