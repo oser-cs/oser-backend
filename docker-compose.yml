@@ -1,31 +1,34 @@
 version: '3'
 
+# Create data volumes to be shared between Django and Nginx
+volumes:
+  static:
+  media:
+  data:
+
 services:
 
   # Django web app on Gunicorn WSGI server
   gunicorn:
-    build: .
+    restart: always
+    build: ./oser-backend
     container_name: django_01
-    expose:
-      - "8000"  # port where the Django app runs
     volumes:
-      - data:/oser-backend
-    restart: on-failure
+      - data:/oser-backend/
+      # Mount static and media file volumes
+      - static:/oser-backend/static
+      - media:/oser-backend/media
 
   # Nginx server
   nginx:
+    restart: always
     image: nginx:latest
     container_name: nginx_01
     ports:
       - 8000:8000
     volumes:
-      # copy files to the Docker container
-      - ./static/:/static  # static files
-      - ./nginx:/etc/nginx/conf.d  # nginx configuration file
+      - ./nginx/:/etc/nginx/conf.d
+      - static:/static/
+      - media:/media/
     depends_on:
       - gunicorn
-    restart: on-failure
-
-# create a volume to enable persisting data
-volumes:
-  data:
