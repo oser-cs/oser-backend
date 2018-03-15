@@ -4,13 +4,10 @@
 .idea
 .travis.yml
 .build
+.env
 media/
 README.md
 LICENSE
-
-# Databases
-**/*.sqlite
-**/*.sqlite3
 
 # Static files (will be collected inside container)
 static/

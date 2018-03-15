@@ -10,6 +10,9 @@ __pycache__/
 *.db
 *.sqlite3
 
+# private
+.env
+
 # media and collected static files
 oser-backend/media/
 static/

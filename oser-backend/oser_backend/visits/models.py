@@ -4,6 +4,7 @@ from django.db import models
 from django.shortcuts import reverse
 from django.utils.timezone import now
 from dry_rest_permissions.generics import authenticated_users
+
 from markdownx.models import MarkdownxField
 
 utc = pytz.UTC
@@ -66,7 +67,8 @@ class VisitParticipant(models.Model):
         unique_together = (('user', 'visit'),)
 
     def get_absolute_url(self):
-        return reverse('api:visit-participants-detail', args=[str(self.pk)])
+        return reverse('api:visit-participants-detail',
+                       args=[str(self.visit.pk)])
 
     # Permissions
 
@@ -181,7 +183,9 @@ class Visit(models.Model):
 
     @property
     def organizers_group_name(self):
-        return 'Organisateurs - {} : {}'.format(self.id, self.title)
+        group_name = 'Organisateurs - {} : {}'.format(self.id, self.title)
+        # limit group name to 80 characters (i.e. Group.name.max_length)
+        return group_name[:80]
 
     class Meta:  # noqa
         ordering = ('date',)

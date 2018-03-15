@@ -1,6 +1,5 @@
 """Users tests."""
 from django.contrib.auth import get_user_model
-from django.db import IntegrityError
 from django.test import TestCase
 
 from tests.utils import ModelTestCase
@@ -90,9 +89,9 @@ class UserModelTest(ModelTestCase):
 
     def test_two_users_with_same_email_not_allowed(self):
         same_email = 'same.email@example.net'
-        with self.assertRaises(IntegrityError):
-            UserFactory.create(email=same_email)
-            UserFactory.create(email=same_email)
+        UserFactory.create(email=same_email)
+        _, created = User.objects.get_or_create(email=same_email)
+        self.assertFalse(created)
 
     def test_visits_relationship(self):
         self.assertEqual(self.obj.visit_set.all().count(), 0)
