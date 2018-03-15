@@ -17,7 +17,7 @@ BASE_DIR = dn(dn(dn(os.path.abspath(__file__))))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # One way to do this is to store it in an environment variable on the server
-SECRET_KEY = 'i^08u==e5++$g(9a#^b46i@xsstxnf9j2rn(%g5nbe@#xu*5#c'
+SECRET_KEY = 'odfuioTvdfvkdhvjeT9659dbnkcn2332fk564jvdf034'
 DEBUG = False
 ALLOWED_HOSTS = ['localhost']
 
@@ -149,8 +149,13 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
 # Database
 
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600),
+    'default': dj_database_url.config(),
 }
+
+# Security: SSL and HTTPS
+SECURE_SSL_REDIRECT = True  # redirect all to HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Authentication
 
@@ -191,6 +196,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_FILES_DIRS = [
+    os.path.join(BASE_DIR, 'staticfiles'),
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # User-uploaded media files

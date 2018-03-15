@@ -11,5 +11,10 @@ script:
   # Check that docker images are running
   - docker ps | grep django_container
   - docker ps | grep postgres_container
+  # Wait for containers to correctly bootup
+  - sleep 10
+  # Run migrations in Django container
+  - docker exec django_container python manage.py makemigrations
+  - docker exec django_container python manage.py migrate
   # Run the tests inside the Django container
   - docker exec django_container python manage.py test
