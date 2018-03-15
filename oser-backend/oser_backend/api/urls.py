@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^auth/get-token/$', obtain_auth_token, name='get-auth-token'),
 ]
 
-router = routers.DefaultRouter()
+router = routers.DefaultRouter(trailing_slash=True)
 
 # Visits views
 router.register('visits', visits_views.VisitViewSet)
