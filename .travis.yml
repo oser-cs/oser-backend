@@ -36,7 +36,7 @@ deploy:
     master: oser-backend-production
     staging: oser-backend-staging
   run:
-    - cd oser_backend
+    - ls && cd oser_backend && ls
     # run database migrations once on Heroku
     - python manage.py makemigrations
     - python manage.py migrate
