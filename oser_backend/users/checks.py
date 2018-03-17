@@ -1,6 +1,7 @@
 """Users app system checks."""
 
 from django.db.utils import OperationalError, ProgrammingError
+from psycopg2 import ProgrammingError as ProgrammingError2
 from django.core.checks import Warning, Info, Error, register, Tags
 from users.permissions import setup_groups
 
@@ -27,7 +28,7 @@ def check_groups(app_configs, **kwargs):
             'Unexpected error: ' + str(e),
             id='users.E001',
         ))
-    except (OperationalError, ProgrammingError):
+    except (OperationalError, ProgrammingError, ProgrammingError2):
         errors.append(Warning(
             'Could not create groups',
             hint=(

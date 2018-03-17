@@ -26,4 +26,4 @@ oser_backend/static/
 # Ignore generated migrations
 **/migrations/*.py
 # But keep migrations folders with their __init__.py files in VCS
-**/migrations/__init__.py
+!**/migrations/__init__.py
