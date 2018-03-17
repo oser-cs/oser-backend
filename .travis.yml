@@ -1,24 +1,42 @@
 language: python
 
 python:
-  - "3.6"
+  - '3.6'
 
 services:
   - postgresql
 
 before_script:
-  # setup the PostgreSQL database
-  # NOTE: the database name (here 'oser_backend_db') must match the
-  # DATABASE_URL environment variable set in TravisCI or, if this
-  # variable is not set, match the one of the default DATABASE_URL
-  # in settings/default.py
+  # Create local PostgreSQL database
+  # NOTE: the database name (here 'oser_backend_db') must match the name
+  # in one of these DATABASE_URL setting:
+  # - the one set up in TravisCI environment variables
+  # - the one set up in settings/default.py
   - psql -c 'create database oser_backend_db;' -U postgres
-  # go to the app root directory
+  # Go to the project root directory
   - cd oser_backend
-  # run database migrations
+  # Create and apply database migrations
   - python manage.py makemigrations
   - python manage.py migrate
 
 script:
-  # run tests
+  # Run tests
   - python manage.py test
+
+deploy:
+  # Deploy to Heroku once the tests have passed
+  # See TravisCI docs: https://docs.travis-ci.com/user/deployment/heroku/
+  provider: heroku
+  app:
+    # direct each branch to the corresponding app
+    master: oser-backend-production
+    staging: oser-backend-staging
+  run:
+    # run database migrations once on Heroku
+    - "python manage.py makemigrations"
+    - "python manage.py migrate"
+  api_key:
+    # Encrypted API key obtained from the following command
+    # (requires TravisCI and Heroku CLI installed)
+    # $ travis encrypt $(heroku auth:token) --add deploy.api_key
+    secure: tk6Pfrftlma+m6TYwl3DODf4rrtoPbvL5C94rBWEyjE3ttyitFIMqWAhG/lVR83ZmCd+sGvm250fqKes2+ZINYW92csvu9vngG4018qzDJ0agA2wOsNkn+mMih96hk+uWpRHWZ90BDG/wWcWnquSzS2fNNmdJVS5lEH4lPQBrgN0dTlHROHnFn5eJK7BR/22EOfF2wmREdMohn7QDBalju+C5ywGKNVYJ9Lhychlp/LbemrHViIXheCO3dS0Lu+AsQaH0Gh+793tmHWqRJhY4EP0IKi6xguH9/b80hkgAH8zZYo8HOXCGBUJnTNWJsf5H4Dvcoeny0p6ak/oyudwO/ZEQB0bs5MeAa5yCunEb6nCnpmPy+spvVjK3ZSGLhfetYHn44tApzFNnqOJPnHSFHy0Tbi/RDFpH6998iUWx7MbXsjsxLnj1C/c53l5xg9YxbZKp8YBNlmwMKdBaEnZEiHyVBhJG05JVnacMUAajtOisObG2yKBjcgUxNuTRIFlSj8UKKlF+wnjrRQLGHK32ISkE+g4NAePtqU5W4hjKqpMvv9uNEopkGb9XNo+9PWN168s7trKWcLIaqNykAVS/0LUYomuV2tMdIcP7biYO84r1YRmFFblTIb19vFsQNagRRZ27gFnjozPufVmDF8tp3buEeEkRTDZZIcJfoGoJFM=
