@@ -23,7 +23,7 @@ script:
   # Run tests
   - python manage.py test
 
-after_script:
+before_deploy:
   # Return the repository root
   - cd .. && ls
 
