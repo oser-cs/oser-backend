@@ -23,6 +23,10 @@ script:
   # Run tests
   - python manage.py test
 
+after_script:
+  # Return the repository root
+  - cd .. && ls
+
 deploy:
   # Deploy to Heroku once the tests have passed
   # See TravisCI docs: https://docs.travis-ci.com/user/deployment/heroku/
