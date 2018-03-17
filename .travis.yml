@@ -1,20 +1,24 @@
-sudo: required
+language: python
+
+python:
+  - "3.6"
 
 services:
-  - docker
+  - postgresql
 
-install:
-  # Build and run the Docker images
-  - docker-compose up -d --build
+before_script:
+  # setup the PostgreSQL database
+  # NOTE: the database name (here 'oser_backend_db') must match the
+  # DATABASE_URL environment variable set in TravisCI or, if this
+  # variable is not set, match the one of the default DATABASE_URL
+  # in settings/default.py
+  - psql -c 'create database oser_backend_db;' -U postgres
+  # go to the app root directory
+  - cd oser_backend
+  # run database migrations
+  - python manage.py makemigrations
+  - python manage.py migrate
 
 script:
-  # Check that docker images are running
-  - docker ps | grep django_container
-  - docker ps | grep postgres_container
-  # Wait for containers to correctly bootup
-  - sleep 10
-  # Run migrations in Django container
-  - docker exec django_container python manage.py makemigrations
-  - docker exec django_container python manage.py migrate
-  # Run the tests inside the Django container
-  - docker exec django_container python manage.py test
+  # run tests
+  - python manage.py test

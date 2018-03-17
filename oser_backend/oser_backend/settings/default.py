@@ -5,8 +5,11 @@ Base settings common to all environments.
 """
 
 import os
-import dj_database_url
+
 from django.contrib.messages import constants as messages
+
+import dj_database_url
+import pymdownx.emoji
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 dn = os.path.dirname
@@ -17,7 +20,8 @@ BASE_DIR = dn(dn(dn(os.path.abspath(__file__))))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # One way to do this is to store it in an environment variable on the server
-SECRET_KEY = 'odfuioTvdfvkdhvjeT9659dbnkcn2332fk564jvdf034'
+SECRET_KEY = os.environ.get('SECRET_KEY',
+                            'odfuioTvdfvkdhvjeT9659dbnkcn2332fk564jvdf034')
 DEBUG = False
 ALLOWED_HOSTS = ['localhost']
 
@@ -116,13 +120,9 @@ REST_FRAMEWORK = {
         # v Enable session authentication in the browsable API
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'DATE_FORMAT': '%d/%m/%Y',
-    'DATE_INPUT_FORMATS': ['%d/%m/%Y'],
 }
 
 # Pymdown-extensions Emoji configuration
-import pymdownx.emoji  # noqa
-
 extension_configs = {
     'emoji_index': pymdownx.emoji.twemoji,
     'emoji_generator': pymdownx.emoji.to_png,
@@ -149,13 +149,14 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
 # Database
 
 DATABASES = {
-    'default': dj_database_url.config(),
+    'default': dj_database_url.config(
+        default='postgres://postgres:postgres@localhost:5432/oser_backend_db'),
 }
 
 # Security: SSL and HTTPS
-SECURE_SSL_REDIRECT = True  # redirect all to HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True  # redirect all to HTTPS
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # Authentication
 

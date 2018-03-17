@@ -1,10 +1,15 @@
-# dependencies
+# virtualenvs
 env/
+venv/
+virtualenv/
 
 # build
 *.pyc
 __pycache__/
-.build
+
+# IDEA
+.idea
+.vscode
 
 # databases
 *.db
@@ -14,11 +19,11 @@ __pycache__/
 .env
 
 # media and collected static files
-oser-backend/oser_backend/media/
-oser-backend/oser_backend/static/
+oser_backend/media/
+oser_backend/static/
 
 # Migrations
 # Ignore generated migrations
-oser_backend/*/migrations/*.py
+**/migrations/*.py
 # But keep migrations folders with their __init__.py files in VCS
-!oser_backend/*/migrations/__init__.py
+**/migrations/__init__.py
