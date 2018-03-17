@@ -36,9 +36,8 @@ deploy:
     master: oser-backend-production
     staging: oser-backend-staging
   run:
-    # run database migrations once on Heroku
-    - python oser_backend/manage.py makemigrations
-    - python oser_backend/manage.py migrate
+    # run additional setup once on Heroku
+    - cd oser_backend && python manage.py makemigrations && python manage.py migrate && python manage.py initadmin
   api_key:
     # Encrypted API key obtained from the following command
     # (requires TravisCI and Heroku CLI installed)
