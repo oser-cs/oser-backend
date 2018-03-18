@@ -5,7 +5,7 @@ See:
 - https://www.codingforentrepreneurs.com/blog/s3-static-media-files-for-django/
 """
 
-import os.environ
+import os
 
 # Use S3 backends
 DEFAULT_FILE_STORAGE = 'oser_backend.aws.backends.StaticRootS3BotoStorage'
