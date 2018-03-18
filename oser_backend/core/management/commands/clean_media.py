@@ -154,6 +154,10 @@ class Command(BaseCommand):
         # are not considered as deletables, which is an expected behavior.
         deletables = storage_files - db_files
 
+        self.stdout.write(f'DB files: {db_files}')
+        self.stdout.write(f'Storage files: {storage_files}')
+        self.stdout.write(f'Deletables: {deletables}')
+
         if deletables:
             self.stdout.write(
                 self.style.NOTICE('Unused media files were detected:'))
