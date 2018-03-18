@@ -28,11 +28,13 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_S3_FILE_OVERWRITE = False
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 
-# Redefine media and static URLs to upload/retrieve to/from S3
-MEDIA_URL = (
-    'https://{}.s3.amazonaws.com/media/'.format(AWS_STORAGE_BUCKET_NAME))
-STATIC_URL = (
-    'https://{}.s3.amazonaws.com/static/'.format(AWS_STORAGE_BUCKET_NAME))
+AWS_BASE_URL = (
+    'https://{bucket}.s3.{region}.amazonaws.com/'
+    .format(bucket=AWS_STORAGE_BUCKET_NAME, region=AWS_S3_REGION_NAME))
 
-MEDIA_ROOT = MEDIA_URL
+# Redefine media and static URLs to upload/retrieve to/from S3
+MEDIA_URL = AWS_BASE_URL + 'media/'
+STATIC_URL = AWS_BASE_URL + 'static/'
+
+MEDIA_ROOT = 'media'
 STATIC_ROOT = 'static'
