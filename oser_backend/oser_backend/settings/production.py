@@ -1,7 +1,7 @@
 """Production settings."""
 
 import os
-import django_heroku
+# import django_heroku
 
 from .dev import *
 from aws.conf import *
@@ -16,4 +16,4 @@ ALLOWED_HOSTS = [
 
 
 # Activate automatic Heroku settings configuration
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
