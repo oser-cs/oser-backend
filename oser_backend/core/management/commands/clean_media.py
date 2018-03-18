@@ -78,8 +78,14 @@ class Command(BaseCommand):
 
         return db_files
 
-    def get_storage_files(self):
+    def get_storage_files(self, location):
         """Retrieve the set of media files stored in default_storage.
+
+        Parameters
+        ----------
+        location : str
+            Directory where to look for unused media files, relative
+            to the media_root.
 
         Returns
         -------
@@ -90,11 +96,8 @@ class Command(BaseCommand):
         if not self.media_root:
             return storage_files
 
-        # Directory where to search for storage files.
-        top_root = os.path.join(self.media_root, self.top)
-
-        # Get all files from the top root, recursively
-        for dir_root, dirs, files in os_walk(default_storage, top_root):
+        # Get all files from location, recursively
+        for dir_root, dirs, files in os_walk(default_storage, location):
             # dir_root is the absolute path except the filename
             # files contains filenames
             dir_relative_to_media_root = dir_root.replace(self.media_root, '')
@@ -137,10 +140,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Find unused media files and delete them."""
-        self.top = options.get('top', '')
+        if options.get('top'):
+            location = os.path.join(self.media_root, options.get('top'))
+        else:
+            location = self.media_root
 
         db_files = self.get_db_files()
-        storage_files = self.get_storage_files()
+        storage_files = self.get_storage_files(location=location)
 
         # Delete physical files that have no references in the DB.
         # NOTE: DB files that are not physical files will not be included.
