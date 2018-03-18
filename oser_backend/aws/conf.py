@@ -8,8 +8,8 @@ See:
 import os
 
 # Use S3 backends
-DEFAULT_FILE_STORAGE = 'oser_backend.aws.backends.StaticRootS3BotoStorage'
-STATICFILES_STORAGE = 'oser_backend.aws.backends.MediaRootS3BotoStorage'
+DEFAULT_FILE_STORAGE = 'aws.backends.StaticRootS3BotoStorage'
+STATICFILES_STORAGE = 'aws.backends.MediaRootS3BotoStorage'
 
 # Credentials
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
