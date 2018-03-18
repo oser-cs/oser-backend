@@ -8,8 +8,8 @@ See:
 import os
 
 # Use S3 backends
-DEFAULT_FILE_STORAGE = 'aws.backends.StaticRootS3BotoStorage'
-STATICFILES_STORAGE = 'aws.backends.MediaRootS3BotoStorage'
+DEFAULT_FILE_STORAGE = 'aws.backends.MediaBackend'
+STATICFILES_STORAGE = 'aws.backends.StaticBackend'
 
 # Credentials
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -24,6 +24,8 @@ AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
+# Do not overwrite files with the same name
+AWS_S3_FILE_OVERWRITE = False
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 
 # Redefine media and static URLs to upload/retrieve to/from S3
