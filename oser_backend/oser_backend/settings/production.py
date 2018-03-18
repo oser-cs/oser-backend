@@ -14,6 +14,7 @@ ALLOWED_HOSTS = [
     'oser-cs.fr',
 ]
 
-
 # Activate automatic Heroku settings configuration
 # django_heroku.settings(locals())
+
+del locals()['STATIC_ROOT']
