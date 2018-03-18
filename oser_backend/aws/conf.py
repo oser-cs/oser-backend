@@ -35,4 +35,4 @@ STATIC_URL = (
     'https://{}.s3.amazonaws.com/static/'.format(AWS_STORAGE_BUCKET_NAME))
 
 MEDIA_ROOT = MEDIA_URL
-STATIC_ROOT = STATIC_URL
+STATIC_ROOT = 'static'
