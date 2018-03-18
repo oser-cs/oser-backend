@@ -1,7 +1,7 @@
 """
 Django settings for oser_backend project.
 
-Base settings common to all environments.
+Development settings used as a base for the production settings.
 """
 
 import os
