@@ -17,6 +17,8 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
 # Name of the storage bucket
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+# Region of the storage bucket (e.g. eu-west-1)
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
 
 # Misc
 AWS_S3_OBJECT_PARAMETERS = {
