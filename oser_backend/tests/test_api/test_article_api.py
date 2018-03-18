@@ -120,7 +120,8 @@ class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
     def get_object(self):
         obj = super().get_object()
         for category in CategoryFactory.create_batch(3):
-            obj.categories.add(category)
+            if category not in obj.categories.all():
+                obj.categories.add(category)
         obj.save()
         return obj
 
