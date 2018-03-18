@@ -22,6 +22,7 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
+AWS_S3_SIGNATURE_VERSION = 's3v4'
 
 # Redefine media and static URLs to upload/retrieve to/from S3
 MEDIA_URL = (
