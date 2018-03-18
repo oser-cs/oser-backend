@@ -1,10 +1,12 @@
 """Showcase site models."""
 
-from django.utils.text import slugify
 from django.db import models
 from django.shortcuts import reverse
+from django.utils.text import slugify
 from dry_rest_permissions.generics import authenticated_users
+
 from markdownx.models import MarkdownxField
+
 
 # Create your models here.
 
@@ -57,7 +59,8 @@ class Article(models.Model):
         'contenu',
         help_text="Contenu complet de l'article")
     published = models.DateTimeField('date de publication', auto_now_add=True)
-    image = models.ImageField('illustration', blank=True, null=True)
+    image = models.ImageField('illustration', blank=True, null=True,
+                              upload_to='articles/')
     pinned = models.BooleanField('épinglé', default=False, blank=True)
     # ^blank=True to allow True of False value (otherwise
     # validation would force pinned to be True)
@@ -171,6 +174,7 @@ class Partner(models.Model):
             "Dimensions recommandées : hauteur = 320px. "
         ),
         null=True,
+        upload_to='partners/',
     )
     premium = models.BooleanField(
         'partenaire privilégié', default=False,

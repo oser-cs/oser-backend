@@ -1,6 +1,8 @@
 """General URL Configuration."""
 
+from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include
 from django.views.generic import RedirectView
@@ -22,3 +24,8 @@ urlpatterns = [
     # Markdown 3rd party app
     url(r'^markdownx/', include('markdownx.urls')),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

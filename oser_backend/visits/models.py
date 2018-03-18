@@ -162,10 +162,12 @@ class Visit(models.Model):
         help_text=(
             "Une illustration représentative de la sortie. "
             "Dimensions : ???x???"
-        ))
+        ),
+        upload_to='visits/images/')
     fact_sheet = models.FileField(
         'fiche sortie', blank=True, null=True,
-        help_text="Formats supportés : PDF")
+        help_text="Formats supportés : PDF",
+        upload_to='visits/fact_sheets/')
     participants = models.ManyToManyField('users.User',
                                           through='VisitParticipant')
     organizers_group = models.OneToOneField('auth.Group',
