@@ -5,7 +5,7 @@ import django_heroku
 
 from .dev import *
 
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', False)
 ALLOWED_HOSTS = ['florimondmanca.pythonanywhere.com', 'localhost',
                  '*.herokuapp.com']
 
