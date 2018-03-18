@@ -8,7 +8,7 @@ from aws.conf import *
 
 DEBUG = os.environ.get('DEBUG', False)
 ALLOWED_HOSTS = ['florimondmanca.pythonanywhere.com', 'localhost',
-                 '*.herokuapp.com']
+                 'oser-backend-production.herokuapp.com']
 
 
 # Activate automatic Heroku settings configuration
