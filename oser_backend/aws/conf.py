@@ -36,5 +36,6 @@ AWS_BASE_URL = (
 MEDIA_URL = AWS_BASE_URL + 'media/'
 STATIC_URL = AWS_BASE_URL + 'static/'
 
+# Direct the MEDIA_ROOT and STATIC_ROOT to their directory
 MEDIA_ROOT = 'media'
 STATIC_ROOT = 'static'

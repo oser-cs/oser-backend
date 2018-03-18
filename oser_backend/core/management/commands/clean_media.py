@@ -22,7 +22,7 @@ class Command(BaseCommand):
     """
 
     help = "Delete all unused media files."
-    media_root = getattr(settings, 'MEDIA_ROOT', None)
+    media_root = getattr(settings, 'MEDIA_ROOT', '')
     top = ''
 
     def add_arguments(self, parser):
@@ -96,8 +96,12 @@ class Command(BaseCommand):
         if not self.media_root:
             return storage_files
 
+        def onerror(e):
+            self.stdout.write(self.style.ERROR(e))
+
         # Get all files from location, recursively
-        for dir_root, dirs, files in os_walk(default_storage, location):
+        for dir_root, dirs, files in os_walk(default_storage, location,
+                                             onerror=onerror):
             # dir_root is the absolute path except the filename
             # files contains filenames
             dir_relative_to_media_root = dir_root.replace(self.media_root, '')
@@ -140,10 +144,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Find unused media files and delete them."""
-        if options.get('top'):
-            location = os.path.join(self.media_root, options.get('top'))
-        else:
-            location = self.media_root
+        location = options.get('top') or ''
 
         db_files = self.get_db_files()
         storage_files = self.get_storage_files(location=location)
