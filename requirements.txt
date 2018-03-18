@@ -15,3 +15,4 @@ whitenoise
 django-heroku
 gunicorn
 django-storages
+boto3
