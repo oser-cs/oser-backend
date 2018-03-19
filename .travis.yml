@@ -33,11 +33,8 @@ deploy:
   provider: heroku
   app:
     # direct each branch to the corresponding app
-    master: oser-backend-production
+    master: oser-backend
     staging: oser-backend-staging
-  # run:
-  #   # run additional setup once on Heroku
-  #   - cd oser_backend && python manage.py makemigrations && python manage.py migrate && python manage.py initadmin
   api_key:
     # Encrypted API key obtained from the following command
     # (requires TravisCI and Heroku CLI installed)
