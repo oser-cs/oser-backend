@@ -1,5 +1,7 @@
 """Partner model tests."""
 
+from django.utils.timezone import now
+
 from showcase_site.factory import PartnerFactory
 from showcase_site.models import Partner
 from tests.utils import ModelTestCase
@@ -28,11 +30,15 @@ class PartnerTest(ModelTestCase):
         'active': {
             'verbose_name': 'actif',
             'default': True,
+        },
+        'start_date': {
+            'verbose_name': 'début du partenariat',
+            'default': now,
         }
     }
     model_tests = {
         'verbose_name': 'partenaire',
-        'ordering': ('-active', '-premium', 'name',),
+        'ordering': ('-active', '-premium', '-start_date', 'name',),
     }
 
     def setUp(self):

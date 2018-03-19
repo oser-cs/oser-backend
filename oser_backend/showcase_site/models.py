@@ -3,10 +3,10 @@
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.text import slugify
+from django.utils.timezone import now
 from dry_rest_permissions.generics import authenticated_users
 
 from markdownx.models import MarkdownxField
-
 
 # Create your models here.
 
@@ -192,10 +192,16 @@ class Partner(models.Model):
             "ne seront pas affichés sur le site."
         )
     )
+    start_date = models.DateField(
+        'début du partenariat', default=now, blank=True, null=True,
+        help_text=(
+            "Laisser vide si inconnu. "
+            "(Cette information est stockée pour historique uniquement.)"
+        ))
 
     class Meta:  # noqa
         verbose_name = 'partenaire'
-        ordering = ('-active', '-premium', 'name',)
+        ordering = ('-active', '-premium', '-start_date', 'name',)
 
     def __str__(self):
         return str(self.name)
