@@ -10,5 +10,6 @@ ALLOWED_HOSTS = [
     'florimondmanca.pythonanywhere.com',
     'localhost',
     'oser-backend.herokuapp.com',
+    'oser-backend-staging.herokuapp.com',
     'oser-cs.fr',
 ]
