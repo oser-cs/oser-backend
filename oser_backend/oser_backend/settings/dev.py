@@ -38,7 +38,6 @@ DJANGO_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # 'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.forms',
 ]
@@ -78,13 +77,13 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ORIGIN_ALLOW_ALL = True
+X_FRAME_OPTIONS = 'DENY'  # refuse to serve in an <iframe>
 
 ROOT_URLCONF = 'oser_backend.urls'
 
@@ -149,7 +148,7 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
 }
 
 # Database
-
+# Will be retrieved through the DATABASE_URL environment variable
 DATABASES = {
     'default': dj_database_url.config(
         default='postgres://postgres:postgres@localhost:5432/oser_backend_db'),
@@ -157,8 +156,9 @@ DATABASES = {
 
 # Security: SSL and HTTPS
 # SECURE_SSL_REDIRECT = True  # redirect all to HTTPS
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
 
 # Authentication
 
@@ -185,10 +185,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Storage
-# Explicitly set default file storage to filesystem in development
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -198,17 +194,19 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
+# In development, static and media files are tied to the local filesystem.
 
+# Storage backend (Django's default)
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+# Static files
 STATIC_URL = '/static/'
-STATIC_FILES_DIRS = [
+STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # User-uploaded media files
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

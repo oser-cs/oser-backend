@@ -11,7 +11,6 @@ django-admin-sortable2>=0.6.19
 pymdown-extensions>=4.8
 psycopg2
 dj-database-url
-whitenoise
 django-heroku
 gunicorn
 django-storages

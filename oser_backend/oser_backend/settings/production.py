@@ -1,7 +1,6 @@
 """Production settings."""
 
 import os
-# import django_heroku
 
 from .dev import *
 from aws.conf import *
@@ -13,8 +12,3 @@ ALLOWED_HOSTS = [
     'oser-backend-production.herokuapp.com',
     'oser-cs.fr',
 ]
-
-# Activate automatic Heroku settings configuration
-# django_heroku.settings(locals())
-
-del locals()['STATIC_ROOT']
