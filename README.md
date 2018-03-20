@@ -14,6 +14,7 @@ Plus d'informations sur leur site : http://shields.io
 [![Django](https://img.shields.io/badge/django-2.0-blue.svg)](https://www.djangoproject.com)
 [![Documentation Status](https://readthedocs.org/projects/oser-tech-docs/badge/?version=latest)](http://oser-tech-docs.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.org/oser-cs/oser-backend.svg?branch=master)](https://travis-ci.org/oser-cs/oser-backend)
+[![Heroku Status](https://heroku-badge.herokuapp.com/?app=oser-backend&style=flat)](https://dashboard.heroku.com/apps)
 
 Bienvenue ! Ce dépôt est le lieu de développement du backend du site internet de l'association OSER, site qui a pour objectif de soutenir l'association dans son action quotidienne.
 
@@ -34,7 +35,7 @@ La documentation complète du backend est disponible dans la documentation techn
 
 #### Documentation de l'API
 
-En supplément, la documentation de l'API est accessible à la racine du serveur Django. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/`](http://localhost:8000/). Vous pouvez aussi librement parcourir l'API à l'adresse [`http://localhost:8000/api/`](http://localhost:8000/api/).
+En supplément, la documentation de l'API est accessible sur le serveur Django. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/api/docs`](http://localhost:8000/api/docs). Vous pouvez aussi librement parcourir l'API à l'adresse [`http://localhost:8000/api`](http://localhost:8000/api). Vous pouvez aussi accéder à la documentation de [l'API en production](http://oser-backend.herokuapp.com/api/docs).
 
 ![API Docs](media/api-docs.png)
 
@@ -88,7 +89,7 @@ Le site d'OSER utilise le DRF en version 3.7.3+. Cette version est entièrement 
 
 Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/site-internet-backlog).
 
-Consultez la [documentation technique](http://oser-tech-docs.readthedocs.io/fr/latest/) pour plus d'informations sur le développement du site.
+Consultez la [documentation technique](http://oser-tech-docs.readthedocs.io/fr/latest/) pour plus d'informations sur le développement du site et l'installation d'un serveur de développement.
 
 ## À propos d'OSER
 
