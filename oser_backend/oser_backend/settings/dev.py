@@ -148,14 +148,14 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
 }
 
 # Database
-# Will be retrieved through the DATABASE_URL environment variable
+# Config be retrieved through the DATABASE_URL environment variable
+# DATABASE_URL format: postgres://USERNAME:PASSWORD@HOST:PORT/NAME
 DATABASES = {
     'default': dj_database_url.config(
         default='postgres://postgres:postgres@localhost:5432/oser_backend_db'),
 }
 
-# Security: SSL and HTTPS
-# SECURE_SSL_REDIRECT = True  # redirect all to HTTPS
+# Security
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
@@ -194,19 +194,20 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Images) and media files (user-uploaded)
 # In development, static and media files are tied to the local filesystem.
+# In production, media files cannot be stored on Heroku and need
+# to be hosted elsewhere (e.g. AWS S3).
 
-# Storage backend (Django's default)
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-
-# Static files
+# Static files config
+STATICFILES_STORAGE = 'django.core.files.storage.FileSystemStorage'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# User-uploaded media files
+# Media files config
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

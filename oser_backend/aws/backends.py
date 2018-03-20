@@ -7,9 +7,10 @@ directories in the S3 bucket (defined by the 'location' below).
 from storages.backends.s3boto3 import S3Boto3Storage
 
 
-def StaticBackend():
-    """Static storage backend."""
-    return S3Boto3Storage(location='static')
+# uncomment and update aws/conf.py to use for storing static files on AWS
+# def StaticBackend():
+#     """Static storage backend."""
+#     return S3Boto3Storage(location='static')
 
 
 def MediaBackend():

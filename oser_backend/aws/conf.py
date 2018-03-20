@@ -9,7 +9,16 @@ import os
 
 # Use S3 backends
 DEFAULT_FILE_STORAGE = 'aws.backends.MediaBackend'
-STATICFILES_STORAGE = 'aws.backends.StaticBackend'
+# Uncomment to store static files on AWS
+# Beware that Heroku automatically calls 'manage.py collectstatic' for
+# each deployment, and this backend does not support checking for pre-existing
+# static files on AWS : all the static files will be uploaded on each
+# deployment.
+# It can be OK to set DISABLE_COLLECTSTATIC on Heroku, but then
+# you'd have to run collectstatic manually on Heroku when necessary.
+# Since static files on the backend should not change a lot, it seems OK
+# to simply use the default file storage for static files.
+# STATICFILES_STORAGE = 'aws.backends.StaticBackend'
 
 # Credentials
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -32,10 +41,8 @@ AWS_BASE_URL = (
     'https://{bucket}.s3.{region}.amazonaws.com/'
     .format(bucket=AWS_STORAGE_BUCKET_NAME, region=AWS_S3_REGION_NAME))
 
-# Redefine media and static URLs to upload/retrieve to/from S3
+# Redefine media URL to upload/retrieve to/from S3
 MEDIA_URL = AWS_BASE_URL + 'media/'
-STATIC_URL = AWS_BASE_URL + 'static/'
 
-# Direct the MEDIA_ROOT and STATIC_ROOT to their bucket directory
+# Direct the MEDIA_ROOT to its bucket directory
 MEDIA_ROOT = 'media'
-STATIC_ROOT = 'static'
