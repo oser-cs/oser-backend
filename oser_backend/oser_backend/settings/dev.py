@@ -200,7 +200,7 @@ USE_TZ = True
 # to be hosted elsewhere (e.g. AWS S3).
 
 # Static files config
-STATICFILES_STORAGE = 'django.core.files.storage.FileSystemStorage'
+STATICFILES_STORAGE = 'django.core.files.storage.StaticFilesStorage'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles'),
