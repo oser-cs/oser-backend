@@ -18,6 +18,7 @@ class Category(models.Model):
 
     @property
     def articles_count(self):
+        """Return the number of articles in this category."""
         return self.article_set.count()
 
     class Meta:  # noqa
@@ -70,10 +71,11 @@ class Article(models.Model):
         help_text="Catégories auxquelles rattacher l'article",
         verbose_name='catégories')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.title and not self.slug:
+    def save(self, *args, **kwargs):
+        """Assign a slug on article creation."""
+        if self.pk is None and not self.slug:
             self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     class Meta:  # noqa
         verbose_name = 'article'

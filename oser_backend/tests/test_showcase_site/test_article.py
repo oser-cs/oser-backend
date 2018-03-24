@@ -53,6 +53,16 @@ class ArticleTest(ModelTestCase):
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)
 
+    def test_multiple_does_not_raise_integrity_error(self):
+        """Regression test.
+
+        A previous way of assigning the slug could cause an integrity error
+        because the article was always saved with slug='', but slug must
+        be unique.
+        """
+        ArticleFactory.create(title='first article')
+        ArticleFactory.create(title='second article')
+
 
 class CleanCategoriesTest(TestCase):
     """Test the clean_categories pre_delete signal on Article."""
