@@ -7,6 +7,7 @@ from showcase_site import views as showcase_site_views
 from tutoring import views as tutoring_views
 from users import views as users_views
 from visits import views as visits_views
+from core import views as core_views
 
 app_name = 'api'
 
@@ -44,5 +45,8 @@ router.register('categories', showcase_site_views.CategoryViewSet)
 router.register('testimonies', showcase_site_views.TestimonyViewSet)
 router.register('keyfigures', showcase_site_views.KeyFigureViewSet)
 router.register('partners', showcase_site_views.PartnerViewSet)
+
+# Core views
+router.register('documents', core_views.DocumentViewSet)
 
 urlpatterns += router.urls
