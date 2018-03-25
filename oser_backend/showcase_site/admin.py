@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 from adminsortable2.admin import SortableAdminMixin
 
-from .models import Article, Category, KeyFigure, Partner, Testimony
+from .models import Article, Category, KeyFigure, Partner, Testimony, Action
 
 
 # Register your models here.
@@ -86,3 +86,10 @@ class PartnerAdmin(admin.ModelAdmin):
             '<img src="{}" alt="{}" style="max-width: 100px; height: auto;">',
             obj.logo.url, obj.name)
     thumbnail.short_description = 'Logo'
+
+
+@admin.register(Action)
+class ActionAdmin(SortableAdminMixin, admin.ModelAdmin):
+    """Action points admin panel."""
+
+    list_display = ('__str__', 'thumbnail', 'highlight')
