@@ -79,7 +79,7 @@ class Article(models.Model):
 
     class Meta:  # noqa
         verbose_name = 'article'
-        ordering = ('-published',)
+        ordering = ('-pinned', '-published',)
 
     def get_absolute_url(self):
         """Return the article's absolute url."""

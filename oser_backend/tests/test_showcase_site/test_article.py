@@ -35,7 +35,7 @@ class ArticleTest(ModelTestCase):
     }
     model_tests = {
         'verbose_name': 'article',
-        'ordering': ('-published',),
+        'ordering': ('-pinned', '-published',),
     }
 
     @classmethod
