@@ -110,7 +110,10 @@ class Action(models.Model):
             "Format recommandé : 200x200"
         )
     )
-    description = MarkdownxField()
+    description = MarkdownxField(help_text=(
+        "Un texte libre décrivant le point d'action. "
+        "Markdown est supporté."
+    ))
     key_figure = models.TextField(
         'chiffre clé',
         default='', blank=True,
@@ -185,7 +188,7 @@ class KeyFigure(models.Model):
         ordering = ('order',)
 
     def save(self, *args, **kwargs):
-        # Always save description as lowercase
+        """Save description as lowercase."""
         self.description = self.description.lower()
         super().save(*args, **kwargs)
 
