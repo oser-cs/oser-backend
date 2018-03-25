@@ -7,24 +7,25 @@ from .serializers import CategorySerializer
 from .serializers import TestimonySerializer
 from .serializers import KeyFigureSerializer
 from .serializers import PartnerSerializer
+from .serializers import ActionSerializer
 from .models import Article
 from .models import Category
 from .models import Testimony
 from .models import KeyFigure
 from .models import Partner
+from .models import Action
 
 # Create your views here.
 
 
-class ArticleViewSet(viewsets.ModelViewSet):
-    """API endpoint that allows articles to be viewed or edited.
+class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
+    """API endpoint that allows articles to be viewed.
 
     Actions: list, retrieve, create, update, partial_update, destroy
     """
 
     serializer_class = ArticleSerializer
     queryset = Article.objects.all()
-    permission_classes = (DRYPermissions,)
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -67,3 +68,10 @@ class PartnerViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = PartnerSerializer
     queryset = Partner.objects.filter(active=True)
+
+
+class ActionViewSet(viewsets.ReadOnlyModelViewSet):
+    """API endpoint to view actions."""
+
+    serializer_class = ActionSerializer
+    queryset = Action.objects.all()

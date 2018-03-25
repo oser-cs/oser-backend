@@ -3,12 +3,12 @@
 from django.test import TestCase
 from rest_framework import status
 
-from tests.utils import HyperlinkedAPITestCase, SerializerTestCaseMixin
+from tests.utils import SimpleAPITestCase, SerializerTestCaseMixin
 from visits.factory import VisitFactory
 from visits.serializers import VisitSerializer
 
 
-class VisitEndpointsTest(HyperlinkedAPITestCase):
+class VisitEndpointsTest(SimpleAPITestCase):
     """Test access to the visits endpoints."""
 
     factory = VisitFactory

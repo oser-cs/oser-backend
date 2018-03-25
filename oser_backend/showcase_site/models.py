@@ -8,6 +8,7 @@ from dry_rest_permissions.generics import authenticated_users
 
 from markdownx.models import MarkdownxField
 
+
 # Create your models here.
 
 
@@ -94,14 +95,45 @@ class Article(models.Model):
     def has_object_read_permission(self, request):
         return True
 
-    @staticmethod
-    @authenticated_users
-    def has_write_permission(request):
-        return True
+    def __str__(self):
+        return str(self.title)
 
-    @authenticated_users
-    def has_object_write_permission(self, request):
-        return True
+
+class Action(models.Model):
+    """Represents a key action point the association pursues."""
+
+    title = models.CharField('titre', max_length=30)
+    thumbnail = models.ImageField(
+        'illustration', null=True, blank=True, upload_to='actions/',
+        help_text=(
+            "Une petite image représentant l'action. "
+            "Format recommandé : 200x200"
+        )
+    )
+    description = MarkdownxField()
+    key_figure = models.TextField(
+        'chiffre clé',
+        default='', blank=True,
+        help_text=(
+            "Enoncer un chiffre clé à propos de cette action. "
+            "Exemple : "
+            "'En 2018, 18 sorties ont été organisées dans des lieux tels que…'"
+        )
+    )
+    highlight = models.BooleanField(
+        "mettre en avant", default=True,
+        help_text=(
+            "Cochez pour afficher cette action sur la page d'accueil. "
+            "Pour un affichage optimal, assurez-vous alors d'avoir renseigné "
+            "une illustration."
+        )
+    )
+    order = models.PositiveIntegerField('ordre', default=0)
+
+    class Meta:  # noqa
+        verbose_name = 'action clé'
+        verbose_name_plural = 'actions clés'
+        ordering = ('order',)
 
     def __str__(self):
         return str(self.title)
@@ -158,7 +190,7 @@ class KeyFigure(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return '{} {}'.format(self.figure, self.description.lower())
+        return '{} {}'.format(self.figure, self.description)
 
 
 class Partner(models.Model):

@@ -5,43 +5,15 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from users.factory import UserFactory
 
-__all__ = ('HyperlinkedAPITestCase', 'SerializerTestCaseMixin')
+__all__ = (
+    'SimpleAPITestCase',
+    'HyperlinkedAPITestCase',
+    'SerializerTestCaseMixin'
+)
 
 
-class HyperlinkedAPITestCase(APITestCase):
-    """API test case suited for hyperlinked serializers."""
-
-    serializer_class = None
-
-    def serialize(self, obj, method, url,
-                  serializer_class=None):
-        """Serialize an object.
-
-        Parameters
-        ----------
-        obj : instance of django.db.models.Model
-        method : str
-            An HTTP method (case insensitive), e.g. 'post'.
-        url : str
-        serializer_class : subclass of rest_framework.Serializer, optional
-            If not given, the test case class' serializer_class attribute
-            will be used.
-        """
-        if serializer_class is None:
-            serializer_class = self.get_serializer_class()
-        request_factory = getattr(APIRequestFactory(), method.lower())
-        request = request_factory(url, format='json')
-        serializer = serializer_class(
-            obj, context={'request': request})
-        data = serializer.data
-        return data
-
-    def get_serializer_class(self):
-        """Return the serializer class."""
-        if self.serializer_class is None:
-            raise AttributeError('serializer_class attribute not defined'
-                                 'for {}'.format(self.__class__))
-        return self.serializer_class
+class SimpleAPITestCase(APITestCase):
+    """API test case that provides handy extra assert functions."""
 
     @staticmethod
     def _check_response(perform_request, response):
@@ -116,6 +88,41 @@ class HyperlinkedAPITestCase(APITestCase):
         self.assertRequestResponse(
             perform_request, user=UserFactory.create(),
             expected_status_code=status.HTTP_403_FORBIDDEN)
+
+
+class HyperlinkedAPITestCase(SimpleAPITestCase):
+    """API test case suited for hyperlinked serializers."""
+
+    serializer_class = None
+
+    def serialize(self, obj, method, url, serializer_class=None):
+        """Serialize an object.
+
+        Parameters
+        ----------
+        obj : instance of django.db.models.Model
+        method : str
+            An HTTP method (case insensitive), e.g. 'post'.
+        url : str
+        serializer_class : subclass of rest_framework.Serializer, optional
+            If not given, the test case class' serializer_class attribute
+            will be used.
+        """
+        if serializer_class is None:
+            serializer_class = self.get_serializer_class()
+        request_factory = getattr(APIRequestFactory(), method.lower())
+        request = request_factory(url, format='json')
+        serializer = serializer_class(
+            obj, context={'request': request})
+        data = serializer.data
+        return data
+
+    def get_serializer_class(self):
+        """Return the serializer class."""
+        if self.serializer_class is None:
+            raise AttributeError('serializer_class attribute not defined'
+                                 'for {}'.format(self.__class__))
+        return self.serializer_class
 
 
 class SerializerTestCaseMixin:

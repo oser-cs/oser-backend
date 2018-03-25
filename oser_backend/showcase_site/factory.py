@@ -69,3 +69,17 @@ class PartnerFactory(factory.DjangoModelFactory):
     # 90% of partnerships will be active on average
     active = factory.LazyFunction(
         lambda: random.choices([True, False], weights=[.9, .1])[0])
+
+
+class ActionFactory(factory.DjangoModelFactory):
+    """Action object factory."""
+
+    class Meta:  # noqa
+        model = models.Action
+
+    title = factory.Faker('text', max_nb_chars=30)
+    description = factory.Faker('text', max_nb_chars=300)
+    key_figure = factory.Faker('text', max_nb_chars=100)
+    highlight = factory.LazyFunction(
+        lambda: random.choices([True, False], weights=[.6, .4])[0]
+    )

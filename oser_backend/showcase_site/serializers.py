@@ -1,8 +1,10 @@
 """Showcase site API serializers."""
 
 from rest_framework import serializers
+
 from core.markdown import MarkdownField
-from .models import Article, Category, Testimony, KeyFigure, Partner
+
+from .models import Action, Article, Category, KeyFigure, Partner, Testimony
 
 
 class CategoryField(serializers.RelatedField):
@@ -80,3 +82,12 @@ class PartnerSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Partner
         fields = ('id', 'name', 'website', 'logo', 'premium')
+
+
+class ActionSerializer(serializers.ModelSerializer):
+    """Serializer for action points."""
+
+    class Meta:  # noqa
+        model = Action
+        fields = ('id', 'title', 'description', 'key_figure',
+                  'thumbnail', 'highlight')
