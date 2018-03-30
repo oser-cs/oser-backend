@@ -157,11 +157,6 @@ DATABASES = {
         default='postgres://postgres:postgres@localhost:5432/oser_backend_db'),
 }
 
-# Security
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-
 # Authentication
 
 AUTH_USER_MODEL = 'users.User'

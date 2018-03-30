@@ -13,3 +13,9 @@ ALLOWED_HOSTS = [
     'oser-backend-staging.herokuapp.com',
     'oser-cs.fr',
 ]
+
+# Security
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_SSL_REDIRECT = True
