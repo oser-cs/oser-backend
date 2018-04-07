@@ -29,19 +29,96 @@ Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien dém
 - [Contribuer](#contribuer)
 - [À propos d'OSER](#À-propos-doser)
 
+## Installation
+
+Cette section vous explique comment installer le site sur votre ordinateur pour le faire tourner en mode développement.
+
+### Logiciels
+
+#### Python
+
+Le backend d'OSER est développé avec Django, un framework web Python. Le site nécessite Python 3.5+.
+
+[Télécharger Python 3.5+](https://www.python.org/downloads/)
+
+#### PostgreSQL
+
+Le site utilise une base de données SQL. Plusieurs technologies existent mais on utilise ici PostgreSQL qu'il vous faut donc installer (choisissez l'installateur selon votre OS).
+
+[Télécharger PostgreSQL](https://www.postgresql.org/download/)
+
+Après avoir installé PostgreSQL, démarrez le serveur en ouvrant pgAdmin, l'interface graphique qui sera installée en même temps que Postgres.
+
+#### Optionnel : Redis, supervisord
+
+Le backend Django est reliée à Celery, une librairie Python permet d'effectuer des traitements ou opérations en tâche de fond.
+
+> NOTE : Pour l'instant, Celery n'est utilisé que pour effectuer un nettoyage périodique des fichiers de médias inutilisés, opération qui peut de toute façon être déclenchée par `$ python manage.py clean_media`. Il n'est donc **pas obligatoire d'installer ce qui suit en développement.**
+
+Celery a besoin d'un système de *messaging* pour fonctionner, on utilise donc ici Redis. Enfin, supervisord est un gestionnaire de processus qui nous permet de lancer Redis et Celery en une seule commande.
+
+### Installation du projet
+
+- (Recommandé) Créez un environnement virtuel (ici appelé `env`) puis activez-le :
+
+```bash
+$ python -m venv env
+$ source env/bin/activate
+```
+
+- Installez les dépendances :
+
+```bash
+$ pip install -r requirements.txt
+```
+
+- Configurez la base de données en exécutant les migrations (rappelez-vous : *le serveur PostgreSQL doit être actif*) :
+
+```bash
+$ cd oser_backend
+$ python manage.py migrate
+```
+
+Il ne vous reste plus qu'à lancer le serveur de développement :
+```bash
+$ python manage.py runserver
+```
+
+Celui-ci sera accessible à l'adresse http://localhost:8000.
+
 ## Documentation
 
-La documentation complète du backend est disponible dans la documentation technique hébergée sur [ReadTheDocs](http://oser-tech-docs.readthedocs.io/fr/latest/). Toutes les instructions d'installation y sont notamment recensées.
+La documentation complète du backend est disponible dans la documentation technique hébergée sur [ReadTheDocs](http://oser-tech-docs.readthedocs.io/fr/latest/).
 
-#### Documentation de l'API
+### Accéder à l'administration
 
-En supplément, la documentation de l'API est accessible sur le serveur Django. Sur le serveur local, vous pouvez donc y accéder à l'URL [`http://localhost:8000/api/docs`](http://localhost:8000/api/docs). Vous pouvez aussi librement parcourir l'API à l'adresse [`http://localhost:8000/api`](http://localhost:8000/api). Vous pouvez aussi accéder à la documentation de [l'API en production](http://oser-backend.herokuapp.com/api/docs).
+L'interface d'administration du site permet d'effectuer des opérations d'administration (modification de données, réinitialisation de mot de passe, création ou désactivation d'utilisateur…).
+
+> En production, utilisez l'administration prudamment et n'y donnez accès qu'à des personnes de confiance et avec les autorisations adéquates !
+
+Lorsque vous accéder au site (par exemple à http://localhost:8000), vous êtes redirigés vers la page d'authentification de l'administration. Authentifiez-vous avec un compte autorisé (compte administrateur ou autre compte auquel le statut `staff` a été attribué).
+
+En développement, si vous venez d'installer le site, il n'y a pas encore d'utilisateurs dans la BDD. Il vous faut donc créer un compte administrateur. Pour cela, exécutez la commande `initadmin` :
+
+```bash
+$ python manage.py initadmin
+```
+
+> Pour des raisons de sécurité, cette commande produira une erreur si des utilisateurs existent déjà dans la base de données. Vous ne pouvez donc l'exécuter que sur une BDD vide.
+
+### Documentation de l'API
+
+En développement, vous pouvez  accéder à la documentation de l'API à l'adresse http://localhost:8000/api/docs.
+
+Vous pouvez aussi librement parcourir l'API à l'adresse http://localhost:8000/api.
+
+Vous pouvez également accéder à la documentation de [l'API en production](http://oser-backend.herokuapp.com/api/docs).
 
 ![API Docs](media/api-docs.png)
 
-#### Authentification
+### Authentification
 
-Pour communiquer avec l'API, un client doit être authentifié. La méthode standard de la [token authentication](https://auth0.com/learn/token-based-authentication-made-easy/) est employée ici.
+Pour communiquer avec l'API, un client (une application Javascript par exemple) doit être authentifié. La méthode standard de la [token authentication](https://auth0.com/learn/token-based-authentication-made-easy/) est employée ici.
 
 Le principe est le suivant :
 
@@ -53,18 +130,28 @@ Le principe est le suivant :
 
 L'avantage est de pouvoir stocker ce token dans un cookie ou dans le stockage local du navigateur, et ainsi éviter de redemander le nom d'utilisateur/mot de passe à chaque réouverture du navigateur.
 
-> Concrètement, comment faire pour authentifier un utilisateur ?
+#### Dans la pratique
 
-Du point de vue d'un client, la procédure d'authentification se fait en 2 étapes :
+Du point de vue d'un client, la procédure d'authentification est la suivante :
 
-A. Récupération du token en envoyant une requête POST à l'endpoint `/api/auth/get-token` avec le `username` et le `password` fournis par l'utilisateur.
+1. Récupération du token en envoyant une requête POST à l'endpoint `/api/auth/get-token` avec le `username` et le `password` fournis par l'utilisateur.
+
+2. Stockage de ce token dans un cookie, le Local Storage ou autre système de stockage côté client.
+
+3. Usage du token lors de futures requêtes en envoyant le paramètre `Authorization: Token <token>` dans l'entête.
+
+#### Exemple
+
+Nous allons nous identifier avec un utilisateur fictif en utilisant l'outil `curl` (disponible Linux/macOS).
+
+On envoie la requête d'authentification qui nous répond avec le token :
 
 ```
 $ curl -X POST -d "username=user&password=pass" localhost:8000/api/auth/get-token/
 {"token":"b6302cebe7817532987e7a8767611b2600414915"}
 ```
 
-B. Usage du token lors de futures requêtes en envoyant le paramètre `Authorization: Token <token>` dans l'entête.
+Nous voilà authentifiés ! On peut ensuite utiliser ce token pour effectuer d'autres requêtes :
 
 ```
 $ curl -X GET "localhost:8000/api/articles/" -H "Authorization: Token b6302cebe7817532987e7a8767611b2600414915"
