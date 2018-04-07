@@ -1,8 +1,7 @@
 """Users factories."""
 
-from string import printable
-
 import random
+
 import factory
 import factory.django
 from django.contrib.auth import get_user_model
@@ -10,6 +9,7 @@ from django.contrib.auth.models import Group
 
 from tutoring.factory import SchoolFactory, TutoringGroupFactory
 from tutoring.models import TutoringGroup
+from utils import printable_only
 
 from . import models
 from .permissions import Groups
@@ -35,11 +35,6 @@ class UserFactory(factory.DjangoModelFactory):
     @factory.lazy_attribute
     def email(self):
         """Generate email for user."""
-        # email can only contain printable characters,
-        # i.e. not "ç", no "é", ...
-        def printable_only(s):
-            return ''.join(c for c in filter(lambda x: x in printable, s))
-
         return '{}.{}-{}@example.net'.format(
             printable_only(self.first_name.lower()),
             printable_only(self.last_name.lower()),

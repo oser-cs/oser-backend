@@ -1,5 +1,6 @@
 """Various utilities."""
 
+from string import printable
 from django.contrib.auth.models import Group
 
 
@@ -48,3 +49,8 @@ def is_in_group(user, group_name):
 def group_exists(group_name):
     """Return True if group exists."""
     return Group.objects.filter(name=group_name).exists()
+
+
+def printable_only(s):
+    """Remove non-printable characters from a string."""
+    return ''.join(c for c in filter(lambda x: x in printable, s))

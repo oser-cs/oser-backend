@@ -66,6 +66,7 @@ PROJECT_APPS = [
     'api.apps.ApiConfig',
     'showcase_site.apps.ShowcaseSiteConfig',
     'visits.apps.VisitsConfig',
+    'register.apps.RegisterConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 

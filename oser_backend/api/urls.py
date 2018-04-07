@@ -3,11 +3,12 @@ from django.conf.urls import url
 from rest_framework import routers
 
 from api.auth import obtain_auth_token
+from core import views as core_views
+from register import views as register_views
 from showcase_site import views as showcase_site_views
 from tutoring import views as tutoring_views
 from users import views as users_views
 from visits import views as visits_views
-from core import views as core_views
 
 app_name = 'api'
 
@@ -29,7 +30,6 @@ router.register('places', visits_views.PlaceViewSet)
 router.register('users', users_views.UserViewSet)
 router.register('tutors', users_views.TutorViewSet)
 router.register('students', users_views.StudentViewSet)
-# router.register('student-visits', users_views.StudentVisitsViewSet)
 router.register('schoolstaffmembers', users_views.SchoolStaffMemberViewSet)
 
 # Tutoring views
@@ -38,6 +38,9 @@ router.register('tutoring/groups', tutoring_views.TutoringGroupViewSet,
                 base_name='tutoring_group')
 router.register('tutoring/sessions', tutoring_views.TutoringSessionViewSet,
                 base_name='tutoring_session')
+
+# Register views
+router.register('registrations', register_views.RegistrationViewSet)
 
 # Showcase site views
 router.register('articles', showcase_site_views.ArticleViewSet)
