@@ -48,7 +48,7 @@ deploy:
     staging: oser-backend-staging
   run:
     # automatically run new migrations
-    - "python oser_backend/manage.py migrate"
+    - 'python oser_backend/manage.py migrate'
   api_key:
     # Encrypted API key obtained from the following command
     # (requires TravisCI and Heroku CLI installed)
