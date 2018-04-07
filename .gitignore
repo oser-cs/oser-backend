@@ -7,6 +7,9 @@ virtualenv/
 *.pyc
 __pycache__/
 
+# Logs
+*.log
+
 # IDEA
 .idea
 .vscode
@@ -14,10 +17,14 @@ __pycache__/
 # databases
 *.db
 *.sqlite3
+*.rdb
 
 # private
-.env
+# .env
 
 # media and collected static files
 oser_backend/media/
 oser_backend/static/
+
+# Supervisor
+supervisord.pid

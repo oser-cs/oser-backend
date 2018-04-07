@@ -97,7 +97,7 @@ class Command(BaseCommand):
             return storage_files
 
         def onerror(e):
-            self.stdout.write(self.style.ERROR(e))
+            self.stdout.write(self.style.ERROR(str(e)))
 
         # Get all files from location, recursively
         for dir_root, dirs, files in os_walk(default_storage, location,

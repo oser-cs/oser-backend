@@ -5,14 +5,25 @@ python:
 
 services:
   - postgresql
+  - redis-server
+
+install:
+  - pip install -r requirements.txt
+  # Supervisor < 4 does not support python 3 but Supervisor 4 is not
+  # released to PyPI yet. => Install from Github
+  - pip install git+https://github.com/Supervisor/supervisor.git
 
 before_script:
+  # Start Celery using the supervisor config
+  - supervisord
+
   # Create local PostgreSQL database
   # NOTE: the database name (here 'oser_backend_db') must match the name
   # in one of these DATABASE_URL setting:
   # - the one set up in TravisCI environment variables
   # - the one set up in settings/default.py
   - psql -c 'create database oser_backend_db;' -U postgres
+
   # Go to the project root directory
   - cd oser_backend
   # Create and apply database migrations
