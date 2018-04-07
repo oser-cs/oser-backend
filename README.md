@@ -51,11 +51,15 @@ Après avoir installé PostgreSQL, démarrez le serveur en ouvrant pgAdmin, l'in
 
 #### Optionnel : Redis, supervisord
 
-Le backend Django est reliée à Celery, une librairie Python permet d'effectuer des traitements ou opérations en tâche de fond.
+Le backend Django est relié à [Celery](http://www.celeryproject.org), une librairie Python permet d'effectuer des traitements ou opérations en tâche de fond.
 
 > NOTE : Pour l'instant, Celery n'est utilisé que pour effectuer un nettoyage périodique des fichiers de médias inutilisés, opération qui peut de toute façon être déclenchée par `$ python manage.py clean_media`. Il n'est donc **pas obligatoire d'installer ce qui suit en développement.**
 
-Celery a besoin d'un système de *messaging* pour fonctionner, on utilise donc ici Redis. Enfin, supervisord est un gestionnaire de processus qui nous permet de lancer Redis et Celery en une seule commande.
+Celery a besoin d'un système de *messaging* pour fonctionner, on utilise donc ici [Redis](https://redis.io).
+
+Enfin, [supervisord](http://supervisord.org) est un gestionnaire de processus qui nous permet de lancer Redis et Celery en une seule commande.
+
+Le plus simple est de se référer aux sites de chaque logiciel/librairie pour leur installation. :wink:
 
 ### Installation du projet
 
@@ -103,6 +107,8 @@ En développement, si vous venez d'installer le site, il n'y a pas encore d'util
 ```bash
 $ python manage.py initadmin
 ```
+
+Les identifiants par défaut sont indiqués dans le fichier `settings/common.py`. En production, pensez à mettre à jour le mot de passe de ce compte !
 
 > Pour des raisons de sécurité, cette commande produira une erreur si des utilisateurs existent déjà dans la base de données. Vous ne pouvez donc l'exécuter que sur une BDD vide.
 
