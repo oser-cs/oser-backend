@@ -187,6 +187,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images) and media files (user-uploaded)
 
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
 # Celery settings
 
 CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
