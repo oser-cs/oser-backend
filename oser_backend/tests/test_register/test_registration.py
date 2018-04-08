@@ -38,8 +38,8 @@ class RegistrationTest(ModelTestCase):
     }
     model_tests = {
         'ordering': ('-submitted',),
-        'verbose_name': 'inscription administrative',
-        'verbose_name_plural': 'inscriptions administratives',
+        'verbose_name': "dossier d'inscription",
+        'verbose_name_plural': "dossiers d'inscription",
     }
 
     @classmethod

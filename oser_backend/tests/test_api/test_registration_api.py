@@ -42,7 +42,8 @@ class RegistrationEndpointsTest(SimpleAPITestCase):
             user=None,
             expected_status_code=status.HTTP_200_OK)
 
-    def test_create_requires_authentication(self):
-        self.assertRequiresAuth(
+    def test_create_no_authentication_required(self):
+        self.assertRequestResponse(
             self.perform_create,
+            user=None,
             expected_status_code=status.HTTP_201_CREATED)

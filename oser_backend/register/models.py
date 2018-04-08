@@ -9,25 +9,35 @@ from dry_rest_permissions.generics import authenticated_users
 class Registration(models.Model):
     """Represents a student registration to tutoring activities."""
 
-    # NOTE: this model is bound to evolve as the registration data
-    # expands.
-
-    first_name = models.CharField(max_length=50,
-                                  verbose_name='prénom')
-    last_name = models.CharField(max_length=50, verbose_name='nom')
-    email = models.EmailField(verbose_name='adresse email')
-    phone = models.CharField(max_length=30,
-                             blank=True, null=True,
-                             verbose_name='téléphone')
-    date_of_birth = models.DateField(blank=False, null=True,
-                                     verbose_name='date de naissance')
-    submitted = models.DateTimeField(auto_now_add=True,
-                                     verbose_name='envoyé le')
+    first_name = models.CharField(
+        max_length=50, verbose_name='prénom',
+        help_text='Prénom du lycéen (50 caractères max)')
+    last_name = models.CharField(
+        max_length=50, verbose_name='nom',
+        help_text='Nom du lycéen (50 caracèteres max)')
+    email = models.EmailField(
+        verbose_name='adresse email',
+        help_text=(
+            'Adresse email personnelle du lycéen '
+            '(doit être une adresse mail valide)'
+        ))
+    phone = models.CharField(
+        max_length=30, blank=True, null=True, verbose_name='téléphone',
+        help_text=(
+            "Numéro de téléphone personnel du lycéen (30 caracètres max). "
+            "Note : le format n'est pas vérifié."
+        ))
+    date_of_birth = models.DateField(
+        verbose_name='date de naissance',
+        help_text="Date de naissance du lycéen")
+    submitted = models.DateTimeField(
+        auto_now_add=True, verbose_name='envoyé le',
+        help_text="Date d'envoi du dossier d'inscription")
 
     class Meta:  # noqa
         ordering = ('-submitted',)
-        verbose_name = 'inscription administrative'
-        verbose_name_plural = 'inscriptions administratives'
+        verbose_name = "dossier d'inscription"
+        verbose_name_plural = "dossiers d'inscription"
 
     @staticmethod
     def has_read_permission(request):
@@ -37,7 +47,6 @@ class Registration(models.Model):
         return True
 
     @staticmethod
-    @authenticated_users
     def has_create_permission(request):
         return True
 
