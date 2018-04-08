@@ -10,32 +10,26 @@ class TestimonyTest(ModelTestCase):
     model = showcase_site.models.Testimony
     field_tests = {
         'created': {
-            'verbose_name': 'date de création',
+            'verbose_name': 'ajouté le',
         },
-        'author_name': {
+        'source': {
             'max_length': 300,
-            'verbose_name': 'auteur',
         },
-        'author_position': {
-            'verbose_name': 'position',
-        },
-        'author': {
-            'short_description': 'auteur',
-        },
-        'content': {
-            'verbose_name': 'contenu',
+        'quote': {
+            'verbose_name': 'citation',
         },
     }
     model_tests = {
         'verbose_name': 'témoignage',
-        'ordering': ('-created', 'author_name'),
+        'ordering': ('-created', 'source'),
     }
 
     @classmethod
     def setUpTestData(cls):
-        cls.obj = TestimonyFactory.create()
+        cls.obj: showcase_site.models.Testimony = TestimonyFactory.create()
 
-    def test_author_property_is_author_name_comma_position_lower(self):
-        expected = '{}, {}'.format(self.obj.author_name,
-                                   self.obj.author_position.lower())
-        self.assertEqual(self.obj.author, expected)
+    def test_preview_is_40_characters_max(self):
+        quote = self.obj.quote
+        max_len = self.obj.PREVIEW_LENGTH
+        expected = (len(quote) > max_len) and quote[:max_len] + '...' or quote
+        self.assertEqual(expected, self.obj.preview)

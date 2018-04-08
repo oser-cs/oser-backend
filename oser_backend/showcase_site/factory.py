@@ -38,9 +38,8 @@ class TestimonyFactory(factory.DjangoModelFactory):
     class Meta:  # noqa
         model = models.Testimony
 
-    author_name = factory.Faker('name', locale='fr')
-    author_position = factory.Faker('job', locale='fr')
-    content = factory.Faker('text', max_nb_chars=200, locale='fr')
+    source = factory.Faker('name', locale='fr')
+    quote = factory.Faker('text', max_nb_chars=200, locale='fr')
 
 
 class KeyFigureFactory(factory.DjangoModelFactory):

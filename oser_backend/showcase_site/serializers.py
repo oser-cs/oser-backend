@@ -65,7 +65,7 @@ class TestimonySerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = Testimony
-        fields = ('id', 'author', 'created', 'content',)
+        fields = ('id', 'source', 'created', 'quote',)
 
 
 class KeyFigureSerializer(serializers.ModelSerializer):

@@ -145,27 +145,30 @@ class Action(models.Model):
 class Testimony(models.Model):
     """Represents a testimony of a person on the association."""
 
-    content = models.TextField('contenu')
-    author_name = models.CharField('auteur', max_length=300,
-                                   help_text="Nom de l'auteur")
-    author_position = models.CharField(
-        'position',
-        max_length=300,
-        help_text="Position de l'auteur (lycéen, professeur…)")
-    created = models.DateField('date de création', auto_now_add=True)
-
-    @property
-    def author(self):
-        return ('{}, {}'
-                .format(self.author_name, self.author_position.lower()))
-    author.fget.short_description = 'auteur'
+    quote = models.TextField('citation')
+    source = models.CharField(
+        'source', max_length=300,
+        help_text=(
+            "Nom et qualité de l'auteur ou de la source de ce témoignage."
+        )
+    )
+    created = models.DateField('ajouté le', auto_now_add=True)
+    PREVIEW_LENGTH = 40
 
     class Meta:  # noqa
         verbose_name = 'témoignage'
-        ordering = ('-created', 'author_name',)
+        ordering = ('-created', 'source',)
+
+    @property
+    def preview(self):
+        """Preview of the testimony's quote."""
+        if len(self.quote) > self.PREVIEW_LENGTH:
+            return self.quote[:self.PREVIEW_LENGTH] + '...'
+        return self.quote
+    preview.fget.short_description = 'Aperçu'
 
     def __str__(self):
-        return self.author
+        return self.preview
 
 
 class KeyFigure(models.Model):

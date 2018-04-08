@@ -41,21 +41,9 @@ class CategoryAdmin(admin.ModelAdmin):
 class TestimonyAdmin(admin.ModelAdmin):
     """Testimony admin panel."""
 
-    list_display = ('__str__', 'get_preview', 'created',)
+    list_display = ('__str__', 'source', 'created',)
+    fields = ('quote', 'source',)
     list_filter = ('created',)
-    preview_length = 100
-    preview_truncated_symbol = ' […]'
-
-    def get_preview(self, obj):
-        """Return a preview of the testimony.
-
-        Max length of preview is preview_length.
-        """
-        if len(obj.content) > self.preview_length:
-            return (obj.content[:self.preview_length] +
-                    self.preview_truncated_symbol)
-        return obj.content
-    get_preview.short_description = 'Aperçu'
 
 
 @admin.register(KeyFigure)
