@@ -17,3 +17,4 @@ django-storages
 boto3
 whitenoise
 celery[redis]
+django-countries

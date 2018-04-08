@@ -58,6 +58,8 @@ THIRD_PARTY_APPS = [
     'guardian',
     # Extra Django file storage backends
     'storages',
+    # Country fields
+    'django_countries',
 ]
 PROJECT_APPS = [
     'core.apps.CoreConfig',

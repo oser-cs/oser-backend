@@ -1,7 +1,7 @@
 """Core admin panel configuration."""
 
 from django.contrib import admin
-from .models import Document
+from .models import Document, Address
 
 # Register your models here.
 
@@ -15,3 +15,10 @@ class DocumentAdmin(admin.ModelAdmin):
 
     # reorganize fields
     fields = ('title', 'slug', 'content',)
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    """Admin panel for addresses."""
+
+    list_display = ('id', '__str__',)

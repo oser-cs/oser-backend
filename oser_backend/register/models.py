@@ -1,7 +1,6 @@
 """Register models."""
 
 from django.db import models
-from dry_rest_permissions.generics import authenticated_users
 
 
 # Create your models here.
@@ -18,8 +17,8 @@ class Registration(models.Model):
     email = models.EmailField(
         verbose_name='adresse email',
         help_text=(
-            'Adresse email personnelle du lycéen '
-            '(doit être une adresse mail valide)'
+            'Adresse email personnelle du lycéen. '
+            'Note : doit être une adresse mail valide.'
         ))
     phone = models.CharField(
         max_length=30, blank=True, null=True, verbose_name='téléphone',
@@ -30,6 +29,17 @@ class Registration(models.Model):
     date_of_birth = models.DateField(
         verbose_name='date de naissance',
         help_text="Date de naissance du lycéen")
+    address = models.ForeignKey(
+        'core.Address', on_delete=models.CASCADE, blank=True, null=True,
+        verbose_name='adresse',
+        help_text="Adresse du lycéen")
+    emergency_contact = models.CharField(
+        max_length=100, blank=True, null=True,
+        verbose_name="contact d'urgence",
+        help_text=(
+            "Contact en cas d'urgence (100 caractères max). "
+            "Exemple : adresse mail ou numéro de téléphone d'un parent."
+        ))
     submitted = models.DateTimeField(
         auto_now_add=True, verbose_name='envoyé le',
         help_text="Date d'envoi du dossier d'inscription")
