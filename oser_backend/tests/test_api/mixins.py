@@ -86,6 +86,9 @@ class SimpleReadOnlyResourceTestMixin:
     list_url: str
     retrieve_url_fmt: str
 
+    # Optional kwargs passed to factory.create() in perform_retrieve()
+    retrieve_kwargs = {}
+
     def perform_list(self):
         response = self.client.get(self.list_url)
         return response
@@ -97,7 +100,7 @@ class SimpleReadOnlyResourceTestMixin:
             expected_status_code=status.HTTP_200_OK)
 
     def perform_retrieve(self):
-        obj = self.factory.create()
+        obj = self.factory.create(**self.retrieve_kwargs)
         url = self.retrieve_url_fmt.format(obj=obj)
         response = self.client.get(url)
         return response
