@@ -37,10 +37,6 @@ class RegistrationViewSet(
     ### Additional fields information
 
     Date of birth must be sent in a ISO-compliant format (in Javascript, `Date.toISOString()` can be used for this).
-
-    ### Authentication
-
-    Required for this action.
     """
 
     queryset = Registration.objects.all()
