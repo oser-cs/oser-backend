@@ -13,3 +13,4 @@ class RegistrationAdmin(admin.ModelAdmin):
     list_display = ('id', 'first_name', 'last_name', 'submitted')
     readonly_fields = ('submitted',)
     list_filter = ('submitted',)
+    autocomplete_fields = ('address',)

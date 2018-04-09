@@ -22,3 +22,4 @@ class AddressAdmin(admin.ModelAdmin):
     """Admin panel for addresses."""
 
     list_display = ('id', '__str__',)
+    search_fields = ('line1', 'line2', 'post_code', 'city',)
