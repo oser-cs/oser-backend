@@ -47,15 +47,14 @@ class UserModelTest(ModelTestCase):
         },
         'date_of_birth': {
             'verbose_name': 'date de naissance',
-            'blank': False,
+            'blank': True,
             'null': True,
         },
         'gender': {
             'verbose_name': 'sexe',
             'max_length': 1,
-            'default': User.MALE,
             'choices': (('M', 'Homme'), ('F', 'Femme')),
-            'blank': False,
+            'blank': True,
         },
         'phone_number': {
             'verbose_name': 'téléphone',

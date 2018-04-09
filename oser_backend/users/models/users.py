@@ -51,8 +51,6 @@ class UserManager(_UserManager):
 @modify_fields(
     username={'blank': True, '_unique': False, 'null': True},
     email={'_unique': True, 'blank': False, 'null': False},
-    first_name={'blank': False},
-    last_name={'blank': False},
 )
 class User(AbstractUser):
     """Custom user.
@@ -71,10 +69,13 @@ class User(AbstractUser):
     """
 
     USERNAME_FIELD = 'email'  # default was: username
+
+    # v List of fields prompted when creating a superuser
     REQUIRED_FIELDS = ['first_name', 'last_name']  # removed email
+
     objects = UserManager()
 
-    date_of_birth = models.DateField(blank=False, null=True,
+    date_of_birth = models.DateField(blank=True, null=True,
                                      verbose_name='date de naissance')
 
     MALE = 'M'
@@ -83,9 +84,8 @@ class User(AbstractUser):
         (MALE, 'Homme'),
         (FEMALE, 'Femme'),
     )
-    gender = models.CharField('sexe',
-                              max_length=1, choices=GENDER_CHOICES,
-                              default=MALE)
+    gender = models.CharField('sexe', blank=True, null=True,
+                              max_length=1, choices=GENDER_CHOICES)
 
     # TODO add a proper phone number validator
     phone_number = models.CharField('téléphone',
