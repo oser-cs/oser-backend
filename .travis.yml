@@ -26,8 +26,7 @@ before_script:
 
   # Go to the project root directory
   - cd oser_backend
-  # Create and apply database migrations
-  - python manage.py makemigrations
+  # Apply database migrations
   - python manage.py migrate
 
 script:
