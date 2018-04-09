@@ -5,6 +5,7 @@ import factory.django
 
 from utils import printable_only
 
+from core.factory import AddressFactory
 from . import models
 
 
@@ -26,3 +27,4 @@ class RegistrationFactory(factory.DjangoModelFactory):
 
     phone = factory.Faker('phone_number')
     date_of_birth = factory.Faker('past_date', start_date='-20y')
+    address = factory.SubFactory(AddressFactory)

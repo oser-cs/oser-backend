@@ -24,9 +24,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Override for writable nested address field."""
+        address_data: dict = validated_data.pop('address', None)
+
         registration = Registration.objects.create(**validated_data)
 
-        address_data: dict = validated_data.pop('address', None)
         if address_data:
             address = Address.objects.create(**address_data)
             registration.address = address

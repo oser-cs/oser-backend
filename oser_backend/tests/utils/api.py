@@ -155,4 +155,15 @@ class SerializerTestCaseMixin:
 
     def test_contains_expected_fields(self):
         data = self.serializer.data
-        self.assertEqual(set(data), set(self.expected_fields))
+
+        # test nested fields passed as {'<name>': (<f1>, <f2>, ...)}
+        for field in self.expected_fields:
+            if isinstance(field, dict):
+                name, fields = list(field.items())[0]
+                data_fields = data.pop(name)
+                self.assertEqual(set(data_fields), set(fields))
+
+        # test non-nested fields
+        not_nested = (field for field in self.expected_fields
+                      if not isinstance(field, dict))
+        self.assertEqual(set(data), set(not_nested))

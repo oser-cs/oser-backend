@@ -28,8 +28,19 @@ class CategoryFactory(factory.DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.Category
+        exclude = ('_title',)
 
-    title = factory.Faker('word')
+    _title = factory.Faker('word')
+
+    @factory.lazy_attribute
+    def title(self):
+        """Category title is subject to a unique constraint.
+
+        Add a random number if the fake title already exists.
+        """
+        if models.Category.objects.filter(title=self._title).exists():
+            return self._title + str(random.randint(0, 100))
+        return self._title
 
 
 class TestimonyFactory(factory.DjangoModelFactory):

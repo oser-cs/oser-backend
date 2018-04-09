@@ -1,6 +1,5 @@
 """Document model tests."""
 
-from django.test import TestCase
 from core.models import Document
 from core.factory import DocumentFactory
 from tests.utils import ModelTestCase

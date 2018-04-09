@@ -51,6 +51,9 @@ def group_exists(group_name):
     return Group.objects.filter(name=group_name).exists()
 
 
-def printable_only(s):
+def printable_only(s, with_spaces=False):
     """Remove non-printable characters from a string."""
-    return ''.join(c for c in filter(lambda x: x in printable, s))
+    filtered = ''.join(c for c in filter(lambda x: x in printable, s))
+    if not with_spaces:
+        return filtered.replace(' ', '')
+    return filtered
