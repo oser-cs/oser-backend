@@ -1,5 +1,8 @@
 language: python
 
+# Cache dependencies between builds
+cache: pip
+
 python:
   - '3.6'
 
