@@ -44,12 +44,12 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 
-AWS_BASE_URL = (
-    'https://{bucket}.s3.{region}.amazonaws.com/'
-    .format(bucket=AWS_STORAGE_BUCKET_NAME, region=AWS_S3_REGION_NAME))
+AWS_S3_CUSTOM_DOMAIN = (
+    '{bucket}.s3.amazonaws.com'
+    .format(bucket=AWS_STORAGE_BUCKET_NAME))
 
 # Redefine media URL to upload/retrieve to/from S3
-MEDIA_URL = AWS_BASE_URL + 'media/'
+MEDIA_URL = 'https://' + AWS_S3_CUSTOM_DOMAIN + 'media/'
 
 # Direct the MEDIA_ROOT to the media/ directory inside the bucket
 MEDIA_ROOT = 'media'
