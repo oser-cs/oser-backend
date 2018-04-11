@@ -110,7 +110,7 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         """Return the article's absolute url."""
-        return reverse('api:article-detail', args=[str(self.pk)])
+        return reverse('api:article-detail', args=[str(self.slug)])
 
     @property
     def was_modified(self):

@@ -69,7 +69,7 @@ class ArticleTest(ModelTestCase):
 
     def test_get_absolute_url(self):
         url = self.obj.get_absolute_url()
-        expected = '/api/articles/{}/'.format(self.obj.pk)
+        expected = '/api/articles/{}/'.format(self.obj.slug)
         self.assertEqual(url, expected)
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)

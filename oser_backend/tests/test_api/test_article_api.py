@@ -19,7 +19,7 @@ class ArticleEndpointsTest(
     serializer_class = ArticleSerializer
 
     list_url = '/api/articles/'
-    retrieve_url_fmt = '/api/articles/{obj.pk}/'
+    retrieve_url_fmt = '/api/articles/{obj.slug}/'
     retrieve_kwargs = {'active': True}
 
     @classmethod

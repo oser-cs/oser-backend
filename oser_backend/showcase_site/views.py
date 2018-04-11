@@ -27,6 +27,8 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = ArticleSerializer
     queryset = Article.objects.filter(active=True)
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'pk'
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
