@@ -1,41 +1,38 @@
 """Article API tests."""
 
 from django.test import TestCase
-from rest_framework import status
 
+from showcase_site.models import Article
 from showcase_site.factory import ArticleFactory, CategoryFactory
 from showcase_site.serializers import ArticleSerializer
-from tests.utils import HyperlinkedAPITestCase, SerializerTestCaseMixin
+from tests.utils import SimpleAPITestCase
+from .mixins import SimpleReadOnlyResourceTestMixin
+from tests.utils import SerializerTestCaseMixin
 
 
-class ArticleEndpointsTest(HyperlinkedAPITestCase):
+class ArticleEndpointsTest(
+        SimpleReadOnlyResourceTestMixin, SimpleAPITestCase):
     """Test access to the articles endpoints."""
 
     factory = ArticleFactory
     serializer_class = ArticleSerializer
 
-    def perform_list(self):
-        url = '/api/articles/'
-        response = self.client.get(url)
-        return response
+    list_url = '/api/articles/'
+    retrieve_url_fmt = '/api/articles/{obj.pk}/'
+    # only non-archived partners are exposed by API => ensure object
+    # created in perform_retrieve() is a non-archived article.
+    retrieve_kwargs = {'archived': False}
 
-    def test_list_no_authentication_required(self):
-        self.assertRequestResponse(
-            self.perform_list,
-            user=None,
-            expected_status_code=status.HTTP_200_OK)
+    @classmethod
+    def setUpTestData(cls):
+        cls.factory.create_batch(5)
 
-    def perform_retrieve(self):
-        obj = self.factory.create()
-        url = '/api/articles/{obj.pk}/'.format(obj=obj)
-        response = self.client.get(url)
-        return response
-
-    def test_retrieve_no_authentication_required(self):
-        self.assertRequestResponse(
-            self.perform_retrieve,
-            user=None,
-            expected_status_code=status.HTTP_200_OK)
+    def test_only_non_archived_articles_listed(self):
+        response = self.perform_list()
+        self.assertEqual(response.status_code, 200)
+        for article_data in response.data:
+            article = Article.objects.get(pk=article_data['id'])
+            self.assertFalse(article.archived)
 
 
 class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
@@ -45,8 +42,8 @@ class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
     factory_class = ArticleFactory
 
     expected_fields = (
-        'id', 'url', 'title', 'slug', 'content', 'published', 'image',
-        'pinned', 'categories'
+        'id', 'url', 'title', 'slug', 'content', 'published', 'modified',
+        'image', 'display_image', 'pinned', 'categories',
     )
 
     def get_object(self):

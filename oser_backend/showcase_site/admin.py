@@ -5,7 +5,7 @@ from django.utils.html import format_html
 
 from adminsortable2.admin import SortableAdminMixin
 
-from .models import Article, Category, KeyFigure, Partner, Testimony, Action
+from .models import Action, Article, Category, KeyFigure, Partner, Testimony
 
 
 # Register your models here.
@@ -15,13 +15,14 @@ from .models import Article, Category, KeyFigure, Partner, Testimony, Action
 class ArticleAdmin(admin.ModelAdmin):
     """Article admin panel."""
 
-    readonly_fields = ('slug', 'published',)
+    readonly_fields = ('slug', 'published', 'modified',)
 
-    list_display = ('title', 'published', 'pinned',)
-    list_filter = ('published', 'pinned', 'categories')
+    list_display = ('title', 'published', 'modified', 'pinned', 'archived',)
+    list_filter = ('published', 'pinned', 'categories', 'archived',)
     autocomplete_fields = ('categories',)
     # reorganize fields
-    fields = ('title', 'slug', 'categories', 'pinned', 'image', 'content',)
+    fields = ('title', 'slug', 'categories', 'pinned',
+              'image', 'display_image', 'content', 'published', 'modified',)
 
 
 @admin.register(Category)

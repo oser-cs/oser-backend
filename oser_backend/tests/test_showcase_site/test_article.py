@@ -13,7 +13,16 @@ class ArticleTest(ModelTestCase):
     model = showcase_site.models.Article
     field_tests = {
         'published': {
-            'verbose_name': 'date de publication',
+            'verbose_name': 'publié le',
+        },
+        'modified': {
+            'verbose_name': 'modifié le',
+            'auto_now': True,
+        },
+        'display_image': {
+            'verbose_name': "afficher l'illustration",
+            'default': True,
+            'blank': True,
         },
         'title': {
             'max_length': 300,
@@ -28,14 +37,20 @@ class ArticleTest(ModelTestCase):
         'pinned': {
             'verbose_name': 'épinglé',
             'default': False,
+            'blank': True,
         },
         'categories': {
             'verbose_name': 'catégories',
+        },
+        'archived': {
+            'verbose_name': 'archivé',
+            'default': False,
+            'blank': True,
         }
     }
     model_tests = {
         'verbose_name': 'article',
-        'ordering': ('-pinned', '-published',),
+        'ordering': ('archived', '-pinned', '-published',),
     }
 
     @classmethod

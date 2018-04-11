@@ -59,11 +59,23 @@ class Article(models.Model):
         ))
     content = MarkdownxField(
         'contenu',
-        help_text="Contenu complet de l'article")
-    published = models.DateTimeField('date de publication', auto_now_add=True)
+        help_text="Contenu complet de l'article (Markdown est supporté).")
+    published = models.DateTimeField('publié le', auto_now_add=True)
+    modified = models.DateTimeField(
+        'modifié le', auto_now=True)
     image = models.ImageField('illustration', blank=True, null=True,
                               upload_to='articles/')
-    pinned = models.BooleanField('épinglé', default=False, blank=True)
+    display_image = models.BooleanField(
+        "afficher l'illustration", default=True,
+        help_text=(
+            "Cocher pour que l'illustration soit affichée sous le chapeau "
+            "introductif de l'article."
+        ))
+    pinned = models.BooleanField(
+        'épinglé', default=False, blank=True,
+        help_text=(
+            "Cocher pour que l'article soit épinglé et affiché en priorité."
+        ))
     # ^blank=True to allow True of False value (otherwise
     # validation would force pinned to be True)
     # see: https://docs.djangoproject.com/fr/2.0/ref/forms/fields/#booleanfield
@@ -71,6 +83,12 @@ class Article(models.Model):
         'Category', blank=True,
         help_text="Catégories auxquelles rattacher l'article",
         verbose_name='catégories')
+    archived = models.BooleanField(
+        'archivé', default=False, blank=True,
+        help_text=(
+            "Cocher pour que l'article soit archivé. "
+            "Il ne sera plus affiché sur le site."
+        ))
 
     def save(self, *args, **kwargs):
         """Assign a slug on article creation."""
@@ -80,7 +98,7 @@ class Article(models.Model):
 
     class Meta:  # noqa
         verbose_name = 'article'
-        ordering = ('-pinned', '-published',)
+        ordering = ('archived', '-pinned', '-published',)
 
     def get_absolute_url(self):
         """Return the article's absolute url."""

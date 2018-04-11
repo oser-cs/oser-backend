@@ -1,6 +1,5 @@
 """Showcase site views."""
 from rest_framework import viewsets
-from dry_rest_permissions.generics import DRYPermissions
 
 from .serializers import ArticleSerializer
 from .serializers import CategorySerializer
@@ -21,11 +20,13 @@ from .models import Action
 class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint that allows articles to be viewed.
 
-    Actions: list, retrieve, create, update, partial_update, destroy
+    Only non-archived articles are visible in the API.
+
+    Actions: list, retrieve
     """
 
     serializer_class = ArticleSerializer
-    queryset = Article.objects.all()
+    queryset = Article.objects.filter(archived=False)
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
