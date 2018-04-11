@@ -1,4 +1,6 @@
 """Article model tests."""
+
+from time import sleep
 from django.test import TestCase
 from showcase_site.models import Article, Category
 from showcase_site.factory import ArticleFactory, CategoryFactory
@@ -81,6 +83,12 @@ class ArticleTest(ModelTestCase):
         """
         ArticleFactory.create(title='first article')
         ArticleFactory.create(title='second article')
+
+    def test_was_modified(self):
+        self.assertFalse(self.obj.was_modified)
+        sleep(1)
+        self.obj.save()
+        self.assertTrue(self.obj.was_modified)
 
 
 class CleanCategoriesTest(TestCase):

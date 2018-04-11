@@ -1,5 +1,6 @@
 """Showcase site models."""
 
+from datetime import timedelta
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.text import slugify
@@ -110,6 +111,12 @@ class Article(models.Model):
     def get_absolute_url(self):
         """Return the article's absolute url."""
         return reverse('api:article-detail', args=[str(self.pk)])
+
+    @property
+    def was_modified(self):
+        """Return whether the article has been modified at least once."""
+        return self.modified - self.published > timedelta(seconds=1)
+    was_modified.fget.short_description = 'Modifié'
 
     # Permissions
 

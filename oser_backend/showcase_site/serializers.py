@@ -48,6 +48,11 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
 
     content = MarkdownField()
     categories = CategoryField(many=True, required=False)
+    modified = serializers.SerializerMethodField()
+
+    def get_modified(self, obj: Article):
+        """Only expose modified if article has already been modified."""
+        return obj.was_modified and obj.modified or None
 
     class Meta:  # noqa
         model = Article

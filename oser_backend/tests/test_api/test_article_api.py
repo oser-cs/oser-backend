@@ -1,5 +1,6 @@
 """Article API tests."""
 
+from time import sleep
 from django.test import TestCase
 
 from showcase_site.models import Article
@@ -65,3 +66,11 @@ class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
         expected = set(self.serializer.data['categories'])
         actual = set(c.title for c in self.obj.categories.all())
         self.assertEqual(actual, expected)
+
+    def test_modified_only_contained_if_was_modified(self):
+        obj = self.get_object()
+        self.assertIsNone(self.serializer.data['modified'])
+        sleep(1)
+        obj.save()
+        serializer = self.get_serializer(obj)
+        self.assertIsNotNone(serializer.data['modified'])
