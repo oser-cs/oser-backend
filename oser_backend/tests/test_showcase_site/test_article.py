@@ -31,6 +31,10 @@ class ArticleTest(ModelTestCase):
         'content': {
             'verbose_name': 'contenu',
         },
+        'introduction': {
+            'blank': True,
+            'default': '',
+        },
         'image': {
             'verbose_name': 'illustration',
         },
@@ -42,15 +46,15 @@ class ArticleTest(ModelTestCase):
         'categories': {
             'verbose_name': 'catégories',
         },
-        'archived': {
-            'verbose_name': 'archivé',
-            'default': False,
+        'active': {
+            'verbose_name': 'actif',
+            'default': True,
             'blank': True,
         }
     }
     model_tests = {
         'verbose_name': 'article',
-        'ordering': ('archived', '-pinned', '-published',),
+        'ordering': ('-active', '-pinned', '-published',),
     }
 
     @classmethod

@@ -19,6 +19,7 @@ class ArticleFactory(factory.DjangoModelFactory):
 
     title = factory.Faker('sentence', locale='fr')
     content = factory.Faker('text', max_nb_chars=2000, locale='fr')
+    introduction = factory.Faker('text', max_nb_chars=200, locale='fr')
     published = factory.Faker('date')
     pinned = factory.Iterator((True, False, False, False))
 

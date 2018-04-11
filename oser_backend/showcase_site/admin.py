@@ -17,12 +17,25 @@ class ArticleAdmin(admin.ModelAdmin):
 
     readonly_fields = ('slug', 'published', 'modified',)
 
-    list_display = ('title', 'published', 'modified', 'pinned', 'archived',)
-    list_filter = ('published', 'pinned', 'categories', 'archived',)
+    list_display = ('title', 'published', 'modified', 'pinned', 'active',)
+    list_filter = ('published', 'pinned', 'categories', 'active',)
     autocomplete_fields = ('categories',)
+
     # reorganize fields
-    fields = ('title', 'slug', 'categories', 'pinned',
-              'image', 'display_image', 'content', 'published', 'modified',)
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'slug', 'categories'),
+        }),
+        ('Dates', {
+            'fields': ('published', 'modified',),
+        }),
+        ('Édition', {
+            'fields': ('image', 'display_image', 'introduction', 'content',),
+        }),
+        ('Visibilité', {
+            'fields': ('pinned', 'active',),
+        }),
+    )
 
 
 @admin.register(Category)

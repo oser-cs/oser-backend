@@ -19,20 +19,18 @@ class ArticleEndpointsTest(
 
     list_url = '/api/articles/'
     retrieve_url_fmt = '/api/articles/{obj.pk}/'
-    # only non-archived partners are exposed by API => ensure object
-    # created in perform_retrieve() is a non-archived article.
-    retrieve_kwargs = {'archived': False}
+    retrieve_kwargs = {'active': True}
 
     @classmethod
     def setUpTestData(cls):
         cls.factory.create_batch(5)
 
-    def test_only_non_archived_articles_listed(self):
+    def test_only_active_articles_listed(self):
         response = self.perform_list()
         self.assertEqual(response.status_code, 200)
         for article_data in response.data:
             article = Article.objects.get(pk=article_data['id'])
-            self.assertFalse(article.archived)
+            self.assertTrue(article.active)
 
 
 class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
@@ -42,7 +40,8 @@ class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
     factory_class = ArticleFactory
 
     expected_fields = (
-        'id', 'url', 'title', 'slug', 'content', 'published', 'modified',
+        'id', 'url', 'title', 'slug', 'content', 'introduction',
+        'published', 'modified',
         'image', 'display_image', 'pinned', 'categories',
     )
 

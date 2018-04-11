@@ -57,6 +57,13 @@ class Article(models.Model):
         help_text=(
             "Un court identifiant généré après la création de l'article."
         ))
+    introduction = models.TextField(
+        blank=True, default='',
+        help_text=(
+            "Chapeau introductif qui sera affiché sous le titre de l'article. "
+            "Utilisez-le pour résumer le contenu de l'article ou introduire "
+            "le sujet."
+        ))
     content = MarkdownxField(
         'contenu',
         help_text="Contenu complet de l'article (Markdown est supporté).")
@@ -83,11 +90,11 @@ class Article(models.Model):
         'Category', blank=True,
         help_text="Catégories auxquelles rattacher l'article",
         verbose_name='catégories')
-    archived = models.BooleanField(
-        'archivé', default=False, blank=True,
+    active = models.BooleanField(
+        'actif', default=True, blank=True,
         help_text=(
-            "Cocher pour que l'article soit archivé. "
-            "Il ne sera plus affiché sur le site."
+            "Décocher pour que l'article soit archivé. "
+            "Il ne sera alors plus affiché sur le site."
         ))
 
     def save(self, *args, **kwargs):
@@ -98,7 +105,7 @@ class Article(models.Model):
 
     class Meta:  # noqa
         verbose_name = 'article'
-        ordering = ('archived', '-pinned', '-published',)
+        ordering = ('-active', '-pinned', '-published',)
 
     def get_absolute_url(self):
         """Return the article's absolute url."""

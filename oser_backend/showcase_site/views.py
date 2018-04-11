@@ -20,13 +20,13 @@ from .models import Action
 class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint that allows articles to be viewed.
 
-    Only non-archived articles are visible in the API.
+    Only active articles are visible in the API.
 
     Actions: list, retrieve
     """
 
     serializer_class = ArticleSerializer
-    queryset = Article.objects.filter(archived=False)
+    queryset = Article.objects.filter(active=True)
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
