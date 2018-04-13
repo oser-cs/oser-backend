@@ -3,7 +3,7 @@
 from showcase_site.factory import KeyFigureFactory
 from showcase_site.serializers import KeyFigureSerializer
 from tests.utils import SimpleAPITestCase
-from .mixins import SimpleReadOnlyResourceTestMixin
+from tests.utils import SimpleReadOnlyResourceTestMixin
 
 
 class KeyFigureEndpointsTest(

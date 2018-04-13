@@ -38,7 +38,11 @@ class RegistrationViewSet(
                         "name": "France"
                     }
                 },
-                "emergency_contact": "urgences@oser-cs.fr",
+                "emergency_contact": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "contact": "urgences@oser-cs.fr"
+                }
                 "submitted": "2018-04-07T23:07:05.943305+02:00"
             }
         ]
@@ -65,6 +69,18 @@ class RegistrationViewSet(
 
     `country` : optional, default is `"FR"`. Must be given as a
     [country code ](https://en.wikipedia.org/wiki/Country_code).
+
+    ### Emergency contact
+
+    Emergency contact format is the following:
+
+        {
+            "first_name": "...",
+            "last_name": "...",
+            "contact": "..."
+        }
+
+    Contact is free-form: it can be a phone number, an email address...
     """
 
     queryset = Registration.objects.all()

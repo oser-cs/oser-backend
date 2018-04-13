@@ -7,7 +7,7 @@ from showcase_site.models import Article
 from showcase_site.factory import ArticleFactory, CategoryFactory
 from showcase_site.serializers import ArticleSerializer
 from tests.utils import SimpleAPITestCase
-from .mixins import SimpleReadOnlyResourceTestMixin
+from tests.utils import SimpleReadOnlyResourceTestMixin
 from tests.utils import SerializerTestCaseMixin
 
 

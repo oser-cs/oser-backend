@@ -9,6 +9,17 @@ from core.factory import AddressFactory
 from . import models
 
 
+class EmergencyContactFactory(factory.DjangoModelFactory):
+    """Emergency contact object factory."""
+
+    class Meta:  # noqa
+        model = models.EmergencyContact
+
+    first_name = factory.Faker('first_name', locale='fr')
+    last_name = factory.Faker('last_name', locale='fr')
+    contact = factory.Faker('phone_number', locale='fr')
+
+
 class RegistrationFactory(factory.DjangoModelFactory):
     """Registration object factory."""
 
@@ -28,3 +39,4 @@ class RegistrationFactory(factory.DjangoModelFactory):
     phone = factory.Faker('phone_number')
     date_of_birth = factory.Faker('past_date', start_date='-20y')
     address = factory.SubFactory(AddressFactory)
+    emergency_contact = factory.SubFactory(EmergencyContactFactory)

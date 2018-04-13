@@ -2,7 +2,7 @@
 from rest_framework import status
 from users.factory import StudentInTutoringGroupFactory, UserFactory
 from tutoring.factory import TutoringGroupFactory
-from tests.test_api.mixins import ProfileEndpointsTestMixin
+from tests.utils import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
 
 from users.serializers import StudentSerializer

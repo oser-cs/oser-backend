@@ -1,5 +1,5 @@
 """SchoolStaffMember API tests."""
-from tests.test_api.mixins import ProfileEndpointsTestMixin
+from tests.utils import ProfileEndpointsTestMixin
 from tests.utils.api import HyperlinkedAPITestCase
 from tutoring.factory import SchoolFactory
 from users.factory import SchoolStaffMemberFactory, UserFactory

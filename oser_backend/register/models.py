@@ -33,13 +33,11 @@ class Registration(models.Model):
         'core.Address', on_delete=models.CASCADE, blank=True, null=True,
         verbose_name='adresse',
         help_text="Adresse du lycéen")
-    emergency_contact = models.CharField(
-        max_length=100, blank=True, null=True,
+    emergency_contact = models.OneToOneField(
+        'EmergencyContact',
+        on_delete=models.CASCADE, blank=True, null=True,
         verbose_name="contact d'urgence",
-        help_text=(
-            "Contact en cas d'urgence (100 caractères max). "
-            "Exemple : adresse mail ou numéro de téléphone d'un parent."
-        ))
+        help_text="Contact en cas d'urgence.")
     submitted = models.DateTimeField(
         auto_now_add=True, verbose_name='envoyé le',
         help_text="Date d'envoi du dossier d'inscription")
@@ -62,3 +60,28 @@ class Registration(models.Model):
 
     def __str__(self):
         return '{o.first_name} {o.last_name} ({o.submitted})'.format(o=self)
+
+
+class EmergencyContact(models.Model):
+    """Represents an emergency contact for a student."""
+
+    first_name = models.CharField(
+        'prénom', max_length=50,
+        help_text='Prénom du contact (50 caractères max).',
+        blank=True, default='')
+    last_name = models.CharField(
+        'nom', max_length=50,
+        help_text='Nom du contact (50 caractères max).',
+        blank=True, default='')
+    contact = models.CharField(
+        max_length=100,
+        help_text='Téléphone, adresse email…',
+    )
+
+    def __str__(self):
+        return '{o.first_name} {o.last_name}'.format(o=self)
+
+    class Meta:  # noqa
+        verbose_name = "contact d'urgence"
+        verbose_name_plural = "contacts d'urgence"
+        ordering = ('last_name', 'first_name',)

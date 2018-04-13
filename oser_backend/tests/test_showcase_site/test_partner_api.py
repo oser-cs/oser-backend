@@ -4,7 +4,7 @@ from showcase_site.models import Partner
 from showcase_site.factory import PartnerFactory
 from showcase_site.serializers import PartnerSerializer
 from tests.utils import SimpleAPITestCase
-from .mixins import SimpleReadOnlyResourceTestMixin
+from tests.utils import SimpleReadOnlyResourceTestMixin
 
 
 class PartnerEndpointsTest(

@@ -4,7 +4,7 @@ from showcase_site.factory import ActionFactory
 from showcase_site.serializers import ActionSerializer
 from tests.utils import SimpleAPITestCase
 
-from .mixins import SimpleReadOnlyResourceTestMixin
+from tests.utils import SimpleReadOnlyResourceTestMixin
 
 
 class ActionEndpointsTest(SimpleReadOnlyResourceTestMixin,

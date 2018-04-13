@@ -3,7 +3,7 @@
 from showcase_site.factory import TestimonyFactory
 from showcase_site.serializers import TestimonySerializer
 from tests.utils import SimpleAPITestCase
-from .mixins import SimpleReadOnlyResourceTestMixin
+from tests.utils import SimpleReadOnlyResourceTestMixin
 
 
 class TestimonyEndpointsTest(

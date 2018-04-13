@@ -3,7 +3,7 @@
 from core.factory import DocumentFactory
 from core.serializers import DocumentSerializer
 from tests.utils import SimpleAPITestCase
-from .mixins import SimpleReadOnlyResourceTestMixin
+from tests.utils import SimpleReadOnlyResourceTestMixin
 
 
 class DocumentEndpointsTest(
