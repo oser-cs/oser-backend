@@ -1,8 +1,10 @@
 """Category API tests."""
 
 from rest_framework import status
-from register.factory import RegistrationFactory
-from register.serializers import RegistrationSerializer
+
+from register.factory import EmergencyContactFactory, RegistrationFactory
+from register.serializers import (EmergencyContactSerializer,
+                                  RegistrationSerializer)
 from tests.utils import SimpleAPITestCase
 
 
@@ -31,7 +33,9 @@ class RegistrationEndpointsTest(SimpleAPITestCase):
 
     def perform_create(self):
         obj = self.factory.build()
+        contact = EmergencyContactFactory.build()
         data = self.serialize(obj)
+        data['emergency_contact'] = EmergencyContactSerializer(contact).data
         data.pop('submitted')  # read-only
         response = self.client.post(self.create_url, data, format='json')
         return response
