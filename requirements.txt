@@ -1,5 +1,5 @@
 Django>2.0
-djangorestframework
+djangorestframework>=3.8
 factory-boy
 coreapi-cli
 django-cors-headers
