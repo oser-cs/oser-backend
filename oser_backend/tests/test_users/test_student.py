@@ -1,21 +1,28 @@
 """Student model tests."""
 
-from tests.test_users.mixins import ProfileTestMixin
 from tests.utils import ModelTestCase
 from tutoring.models import School, TutoringGroup
-from users.factory import StudentInTutoringGroupFactory
+from users.factory import StudentInTutoringGroupFactory, UserFactory
 from users.models import Student
 
 
-class StudentTestCase(ProfileTestMixin, ModelTestCase):
+class StudentTestCase(ModelTestCase):
     """Test case for Student model."""
 
     model = Student
     field_tests = {
+        'user': {
+            'verbose_name': 'utilisateur',
+        },
         'address': {
             'verbose_name': 'adresse',
             'blank': False,
-        }
+            'null': True,
+        },
+        'tutoring_group': {
+            'verbose_name': 'groupe de tutorat',
+            'null': True,
+        },
     }
     model_tests = {
         'verbose_name': 'lycéen',
@@ -25,6 +32,9 @@ class StudentTestCase(ProfileTestMixin, ModelTestCase):
     def setUpTestData(self):
         self.obj = StudentInTutoringGroupFactory.create()
 
+    def test_user_relationship(self):
+        self.assertEqual(self.obj, self.obj.user.student)
+
     def test_school_relationship(self):
         self.assertEqual(School.objects.get(), self.obj.school)
         self.assertIn(self.obj, School.objects.get().students.all())
@@ -33,4 +43,8 @@ class StudentTestCase(ProfileTestMixin, ModelTestCase):
         self.assertEqual(TutoringGroup.objects.get(), self.obj.tutoring_group)
         self.assertIn(self.obj, TutoringGroup.objects.get().students.all())
 
-    # TODO test 1-n relationship with tutoring group
+    def test_get_absolute_url(self):
+        self.client.force_login(UserFactory.create())
+        url = self.obj.get_absolute_url()
+        response = self.client.get(url)
+        self.assertEqual(200, response.status_code)

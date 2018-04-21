@@ -51,7 +51,6 @@ class Command(BaseCommand):
         'user__last_name': 'Bond',
         'user__email': 'martin.bond@example.com',
         'user__password': 'test1234',
-        'group_names': [Groups.G_SECTEUR_SORTIES]
     }
 
     @property
@@ -141,11 +140,8 @@ class Command(BaseCommand):
 
     def add_visit_organizers(self):
         tutors = users.models.Tutor.objects.all()
-        visits_group = Group.objects.get(name=Groups.G_SECTEUR_SORTIES)
 
         def add_to_organizers(visit, user):
-            if user not in visits_group.user_set.all():
-                visits_group.user_set.add(user)
             visit.organizers_group.user_set.add(user)
 
         for visit in visits.models.Visit.objects.all():

@@ -8,6 +8,7 @@ from .models import Tutor
 
 @receiver(post_save, sender=Tutor)
 def add_created_tutor_to_staff(sender, instance, created, **kwargs):
+    """When creating a tutor profile, automatically assign it as staff."""
     if created:
         instance.user.is_staff = True
         instance.user.save()

@@ -30,7 +30,6 @@ router.register('places', visits_views.PlaceViewSet)
 router.register('users', users_views.UserViewSet)
 router.register('tutors', users_views.TutorViewSet)
 router.register('students', users_views.StudentViewSet)
-router.register('schoolstaffmembers', users_views.SchoolStaffMemberViewSet)
 
 # Tutoring views
 router.register('schools', tutoring_views.SchoolViewSet)

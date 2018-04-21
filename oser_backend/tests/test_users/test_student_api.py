@@ -1,18 +1,13 @@
 """Student API tests."""
 from rest_framework import status
-from users.factory import StudentInTutoringGroupFactory, UserFactory
-from tutoring.factory import TutoringGroupFactory
-from tests.utils import ProfileEndpointsTestMixin
+from users.factory import StudentInTutoringGroupFactory
 from tests.utils.api import HyperlinkedAPITestCase
 
 from users.serializers import StudentSerializer
 
 
-class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
-    """Test access to the students endpoints.
-
-    Regular actions tests are provided by the ProfileEndpointsTestMixin.
-    """
+class StudentEndpointsTest(HyperlinkedAPITestCase):
+    """Test access to the students endpoints."""
 
     factory = StudentInTutoringGroupFactory
     serializer_class = StudentSerializer
@@ -27,40 +22,15 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
         response = self.client.get('/api/students/{obj.pk}/'.format(obj=obj))
         return response
 
-    def perform_create(self):
-        url = '/api/students/'
-        user = UserFactory.create()
-        tutoring_group = TutoringGroupFactory.create()
-        obj = self.factory.build(user=user,
-                                 tutoring_group=tutoring_group,
-                                 school=tutoring_group.school)
-        data = self.serialize(obj, 'post', url)
-        response = self.client.post(url, data, format='json')
-        return response
+    def test_list(self):
+        self.assertRequiresAuth(
+            self.perform_list,
+            expected_status_code=status.HTTP_200_OK)
 
-    def perform_update(self, obj=None):
-        if obj is None:
-            obj = self.factory.create()
-        url = '/api/students/{obj.pk}/'.format(obj=obj)
-        data = self.serialize(obj, 'put', url)
-        data['address'] = 'Modified address'
-        response = self.client.put(url, data, format='json')
-        return response
-
-    def perform_partial_update(self, obj=None):
-        if obj is None:
-            obj = self.factory.create()
-        response = self.client.patch('/api/students/{obj.pk}/'.format(obj=obj),
-                                     data={'address': 'Modified address'},
-                                     format='json')
-        return response
-
-    def perform_delete(self, obj=None):
-        if obj is None:
-            obj = self.factory.create()
-        response = self.client.delete(
-            '/api/students/{obj.pk}/'.format(obj=obj))
-        return response
+    def test_retrieve(self):
+        self.assertRequiresAuth(
+            self.perform_retrieve,
+            expected_status_code=status.HTTP_200_OK)
 
     def test_retrieve_tutoring_group(self):
         def perform_retrieve_tutoring_group():
@@ -69,5 +39,6 @@ class StudentEndpointsTest(ProfileEndpointsTestMixin, HyperlinkedAPITestCase):
                 '/api/students/{}/tutoringgroup/'.format(obj.pk))
             return response
 
-        self.assertRequiresAuth(perform_retrieve_tutoring_group,
-                                expected_status_code=status.HTTP_200_OK)
+        self.assertRequiresAuth(
+            perform_retrieve_tutoring_group,
+            expected_status_code=status.HTTP_200_OK)

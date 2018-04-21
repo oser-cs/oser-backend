@@ -2,19 +2,20 @@
 
 from django.contrib import admin
 from django.utils.html import format_html
+from core.admin import AutocompleteAddressMixin
 from .models import Registration, EmergencyContact
 
 # Register your models here.
 
 
 @admin.register(Registration)
-class RegistrationAdmin(admin.ModelAdmin):
+class RegistrationAdmin(AutocompleteAddressMixin, admin.ModelAdmin):
     """Admin panel for registrations."""
 
     list_display = ('last_name', 'first_name', 'submitted')
     readonly_fields = ('submitted',)
     list_filter = ('submitted',)
-    autocomplete_fields = ('address', 'emergency_contact')
+    autocomplete_fields = ('emergency_contact',)
 
 
 @admin.register(EmergencyContact)

@@ -2,9 +2,10 @@
 
 from rest_framework import serializers
 
-from .models import (
-    TutoringGroup, School, TutoringSession)
 from users.models import Student
+from core.serializers import AddressSerializer
+
+from .models import School, TutoringGroup, TutoringSession
 
 
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
@@ -13,6 +14,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
     Suited for: list, retrieve, update, partial_update, delete
     """
 
+    address = AddressSerializer()
     students = serializers.HyperlinkedRelatedField(
         many=True,
         queryset=Student.objects.all(),
@@ -42,20 +44,6 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
         """
         queryset = queryset.prefetch_related('students')
         return queryset
-
-
-class SchoolCreateSerializer(SchoolSerializer):
-    """Serializer for creating new school instances.
-
-    Suited for: create
-    """
-
-    class Meta(SchoolSerializer.Meta):  # noqa
-        extra_kwargs = {
-            **SchoolSerializer.Meta.extra_kwargs,
-            'students': {'required': False},
-            'uai_code': {'read_only': False},
-        }
 
 
 class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):

@@ -5,10 +5,12 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 from guardian.admin import GuardedModelAdminMixin
 
+from core.admin import AutocompleteAddressMixin
 from tutoring.admin import TutoringGroupMembershipInline
 from visits.admin import VisitParticipantInline
 
-from .models import SchoolStaffMember, Student, Tutor, User
+from .models import Student, Tutor
+from .models import User
 
 
 # Register your models here.
@@ -75,16 +77,8 @@ class TutorAdmin(admin.ModelAdmin):
 
 
 @admin.register(Student)
-class StudentAdmin(admin.ModelAdmin):
+class StudentAdmin(AutocompleteAddressMixin, admin.ModelAdmin):
     """Student admin panel."""
 
     class Meta:  # noqa
         model = Student
-
-
-@admin.register(SchoolStaffMember)
-class SchoolStaffMemberAdmin(admin.ModelAdmin):
-    """School staff member admin panel."""
-
-    class Meta:  # noqa
-        model = SchoolStaffMember

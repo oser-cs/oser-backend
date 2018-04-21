@@ -9,12 +9,12 @@ class Groups:
     # Add more groups below.
     # They will be created at each system check if not already existing.
     # NOTE: Group variable name must start with "G_" to be detected.
-    G_VP_TUTORAT = 'VP Tutorat'
-    G_SECTEUR_SORTIES = 'Secteur sorties'
+    # G_VP_TUTORAT = 'VP Tutorat'
+    # G_SECTEUR_SORTIES = 'Secteur sorties'
 
     # Define permissions of groups here
     perms = {
-        G_SECTEUR_SORTIES: ('change_visit', 'change_place'),
+        # G_SECTEUR_SORTIES: ('change_visit', 'change_place'),
     }
 
     @classmethod

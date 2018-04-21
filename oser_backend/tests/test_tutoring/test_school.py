@@ -26,6 +26,7 @@ class SchoolTest(ModelTestCase):
         },
         'address': {
             'verbose_name': 'adresse',
+            'null': True,
         }
     }
     model_tests = {

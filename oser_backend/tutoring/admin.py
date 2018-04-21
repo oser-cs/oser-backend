@@ -3,6 +3,7 @@
 from django.contrib import admin
 from django.shortcuts import reverse
 from django.utils.html import format_html
+from core.admin import AutocompleteAddressMixin
 from .models import TutoringGroup, School, TutoringSession
 
 # Register your models here.
@@ -22,13 +23,14 @@ class TutoringGroupAdmin(admin.ModelAdmin):
     inlines = [
         TutoringGroupMembershipInline
     ]
+    search_fields = ('name',)
 
     class Meta:  # noqa
         model = TutoringGroup
 
 
 @admin.register(School)
-class SchoolAdmin(admin.ModelAdmin):
+class SchoolAdmin(AutocompleteAddressMixin, admin.ModelAdmin):
     """School admin panel."""
 
     list_display = ('__str__', 'uai_code',
@@ -56,6 +58,7 @@ class TutoringSessionAdmin(admin.ModelAdmin):
     """Tutoring session admin panel."""
 
     list_display = ('__str__', 'link_tutoring_group', 'link_school', 'date',)
+    autocomplete_fields = ('tutoring_group',)
 
     def link_tutoring_group(self, obj):
         link = reverse('admin:tutoring_tutoringgroup_change',

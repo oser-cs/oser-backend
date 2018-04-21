@@ -1,14 +1,13 @@
 """Users models."""
+
 from django.contrib.auth.models import UserManager as _UserManager
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
 
+from users.utils import get_promotion_range
 from utils import modify_fields
-
-from .profiles import Profile
 
 
 class UserManager(_UserManager):
@@ -63,9 +62,6 @@ class User(AbstractUser):
     gender : char (choices: 'M' or 'F')
     phone_number : char
     profile_type : char
-        The type of profile this user has. Used to polymorphically find
-        the profile corresponding to a user (profiles can be of various
-        types) through user.profile.
     """
 
     USERNAME_FIELD = 'email'  # default was: username
@@ -92,28 +88,26 @@ class User(AbstractUser):
                                     max_length=20, null=True, blank=True)
 
     # type of profile of the user
-    # allows to access the Profile object through user.profile
+    PROFILE_STUDENT = 0
+    PROFILE_TUTOR = 1
+    PROFILE_CHOICES = (
+        (PROFILE_STUDENT, 'Lycéen'),
+        (PROFILE_TUTOR, 'Tuteur'),
+    )
     profile_type = models.CharField(max_length=20,
                                     null=True,
-                                    choices=Profile.get_profile_type_choices(),
+                                    choices=PROFILE_CHOICES,
                                     verbose_name='type de profil')
 
     @property
-    def profile(self):
-        """Return the profile of the user.
+    def student(self):
+        return getattr(self, 'student', None)
+    student.fget.short_description = 'profil lycéen'
 
-        The returned object is an instance of the model corresponding to
-        the profile_type.
-
-        Example: if profile_type is 'student', user.profile will be a
-        Student object.
-        """
-        return self.profile_object
-        # if not self.profile_type:
-        #     raise AttributeError('User has no profile')
-        # model = Profile.get_model(self.profile_type)
-        # return model.objects.get(user_id=self.id)
-    profile.fget.short_description = 'profil'
+    @property
+    def tutor(self):
+        return getattr(self, 'tutor', None)
+    tutor.fget.short_description = 'profil tuteur'
 
     def get_absolute_url(self):
         return reverse('api:user-detail', args=[str(self.id)])
@@ -127,11 +121,84 @@ class User(AbstractUser):
     def has_object_read_permission(self, request):
         return True
 
+
+# Define user profiles here.
+
+
+class ProfileMixin:
+
+    def __str__(self):
+        full_name = self.user.get_full_name()
+        if full_name:
+            return full_name
+        return f'{self.__class__.__name__} {self.pk}'
+
+    def get_absolute_url(self):
+        return reverse(self.detail_view_name, args=[self.pk])
+
     @staticmethod
-    def has_write_permission(request):
-        """Anyone can create a user."""
+    @authenticated_users
+    def has_read_permission(request):
         return True
 
     @authenticated_users
-    def has_object_write_permission(self, request):
-        return request.user.id == self.id
+    def has_object_read_permission(self, request):
+        return True
+
+
+class Student(ProfileMixin, models.Model):
+    """Represents a student profile."""
+
+    detail_view_name = 'api:student-detail'
+
+    user = models.OneToOneField(
+        'users.User',
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name='utilisateur',
+        related_name='student')
+
+    address = models.ForeignKey(
+        'core.Address',
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='adresse')
+
+    tutoring_group = models.ForeignKey(
+        'tutoring.TutoringGroup',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='students',
+        verbose_name='groupe de tutorat')
+
+    school = models.ForeignKey(
+        'tutoring.School',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='students',
+        verbose_name='lycée')
+
+    class Meta:  # noqa
+        verbose_name = 'lycéen'
+
+
+class Tutor(ProfileMixin, models.Model):
+    """Represents a tutor profile."""
+
+    detail_view_name = 'api:tutor-detail'
+
+    user = models.OneToOneField(
+        'users.User',
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name='utilisateur',
+        related_name='tutor')
+
+    PROMOTION_CHOICES = tuple(
+        (year, str(year)) for year in get_promotion_range()
+    )
+    promotion = models.IntegerField(choices=PROMOTION_CHOICES,
+                                    default=PROMOTION_CHOICES[0][0])
+
+    class Meta:  # noqa
+        verbose_name = 'tuteur'

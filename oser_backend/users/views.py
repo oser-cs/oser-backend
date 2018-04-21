@@ -2,22 +2,20 @@
 
 from django.contrib.auth import get_user_model
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import viewsets
-from rest_framework.decorators import detail_route
+from rest_framework import mixins, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from tutoring.serializers import TutoringGroupSerializer
 from visits.serializers import VisitSerializer
 
-from .models import SchoolStaffMember, Student, Tutor
-from .serializers import (SchoolStaffMembersSerializer, StudentSerializer,
-                          TutorSerializer, UserCreateSerializer,
-                          UserSerializer, UserUpdateSerializer)
+from .models import Student, Tutor
+from .serializers import StudentSerializer, TutorSerializer, UserSerializer
 
 User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint that allows users to be viewed or edited.
 
     retrieve:
@@ -25,84 +23,21 @@ class UserViewSet(viewsets.ModelViewSet):
 
     list:
     Return all users.
-
-    create:
-    Create a user instance.
     """
 
     queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = (DRYPermissions,)
 
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return UserCreateSerializer
-        elif self.action in ('update', 'partial_update'):
-            return UserUpdateSerializer
-        return UserSerializer
 
-
-class ProfileViewSetMeta(type):
-    """Metaclass for ProfileViewSet.
-
-    Automatically adds action to the concrete viewset docstring.
-    """
-
-    ACTIONS_DOCSTRING_TEMPLATE = """
-
-    Available actions
-
-    list:
-    Return all {plural}.
-
-    retrieve:
-    Return a {singular} instance.
-
-    create:
-    Create a {singular} instance.
-
-    destroy:
-    Destroy a {singular} instance.
-
-    update:
-    Update a {singular} instance (requires full data about the instance).
-
-    partial_update:
-    Partially update a {singular} instance (e.g. a single attribute).
-    """
-
-    def __new__(metacls, name, bases, namespace):
-        add_actions_docs = namespace.pop('add_actions_docs', True)
-        cls = super().__new__(metacls, name, bases, namespace)
-        if add_actions_docs:
-            if not cls.__doc__:
-                cls.__doc__ = ""
-            if not hasattr(cls, 'queryset'):
-                raise AttributeError('ProfileViewSet subclass must define '
-                                     'a queryset attribute')
-            # build the actions dosctring
-            actions_doc = type(cls).ACTIONS_DOCSTRING_TEMPLATE.format(
-                singular=cls.queryset.model._meta.model_name,
-                plural=cls.queryset.model._meta.model_name + 's',
-            )
-            # append actions docstring to viewset's docstring.
-            cls.__doc__ += actions_doc
-        return cls
-
-
-class ProfileViewSet(viewsets.ModelViewSet, metaclass=ProfileViewSetMeta):
-    """Abstract viewset for profiles."""
-
-    permission_classes = (DRYPermissions,)  # defined for all profile types
-    add_actions_docs = False
-
-
-class TutorViewSet(ProfileViewSet):
-    """API endpoint that allows tutors to be viewed or edited."""
+class TutorViewSet(viewsets.ReadOnlyModelViewSet):
+    """API endpoint that allows tutors to be viewed."""
 
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
+    permission_classes = (DRYPermissions,)
 
-    @detail_route()
+    @action(detail=True)
     def tutoringgroups(self, request, pk=None):
         """Retrieve the tutoring groups of a tutor."""
         tutor = self.get_object()
@@ -112,13 +47,14 @@ class TutorViewSet(ProfileViewSet):
         return Response(serializer.data)
 
 
-class StudentViewSet(ProfileViewSet):
-    """API endpoint that allows students to be viewed or edited."""
+class StudentViewSet(viewsets.ReadOnlyModelViewSet):
+    """API endpoint that allows students to be viewed."""
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = (DRYPermissions,)
 
-    @detail_route()
+    @action(detail=True)
     def tutoringgroup(self, request, pk=None):
         """Retrieve the tutoring group of a student."""
         student = self.get_object()
@@ -127,7 +63,7 @@ class StudentViewSet(ProfileViewSet):
                                              context={'request': request})
         return Response(serializer.data)
 
-    @detail_route()
+    @action(detail=True)
     def visits(self, request, pk=None):
         """List detailed info about the visits a student participates in."""
         # NOTE: Only available for student users for now.
@@ -136,10 +72,3 @@ class StudentViewSet(ProfileViewSet):
         serializer = VisitSerializer(visits, many=True,
                                      context={'request': request})
         return Response(serializer.data)
-
-
-class SchoolStaffMemberViewSet(ProfileViewSet):
-    """API endpoint that allows school staff members to be viewed or edited."""
-
-    queryset = SchoolStaffMember.objects.all()
-    serializer_class = SchoolStaffMembersSerializer

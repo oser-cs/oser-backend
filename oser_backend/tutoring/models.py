@@ -8,9 +8,6 @@ from django.template.defaulttags import date as date_tag
 from dry_rest_permissions.generics import (allow_staff_or_superuser,
                                            authenticated_users)
 
-from users.permissions import Groups
-from utils import is_in_group
-
 from .conf import settings
 from .validators import uai_code_validator
 
@@ -21,10 +18,17 @@ from .validators import uai_code_validator
 class TutorTutoringGroup(models.Model):
     """Intermediate model for tutoring group and tutors n-n relationship."""
 
-    tutoring_group = models.ForeignKey('TutoringGroup',
-                                       on_delete=models.CASCADE)
-    tutor = models.ForeignKey('users.Tutor', on_delete=models.CASCADE)
-    is_leader = models.BooleanField(default=False)
+    tutoring_group = models.ForeignKey(
+        'TutoringGroup', on_delete=models.CASCADE,
+        verbose_name='groupe de tutorat')
+    tutor = models.ForeignKey(
+        'users.Tutor', on_delete=models.CASCADE,
+        verbose_name='Tuteur')
+    is_leader = models.BooleanField(default=False, verbose_name='Responsable')
+
+    class Meta:  # noqa
+        verbose_name = 'membre du groupe de tutorat'
+        verbose_name_plural = 'membres du groupe de tutorat'
 
 
 class TutoringGroup(models.Model):
@@ -73,18 +77,16 @@ class TutoringGroup(models.Model):
     @staticmethod
     @allow_staff_or_superuser
     def has_write_permission(request):
-        """Can only be created or destroyed by admin or VP Tutorat."""
-        return is_in_group(request.user, Groups.G_VP_TUTORAT)
+        return True
 
     @allow_staff_or_superuser
     def has_object_write_permission(self, request):
-        """Can only be written by admin, leader tutor or VP tutorat."""
+        """Can only be written by admin, leader tutor."""
         is_leader = (self.tutors
                      .filter(user_id=request.user.id,
                              tutortutoringgroup__is_leader=True)
                      .exists())
-        is_vp_tutorat = is_in_group(request.user, Groups.G_VP_TUTORAT)
-        return is_leader or is_vp_tutorat
+        return is_leader
 
     def __str__(self):
         return str(self.name)
@@ -103,7 +105,6 @@ class School(models.Model):
     Relationships
     -------------
     students : n-1 with users.Student
-    staffmembers : n-1 with users.SchoolStaffMember
 
     Meta
     ----
@@ -119,15 +120,15 @@ class School(models.Model):
         primary_key=True,
         validators=[uai_code_validator],
         help_text=(
-            "Code UAI (ex-RNE) de l'établissement. "
+            "Code UAI (ex-RNE) de l'établissement qui sert à l'identifier. "
             "Celui-ci est composé de 7 chiffres et une lettre. "
-            "Ce code est répertorié dans "
+            "Il est répertorié dans "
             "l'annuaire des établissements sur le site du "
             "ministère de l'Éducation Nationale."))
 
-    # TODO convert to validated address field
-    address = models.CharField('adresse', max_length=200,
-                               help_text='Adresse complète du lycée')
+    address = models.ForeignKey(
+        'core.Address', on_delete=models.SET_NULL, verbose_name='adresse',
+        null=True, help_text='Adresse complète du lycée')
 
     class Meta:  # noqa
         ordering = ('name',)
@@ -157,12 +158,12 @@ class School(models.Model):
     @authenticated_users
     @allow_staff_or_superuser
     def has_write_permission(request):
-        return is_in_group(request.user, Groups.G_VP_TUTORAT)
+        return True
 
     @authenticated_users
     @allow_staff_or_superuser
     def has_object_write_permission(self, request):
-        return is_in_group(request.user, Groups.G_VP_TUTORAT)
+        return True
 
     def __str__(self):
         return str(self.name)

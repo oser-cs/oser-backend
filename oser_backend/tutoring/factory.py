@@ -1,13 +1,17 @@
 """Tutoring factories."""
 
 from datetime import timedelta
+
 import factory
 import factory.django
 import pytz
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from . import models
+
+from core.factory import AddressFactory
 from tutoring.utils import random_uai_code
+
+from . import models
 
 User = get_user_model()
 utc = pytz.UTC
@@ -25,7 +29,7 @@ class SchoolFactory(factory.DjangoModelFactory):
     uai_code = factory.LazyFunction(random_uai_code)
     school_name = factory.Faker('name', locale='fr')
     name = factory.LazyAttribute(lambda o: 'Lycée {o.school_name}'.format(o=o))
-    address = factory.Faker('address', locale='fr')
+    address = factory.SubFactory(AddressFactory)
 
 
 class TutoringGroupFactory(factory.DjangoModelFactory):

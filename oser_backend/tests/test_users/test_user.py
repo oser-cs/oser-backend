@@ -4,7 +4,6 @@ from django.test import TestCase
 
 from tests.utils import ModelTestCase
 from users.factory import UserFactory
-from users.models import Profile
 
 User = get_user_model()
 
@@ -65,7 +64,10 @@ class UserModelTest(ModelTestCase):
             'verbose_name': 'type de profil',
             'blank': False,
             'null': True,
-            'choices': Profile.get_profile_type_choices(),
+            'choices': (
+                (User.PROFILE_STUDENT, 'Lycéen'),
+                (User.PROFILE_TUTOR, 'Tuteur'),
+            )
         }
     }
     model_tests = {

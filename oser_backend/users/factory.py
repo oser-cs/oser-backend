@@ -1,18 +1,19 @@
 """Users factories."""
 
 import random
+from datetime import datetime
 
 import factory
 import factory.django
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from tutoring.factory import SchoolFactory, TutoringGroupFactory
+from core.factory import AddressFactory
+from tutoring.factory import TutoringGroupFactory
 from tutoring.models import TutoringGroup
 from utils import printable_only
 
 from . import models
-from .permissions import Groups
 
 User = get_user_model()
 
@@ -56,23 +57,14 @@ class UserFactory(factory.DjangoModelFactory):
         return manager.create_user(*args, **kwargs)
 
 
-# @factory.django.mute_signals(post_save)
-class ProfileFactory(factory.DjangoModelFactory):
-    """Profile object factory."""
-
-    class Meta:  # noqa
-        model = models.Profile
-
-    user = factory.SubFactory(UserFactory)
-
-
-class StudentFactory(ProfileFactory):
+class StudentFactory(factory.DjangoModelFactory):
     """Student object factory. Not assigned to a tutoring group."""
 
     class Meta:  # noqa
         model = models.Student
 
-    address = factory.Faker('address', locale='fr')
+    user = factory.SubFactory(UserFactory)
+    address = factory.SubFactory(AddressFactory)
 
 
 class StudentInTutoringGroupFactory(StudentFactory):
@@ -90,13 +82,17 @@ class StudentInTutoringGroupFactory(StudentFactory):
     school = factory.SelfAttribute('tutoring_group.school')
 
 
-class TutorFactory(ProfileFactory):
+_this_year = datetime.today().year
+
+
+class TutorFactory(factory.DjangoModelFactory):
     """Tutor object factory."""
 
     class Meta:  # noqa
         model = models.Tutor
 
-    promotion = factory.Iterator([2019, 2020, 2021])
+    user = factory.SubFactory(UserFactory)
+    promotion = factory.Iterator([_this_year, _this_year + 1, _this_year + 2])
 
 
 class TutorInGroupFactory(TutorFactory):
@@ -105,29 +101,8 @@ class TutorInGroupFactory(TutorFactory):
     @factory.post_generation
     def group_names(obj, created, extracted, **kwargs):
         """Add groups using the group_names=... passed at instance creation."""
+        if not extracted:
+            return
         for group_name in extracted:
             group = Group.objects.get(name=group_name)
             group.user_set.add(obj.user)
-
-
-class VpTutoratTutorFactory(TutorFactory):
-    """VP Tutorat tutor object factory."""
-
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        """Override the default ``_create`` with our custom call."""
-        manager = cls._get_manager(model_class)
-        obj = manager.create(*args, **kwargs)
-        Group.objects.get(name=Groups.G_VP_TUTORAT).user_set.add(obj.user)
-        return obj
-
-
-class SchoolStaffMemberFactory(ProfileFactory):
-    """SchoolStaffMember object factory."""
-
-    class Meta:  # noqa
-        model = models.SchoolStaffMember
-
-    # user = factory.SubFactory(UserFactory, profile_type='schoolstaffmember')
-    school = factory.SubFactory(SchoolFactory)
-    role = 'directeur'
