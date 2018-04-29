@@ -9,8 +9,7 @@ from core.admin import AutocompleteAddressMixin
 from tutoring.admin import TutoringGroupMembershipInline
 from visits.admin import VisitParticipantInline
 
-from .models import Student, Tutor
-from .models import User
+from .models import Student, Tutor, User
 
 
 # Register your models here.
@@ -38,8 +37,8 @@ class CustomUserAdmin(GuardedModelAdminMixin, UserAdmin):
     # that reference specific fields on auth.User.
     list_display = [field for field in UserAdmin.list_display
                     if field != 'username']
-    search_fields = [field for field in UserAdmin.search_fields
-                     if field != 'username']
+    search_fields = search_fields = (
+        'email', 'first_name', 'last_name',)
     ordering = ('email',)
     readonly_fields = ('last_login', 'date_joined',)
 
@@ -66,8 +65,14 @@ class CustomUserAdmin(GuardedModelAdminMixin, UserAdmin):
     inlines = (UserVisitParticipantInline, )
 
 
+class ProfileAdminMixin:
+    """Common functionalities for profile admin panels."""
+
+    search_fields = ('user__email', 'user__first_name', 'user__last_name',)
+
+
 @admin.register(Tutor)
-class TutorAdmin(admin.ModelAdmin):
+class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin):
     """Tutor admin panel."""
 
     inlines = (TutoringGroupMembershipInline,)
@@ -77,7 +82,8 @@ class TutorAdmin(admin.ModelAdmin):
 
 
 @admin.register(Student)
-class StudentAdmin(AutocompleteAddressMixin, admin.ModelAdmin):
+class StudentAdmin(AutocompleteAddressMixin, ProfileAdminMixin,
+                   admin.ModelAdmin):
     """Student admin panel."""
 
     class Meta:  # noqa

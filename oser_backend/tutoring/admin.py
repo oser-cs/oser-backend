@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.shortcuts import reverse
 from django.utils.html import format_html
 from core.admin import AutocompleteAddressMixin
+from users.models import Student
 from .models import TutoringGroup, School, TutoringSession
 
 # Register your models here.
@@ -16,12 +17,23 @@ class TutoringGroupMembershipInline(admin.TabularInline):
     extra = 0
 
 
+class TutoringGroupStudentsInline(admin.TabularInline):
+    """Inline to show students in a tutoring group."""
+
+    model = Student
+    extra = 0
+    max_num = 0
+    readonly_fields = ('user', 'address', 'school',)
+    can_delete = False
+
+
 @admin.register(TutoringGroup)
 class TutoringGroupAdmin(admin.ModelAdmin):
     """Tutoring group admin panel."""
 
     inlines = [
-        TutoringGroupMembershipInline
+        TutoringGroupStudentsInline,
+        TutoringGroupMembershipInline,
     ]
     search_fields = ('name',)
 

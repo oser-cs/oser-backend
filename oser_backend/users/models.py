@@ -131,7 +131,7 @@ class ProfileMixin:
         full_name = self.user.get_full_name()
         if full_name:
             return full_name
-        return f'{self.__class__.__name__} {self.pk}'
+        return self.user.email
 
     def get_absolute_url(self):
         return reverse(self.detail_view_name, args=[self.pk])
