@@ -6,7 +6,6 @@ from django.utils.translation import ugettext_lazy as _
 from guardian.admin import GuardedModelAdminMixin
 
 from core.admin import AutocompleteAddressMixin
-from tutoring.admin import TutoringGroupMembershipInline
 from visits.admin import VisitParticipantInline
 
 from .models import Student, Tutor, User
@@ -71,11 +70,21 @@ class ProfileAdminMixin:
     search_fields = ('user__email', 'user__first_name', 'user__last_name',)
 
 
+class TutorTutoringGroupsInline(admin.TabularInline):
+    """Inline for tutor tutoring groups."""
+
+    model = Tutor.tutoring_groups.through
+    extra = 0
+    max_num = 0
+    readonly_fields = ('tutoring_group', 'is_leader')
+    can_delete = False
+
+
 @admin.register(Tutor)
 class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin):
     """Tutor admin panel."""
 
-    inlines = (TutoringGroupMembershipInline,)
+    inlines = (TutorTutoringGroupsInline,)
 
     class Meta:  # noqa
         model = Tutor

@@ -43,4 +43,4 @@ class TutoringSessionTest(ModelTestCase):
                          self.obj.tutoring_group)
         self.assertIn(self.obj,
                       tutoring.models.TutoringGroup.objects.get()
-                      .tutoring_sessions.all())
+                      .sessions.all())

@@ -186,21 +186,7 @@ def default_end_time():
 
 
 class TutoringSession(models.Model):
-    """Represents a tutoring session event.
-
-    Fields
-    ------
-    date : date
-    start_time : time
-    end_time : time
-    tutoring_group : 1-n with tutoring.TutoringGroup
-        Deletion rule: CASCADE
-    report : 1-1 with tutoring.TutoringReport
-
-    Meta
-    ----
-    ordering : by date (upcoming sessions first)
-    """
+    """Represents a tutoring session event."""
 
     date = models.DateField(default=datetime.now)
     start_time = models.TimeField('heure de début',
@@ -210,8 +196,7 @@ class TutoringSession(models.Model):
     tutoring_group = models.ForeignKey('TutoringGroup',
                                        on_delete=models.CASCADE,
                                        verbose_name='groupe de tutorat',
-                                       related_name='tutoring_sessions')
-    # TODO add report 1-1
+                                       related_name='sessions')
 
     class Meta:  # noqa
         verbose_name = 'séance de tutorat'
