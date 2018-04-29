@@ -164,6 +164,29 @@ $ curl -X GET "localhost:8000/api/articles/" -H "Authorization: Token b6302cebe7
 [{"id": 39, "content": ...}, ...]
 ```
 
+### Tâches de fond
+
+Le daemon Celery gère le calendrier tâches de fond (nettoyage des fichiers de médias non-utilisés ou autres tâches définies dans le `settings.py`). Pour fonctionner, Celery nécessite un serveur de messages, on utilise ici Redis.
+
+Les opérations nécessaires pour lancer Celery ainsi que la configuration avec Redis sont rassemblées dans le fichier `supervisord.conf`. Assurez-vous donc d'avoir installé Redis et Supervisor puis démarrez Supervisor au même niveau que le fichier `supervisord.conf` :
+
+```
+# Supervisor ne supporte toujours pas officiellement Python 3,
+# mais la dernière version de développement oui.
+$ pip install git+https://github.com/Supervisor/supervisor.git
+$ supervisord
+```
+
+Pour accéder aux derniers logs de Celery ou de Redis, utilisez `supervisorctl tail (celery|redis)`:
+
+```
+$ supervisorctl tail celery
+[2018-04-29 10:59:31,550: INFO/MainProcess] Connected to redis://localhost:6379//
+[2018-04-29 10:59:31,566: INFO/MainProcess] mingle: searching for neighbors
+[2018-04-29 10:59:32,601: INFO/MainProcess] mingle: all alone
+[2018-04-29 10:59:32,657: INFO/MainProcess] celery@MacBook-Pro-de-Florimond-2.local ready.
+```
+
 ## Dépendances
 
 ### Django

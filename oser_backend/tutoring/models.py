@@ -126,7 +126,7 @@ class School(models.Model):
             "l'annuaire des établissements sur le site du "
             "ministère de l'Éducation Nationale."))
 
-    address = models.ForeignKey(
+    address = models.OneToOneField(
         'core.Address', on_delete=models.SET_NULL, verbose_name='adresse',
         null=True, help_text='Adresse complète du lycée')
 
