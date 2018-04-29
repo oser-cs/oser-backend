@@ -20,12 +20,6 @@ urlpatterns = [
 
 router = routers.DefaultRouter(trailing_slash=True)
 
-# Visits views
-router.register('visits', visits_views.VisitViewSet)
-router.register('visit-participants', visits_views.VisitParticipantsViewSet,
-                base_name='visit-participants')
-router.register('places', visits_views.PlaceViewSet)
-
 # Users views
 router.register('users', users_views.UserViewSet)
 router.register('tutors', users_views.TutorViewSet)
@@ -33,13 +27,20 @@ router.register('students', users_views.StudentViewSet)
 
 # Tutoring views
 router.register('schools', tutoring_views.SchoolViewSet)
-router.register('tutoring/groups', tutoring_views.TutoringGroupViewSet,
+router.register('groups', tutoring_views.TutoringGroupViewSet,
                 base_name='tutoring_group')
-router.register('tutoring/sessions', tutoring_views.TutoringSessionViewSet,
+router.register('sessions', tutoring_views.TutoringSessionViewSet,
                 base_name='tutoring_session')
 
 # Register views
 router.register('registrations', register_views.RegistrationViewSet)
+
+# Visits views
+router.register('visits', visits_views.VisitViewSet)
+router.register('visit-participants', visits_views.VisitParticipantsViewSet,
+                base_name='visit-participants')
+router.register('places', visits_views.PlaceViewSet)
+
 
 # Showcase site views
 router.register('articles', showcase_site_views.ArticleViewSet)

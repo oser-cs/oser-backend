@@ -49,14 +49,15 @@ class VisitSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = Visit
-        fields = ('id', 'url', 'title', 'summary', 'description', 'place',
+        fields = ('id', 'title', 'summary', 'description', 'place',
                   'date', 'passed',
                   'deadline', 'registrations_open',
                   'participants',
                   'organizers',
                   'attached_files',
                   'image',
-                  'fact_sheet',)
+                  'fact_sheet',
+                  'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:visit-detail'},
         }
@@ -76,7 +77,7 @@ class VisitParticipantReadSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = VisitParticipant
-        fields = ('id', 'url', 'user', 'visit', 'present')
+        fields = ('id', 'user', 'visit', 'present', 'url')
         extra_kwargs = {
             'url': {'view_name': 'api:visit-participants-detail'},
         }

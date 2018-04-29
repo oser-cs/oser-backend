@@ -33,7 +33,7 @@ class TutoringGroupTest(ModelTestCase):
     def test_get_absolute_url(self):
         self.client.force_login(UserFactory.create())
         response = self.client.get(
-            '/api/tutoring/groups/{}/'.format(self.obj.pk))
+            '/api/groups/{}/'.format(self.obj.pk))
         self.assertEqual(200, response.status_code)
 
     def test_tutors_many_to_many_relationship(self):

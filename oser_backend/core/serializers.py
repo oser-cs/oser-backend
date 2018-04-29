@@ -15,7 +15,7 @@ class DocumentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = Document
-        fields = ('url', 'title', 'slug', 'content')
+        fields = ('title', 'slug', 'content', 'url')
         extra_kwargs = {
             'url': {
                 'view_name': 'api:document-detail',

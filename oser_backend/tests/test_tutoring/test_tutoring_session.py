@@ -34,7 +34,7 @@ class TutoringSessionTest(ModelTestCase):
         self.obj = TutoringSessionFactory.create()
 
     def test_get_absolute_url(self):
-        url = '/api/tutoring/sessions/{}/'.format(self.obj.pk)
+        url = '/api/sessions/{}/'.format(self.obj.pk)
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)
 

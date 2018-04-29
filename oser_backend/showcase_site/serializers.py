@@ -56,9 +56,9 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = Article
-        fields = ('id', 'url', 'title', 'slug', 'introduction',
+        fields = ('id', 'title', 'slug', 'introduction',
                   'content', 'published', 'modified', 'image',
-                  'display_image', 'pinned', 'categories',)
+                  'display_image', 'pinned', 'categories', 'url',)
         extra_kwargs = {
             'slug': {'read_only': True},
             'url': {'view_name': 'api:article-detail'},

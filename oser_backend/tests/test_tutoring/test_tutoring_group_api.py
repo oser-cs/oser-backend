@@ -14,7 +14,7 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
     serializer_class = TutoringGroupSerializer
 
     def perform_list(self):
-        url = '/api/tutoring/groups/'
+        url = '/api/groups/'
         response = self.client.get(url)
         return response
 
@@ -24,7 +24,7 @@ class TutoringGroupEndpointsTest(HyperlinkedAPITestCase):
 
     def perform_retrieve(self):
         obj = self.factory.create()
-        url = '/api/tutoring/groups/{obj.pk}/'.format(obj=obj)
+        url = '/api/groups/{obj.pk}/'.format(obj=obj)
         response = self.client.get(url)
         return response
 

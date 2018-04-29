@@ -41,9 +41,9 @@ class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
     factory_class = ArticleFactory
 
     expected_fields = (
-        'id', 'url', 'title', 'slug', 'content', 'introduction',
+        'id', 'title', 'slug', 'content', 'introduction',
         'published', 'modified',
-        'image', 'display_image', 'pinned', 'categories',
+        'image', 'display_image', 'pinned', 'categories', 'url',
     )
 
     def get_object(self):

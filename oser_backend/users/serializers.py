@@ -5,6 +5,7 @@ from rest_framework import serializers
 
 from core.serializers import AddressSerializer
 from tutoring.models import School, TutoringGroup
+from tutoring.serializers import TutoringGroupSerializer
 
 from .models import Student, Tutor
 
@@ -32,19 +33,13 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class TutorSerializer(serializers.HyperlinkedModelSerializer):
     """Hyperlinked serializer for Tutor."""
 
-    user = serializers.HyperlinkedRelatedField(
-        queryset=User.objects.all(),
-        view_name='api:user-detail',
-    )
-    tutoring_groups = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='api:tutoring_group-detail',
-    )
+    user = UserSerializer()
+    tutoring_groups = serializers.PrimaryKeyRelatedField(
+        many=True, read_only=True)
 
     class Meta:  # noqa
         model = Tutor
-        fields = ('user_id', 'user', 'promotion', 'tutoring_groups', 'url',)
+        fields = ('user', 'promotion', 'tutoring_groups', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:tutor-detail'},
         }
@@ -53,29 +48,23 @@ class TutorSerializer(serializers.HyperlinkedModelSerializer):
 class StudentSerializer(serializers.HyperlinkedModelSerializer):
     """Hyperlinked serializer for Student."""
 
-    user = serializers.HyperlinkedRelatedField(
-        queryset=User.objects.all(),
-        view_name='api:user-detail',
-    )
-    tutoring_group = serializers.HyperlinkedRelatedField(
+    user = UserSerializer()
+    tutoring_group = serializers.PrimaryKeyRelatedField(
         queryset=TutoringGroup.objects.all(),
-        view_name='api:student-tutoringgroup',
     )
-    school = serializers.HyperlinkedRelatedField(
+    school = serializers.PrimaryKeyRelatedField(
         queryset=School.objects.all(),
-        view_name='api:school-detail',
     )
-    visits = serializers.HyperlinkedRelatedField(
+    visits = serializers.PrimaryKeyRelatedField(
         source='user.visit_set',
         many=True,
-        view_name='api:visit-detail',
         read_only=True)
     address = AddressSerializer()
 
     class Meta:  # noqa
         model = Student
-        fields = ('user_id', 'url', 'user', 'address', 'tutoring_group',
-                  'school', 'visits',)
+        fields = ('user_id', 'user', 'address', 'tutoring_group',
+                  'school', 'visits', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:student-detail'},
         }

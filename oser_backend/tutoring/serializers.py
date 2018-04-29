@@ -15,10 +15,9 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
     """
 
     address = AddressSerializer()
-    students = serializers.HyperlinkedRelatedField(
+    students = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Student.objects.all(),
-        view_name='api:student-detail',
         help_text='Lycéens inscrits à ce lycée',
     )
     students_count = serializers.IntegerField(source='students.count',
@@ -26,8 +25,8 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = School
-        fields = ('uai_code', 'url', 'name', 'address', 'students',
-                  'students_count',)
+        fields = ('uai_code', 'name', 'address', 'students',
+                  'students_count', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:school-detail'},
             'uai_code': {'read_only': True},
@@ -49,19 +48,16 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for TutoringGroup."""
 
-    tutors = serializers.HyperlinkedRelatedField(
+    tutors = serializers.PrimaryKeyRelatedField(
         many=True,
         read_only=True,
-        view_name='api:tutor-detail',
     )
-    students = serializers.HyperlinkedRelatedField(
+    students = serializers.PrimaryKeyRelatedField(
         many=True,
         read_only=True,
-        view_name='api:student-detail',
     )
-    school = serializers.HyperlinkedRelatedField(
+    school = serializers.PrimaryKeyRelatedField(
         read_only=True,
-        view_name='api:school-detail',
     )
     students_count = serializers.IntegerField(source='students.count',
                                               read_only=True)
@@ -70,8 +66,8 @@ class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = TutoringGroup
-        fields = ('id', 'url', 'name', 'tutors', 'students', 'school',
-                  'students_count', 'tutors_count',)
+        fields = ('id', 'name', 'tutors', 'students', 'school',
+                  'students_count', 'tutors_count', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:tutoring_group-detail'},
         }
@@ -94,8 +90,8 @@ class TutoringSessionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = TutoringSession
-        fields = ('id', 'url', 'date', 'start_time', 'end_time',
-                  'tutoring_group',)
+        fields = ('id', 'date', 'start_time', 'end_time',
+                  'tutoring_group', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:tutoring_session-detail'},
         }
