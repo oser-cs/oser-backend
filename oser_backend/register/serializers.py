@@ -13,7 +13,8 @@ class EmergencyContactSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = EmergencyContact
-        fields = ('first_name', 'last_name', 'contact')
+        fields = ('first_name', 'last_name',
+                  'email', 'home_phone', 'mobile_phone')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

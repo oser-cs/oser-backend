@@ -13,15 +13,25 @@ class EmergencyContactTest(ModelTestCase):
         'first_name': {
             'max_length': 50,
             'verbose_name': 'prénom',
-            'blank': True,
         },
         'last_name': {
             'max_length': 50,
             'verbose_name': 'nom',
-            'blank': True,
         },
-        'contact': {
-            'max_length': 100,
+        'email': {
+            'verbose_name': 'adresse email',
+            'blank': True,
+            'null': True,
+        },
+        'home_phone': {
+            'verbose_name': 'téléphone fixe',
+            'blank': True,
+            'null': True,
+        },
+        'mobile_phone': {
+            'verbose_name': 'téléphone portable',
+            'blank': True,
+            'null': True,
         },
     }
     model_tests = {

@@ -67,18 +67,27 @@ class EmergencyContact(models.Model):
 
     first_name = models.CharField(
         'prénom', max_length=50,
-        help_text='Prénom du contact (50 caractères max).',
-        blank=True, default='')
+        help_text='Prénom du contact (50 caractères max).'
+    )
     last_name = models.CharField(
         'nom', max_length=50,
-        help_text='Nom du contact (50 caractères max).',
-        blank=True, default='')
-    contact = models.CharField(
-        max_length=100,
-        help_text='Téléphone, adresse email…',
+        help_text='Nom du contact (50 caractères max).'
+    )
+    email = models.EmailField(
+        verbose_name='adresse email',
+        blank=True, null=True,
+    )
+    home_phone = models.CharField(
+        'téléphone fixe', max_length=50,
+        blank=True, null=True,
+    )
+    mobile_phone = models.CharField(
+        'téléphone portable', max_length=50,
+        blank=True, null=True,
     )
 
     def __str__(self):
+        """Represent the emergency contact by its full name."""
         return '{o.first_name} {o.last_name}'.format(o=self)
 
     class Meta:  # noqa

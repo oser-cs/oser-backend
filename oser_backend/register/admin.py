@@ -22,7 +22,9 @@ class RegistrationAdmin(AutocompleteAddressMixin, admin.ModelAdmin):
 class EmergencyContactAdmin(admin.ModelAdmin):
     """Admin panel for emergency contacts."""
 
-    list_display = ('last_name', 'first_name', 'contact', 'registration_link',)
+    list_display = ('last_name', 'first_name',
+                    'email', 'home_phone', 'mobile_phone',
+                    'registration_link',)
     list_display_links = ('registration_link',)
 
     # necessary to use emergency contact in Registration's admin autocomplete
