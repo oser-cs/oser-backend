@@ -20,7 +20,9 @@ class EmergencyContactFactory(factory.DjangoModelFactory):
 
     @factory.lazy_attribute
     def email(self):
-        return f'{self.first_name}.{self.last_name}@fake.com'
+        return '{}.{}@fake.net'.format(
+            printable_only(self.first_name.lower()),
+            printable_only(self.last_name.lower()))
 
     home_phone = factory.Faker('phone_number', locale='fr')
     mobile_phone = factory.Faker('phone_number', locale='fr')
