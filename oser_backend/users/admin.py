@@ -7,10 +7,8 @@ from guardian.admin import GuardedModelAdminMixin
 
 from visits.admin import VisitParticipantInline
 
-from .models import Student, Tutor, User
+from .models import User
 
-
-# Register your models here.
 
 class UserVisitParticipantInline(VisitParticipantInline):
     """Inline for VisitParticipant on the User admin panel.
@@ -61,37 +59,3 @@ class CustomUserAdmin(GuardedModelAdminMixin, UserAdmin):
     )
 
     inlines = (UserVisitParticipantInline, )
-
-
-class ProfileAdminMixin:
-    """Common functionalities for profile admin panels."""
-
-    search_fields = ('user__email', 'user__first_name', 'user__last_name',)
-
-
-class TutorTutoringGroupsInline(admin.TabularInline):
-    """Inline for tutor tutoring groups."""
-
-    model = Tutor.tutoring_groups.through
-    extra = 0
-    max_num = 0
-    readonly_fields = ('tutoring_group', 'is_leader')
-    can_delete = False
-
-
-@admin.register(Tutor)
-class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin):
-    """Tutor admin panel."""
-
-    inlines = (TutorTutoringGroupsInline,)
-
-    class Meta:  # noqa
-        model = Tutor
-
-
-@admin.register(Student)
-class StudentAdmin(ProfileAdminMixin, admin.ModelAdmin):
-    """Student admin panel."""
-
-    class Meta:  # noqa
-        model = Student

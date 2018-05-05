@@ -1,9 +1,10 @@
 """Student model tests."""
 
+from profiles.factory import StudentInTutoringGroupFactory
+from profiles.models import Student
 from tests.utils import ModelTestCase
 from tutoring.models import School, TutoringGroup
-from users.factory import StudentInTutoringGroupFactory, UserFactory
-from users.models import Student
+from users.factory import UserFactory
 
 
 class StudentTestCase(ModelTestCase):

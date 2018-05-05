@@ -2,25 +2,19 @@
 
 import random
 
-from django.contrib.auth.models import Group
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
 import showcase_site.models
 import users.models
+import profiles.models
 import visits.models
-from users.factory import (
-    StudentFactory, TutorFactory, TutorInGroupFactory,
-)
-from visits.factory import (
-    VisitFactory, PlaceFactory,
-)
-from showcase_site.factory import (
-    CategoryFactory, ArticleFactory, TestimonyFactory,
-    KeyFigureFactory, PartnerFactory,
-)
-from users.permissions import Groups
+from profiles.factory import StudentFactory, TutorFactory, TutorInGroupFactory
+from showcase_site.factory import (ArticleFactory, CategoryFactory,
+                                   KeyFigureFactory, PartnerFactory,
+                                   TestimonyFactory)
+from visits.factory import PlaceFactory, VisitFactory
 
 from .utils import DataLoader, SeqDataLoader, get_model, watcher
 
@@ -55,12 +49,12 @@ class Command(BaseCommand):
 
     @property
     def known_student(self):
-        return users.models.Student.objects.filter(
+        return profiles.models.Student.objects.filter(
             user__email=self.known_student_data['user__email']).first()
 
     @property
     def known_tutor(self):
-        return users.models.Tutor.objects.filter(
+        return profiles.models.Tutor.objects.filter(
             user__email=self.known_tutor_data['user__email']).first()
 
     def add_arguments(self, parser):
@@ -139,7 +133,7 @@ class Command(BaseCommand):
                 VisitFactory.create(image=image, fact_sheet=fact_sheet)
 
     def add_visit_organizers(self):
-        tutors = users.models.Tutor.objects.all()
+        tutors = profiles.models.Tutor.objects.all()
 
         def add_to_organizers(visit, user):
             visit.organizers_group.user_set.add(user)

@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from users.models import Student
+from profiles.models import Student
 from core.serializers import AddressSerializer
 
 from .models import School, TutoringGroup, TutoringSession

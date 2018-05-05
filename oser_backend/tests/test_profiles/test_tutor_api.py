@@ -1,10 +1,10 @@
 """Tutor API tests."""
 from rest_framework import status
 
+from profiles.factory import TutorFactory
+from profiles.serializers import TutorSerializer
 from tests.utils.api import HyperlinkedAPITestCase
 from tutoring.factory import TutorTutoringGroupFactory
-from users.factory import TutorFactory
-from users.serializers import TutorSerializer
 
 
 class TutorEndpointsTest(HyperlinkedAPITestCase):

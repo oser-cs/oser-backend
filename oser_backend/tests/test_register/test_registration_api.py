@@ -12,7 +12,7 @@ from register.serializers import (EmergencyContactSerializer,
 from tests.utils import SimpleAPITestCase
 from tutoring.factory import SchoolFactory, TutoringGroupFactory
 from users.factory import UserFactory
-from users.models import Student
+from profiles.models import Student
 
 User = get_user_model()
 

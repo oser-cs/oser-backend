@@ -1,8 +1,9 @@
 """Tutor model tests."""
 
+from profiles.factory import TutorFactory
+from profiles.models import Tutor
 from tests.utils import ModelTestCase
-from users.factory import TutorFactory, UserFactory
-from users.models import Tutor
+from users.factory import UserFactory
 
 
 class TutorTestCase(ModelTestCase):

@@ -1,4 +1,4 @@
-"""Uses settings."""
+"""Profile settings."""
 
 from django.conf import settings
 from utils import setdefault

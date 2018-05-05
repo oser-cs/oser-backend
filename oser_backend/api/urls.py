@@ -4,6 +4,7 @@ from rest_framework import routers
 
 from api.auth import obtain_auth_token
 from core import views as core_views
+from profiles import views as profiles_views
 from register import views as register_views
 from showcase_site import views as showcase_site_views
 from tutoring import views as tutoring_views
@@ -22,8 +23,10 @@ router = routers.DefaultRouter(trailing_slash=True)
 
 # Users views
 router.register('users', users_views.UserViewSet)
-router.register('tutors', users_views.TutorViewSet)
-router.register('students', users_views.StudentViewSet)
+
+# Profiles views
+router.register('tutors', profiles_views.TutorViewSet)
+router.register('students', profiles_views.StudentViewSet)
 
 # Tutoring views
 router.register('schools', tutoring_views.SchoolViewSet)

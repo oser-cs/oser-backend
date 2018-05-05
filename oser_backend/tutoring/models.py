@@ -22,7 +22,7 @@ class TutorTutoringGroup(models.Model):
         'TutoringGroup', on_delete=models.CASCADE,
         verbose_name='groupe de tutorat')
     tutor = models.ForeignKey(
-        'users.Tutor', on_delete=models.CASCADE,
+        'profiles.Tutor', on_delete=models.CASCADE,
         verbose_name='Tuteur')
     is_leader = models.BooleanField(default=False, verbose_name='Responsable')
 
@@ -37,17 +37,17 @@ class TutoringGroup(models.Model):
     Fields
     ------
     name : char
-    tutors : n-n with users.Tutor
+    tutors : n-n with profiles.Tutor
     school : 1-n with tutoring.School
         Deletion rule: SET_NULL
 
     Relationships
     -------------
-    students : n-1 with users.Student
+    students : n-1 with profiles.Student
     """
 
     name = models.CharField('nom', max_length=200)
-    tutors = models.ManyToManyField('users.Tutor',
+    tutors = models.ManyToManyField('profiles.Tutor',
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
                                     blank=True,
@@ -104,7 +104,7 @@ class School(models.Model):
 
     Relationships
     -------------
-    students : n-1 with users.Student
+    students : n-1 with profiles.Student
 
     Meta
     ----

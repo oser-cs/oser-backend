@@ -1,8 +1,9 @@
-"""Users utilities tests."""
+"""Profiles utilities tests."""
+
 import datetime
 from django.test import TestCase
 from django.conf import settings
-from users.utils import get_promotion_range
+from profiles.utils import get_promotion_range
 
 
 class TestGetPromotionRange(TestCase):

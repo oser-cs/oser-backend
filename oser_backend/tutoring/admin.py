@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.shortcuts import reverse
 from django.utils.html import format_html
 from core.admin import AutocompleteAddressMixin
-from users.models import Student
+from profiles.models import Student
 from .models import TutoringGroup, School, TutoringSession
 
 # Register your models here.

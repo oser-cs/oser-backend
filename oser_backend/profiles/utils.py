@@ -1,7 +1,7 @@
-"""Users utilities."""
+"""Profile utilities."""
 
 import datetime
-from .conf import settings
+from .settings import settings
 
 
 def get_promotion_range(date=None):

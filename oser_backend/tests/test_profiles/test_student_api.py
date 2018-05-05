@@ -1,9 +1,9 @@
 """Student API tests."""
 from rest_framework import status
-from users.factory import StudentInTutoringGroupFactory
-from tests.utils.api import HyperlinkedAPITestCase
 
-from users.serializers import StudentSerializer
+from profiles.factory import StudentInTutoringGroupFactory
+from profiles.serializers import StudentSerializer
+from tests.utils.api import HyperlinkedAPITestCase
 
 
 class StudentEndpointsTest(HyperlinkedAPITestCase):

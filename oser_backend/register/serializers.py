@@ -7,7 +7,7 @@ from rest_framework import serializers
 from core.models import Address
 from core.serializers import AddressSerializer
 from tutoring.models import School, TutoringGroup
-from users.models import Student
+from profiles.models import Student
 
 from .models import EmergencyContact, Registration
 

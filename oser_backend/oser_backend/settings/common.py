@@ -64,11 +64,12 @@ THIRD_PARTY_APPS = [
 PROJECT_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
+    'profiles.apps.ProfilesConfig',
     'tutoring.apps.TutoringConfig',
-    'api.apps.ApiConfig',
     'showcase_site.apps.ShowcaseSiteConfig',
     'visits.apps.VisitsConfig',
     'register.apps.RegisterConfig',
+    'api.apps.ApiConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 

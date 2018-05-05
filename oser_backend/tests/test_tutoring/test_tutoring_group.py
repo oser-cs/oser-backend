@@ -3,7 +3,8 @@
 from tests.utils import ModelTestCase
 from tutoring.factory import TutoringGroupFactory, TutorTutoringGroupFactory
 from tutoring.models import TutoringGroup
-from users.factory import UserFactory, TutorFactory
+from users.factory import UserFactory
+from profiles.factory import TutorFactory
 
 
 class TutoringGroupTest(ModelTestCase):
