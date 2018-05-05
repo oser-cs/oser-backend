@@ -23,7 +23,7 @@ class TutoringGroupStudentsInline(admin.TabularInline):
     model = Student
     extra = 0
     max_num = 0
-    readonly_fields = ('user', 'address', 'school',)
+    readonly_fields = ('user', 'school',)
     can_delete = False
 
 

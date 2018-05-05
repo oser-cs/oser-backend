@@ -4,8 +4,9 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from core.serializers import AddressSerializer
+from register.serializers import (EmergencyContactSerializer,
+                                  StudentRegistrationSerializer)
 from tutoring.models import School, TutoringGroup
-from tutoring.serializers import TutoringGroupSerializer
 
 from .models import Student, Tutor
 
@@ -60,11 +61,14 @@ class StudentSerializer(serializers.HyperlinkedModelSerializer):
         many=True,
         read_only=True)
     address = AddressSerializer()
+    emergency_contact = EmergencyContactSerializer()
+    registration = StudentRegistrationSerializer()
 
     class Meta:  # noqa
         model = Student
         fields = ('user_id', 'user', 'address', 'tutoring_group',
-                  'school', 'visits', 'url',)
+                  'school', 'emergency_contact', 'registration',
+                  'visits', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:student-detail'},
         }

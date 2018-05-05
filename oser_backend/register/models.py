@@ -28,7 +28,9 @@ class Registration(models.Model):
         ))
     date_of_birth = models.DateField(
         verbose_name='date de naissance',
-        help_text="Date de naissance du lycéen")
+        help_text="Date de naissance du lycéen",
+        blank=True, null=True
+    )
     address = models.ForeignKey(
         'core.Address', on_delete=models.CASCADE, blank=True, null=True,
         verbose_name='adresse',
@@ -41,6 +43,14 @@ class Registration(models.Model):
     submitted = models.DateTimeField(
         auto_now_add=True, verbose_name='envoyé le',
         help_text="Date d'envoi du dossier d'inscription")
+    validated = models.BooleanField(
+        default=False, verbose_name='validé',
+        help_text=(
+            "Cocher pour valider le dossier d'inscription. "
+            "Le lycéen pourra alors avoir accès à toutes les fonctionnalités "
+            "associées à son profil."
+        )
+    )
 
     class Meta:  # noqa
         ordering = ('-submitted',)

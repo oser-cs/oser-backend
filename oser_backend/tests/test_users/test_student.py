@@ -14,11 +14,6 @@ class StudentTestCase(ModelTestCase):
         'user': {
             'verbose_name': 'utilisateur',
         },
-        'address': {
-            'verbose_name': 'adresse',
-            'blank': False,
-            'null': True,
-        },
         'tutoring_group': {
             'verbose_name': 'groupe de tutorat',
             'null': True,

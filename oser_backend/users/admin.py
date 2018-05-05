@@ -5,7 +5,6 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 from guardian.admin import GuardedModelAdminMixin
 
-from core.admin import AutocompleteAddressMixin
 from visits.admin import VisitParticipantInline
 
 from .models import Student, Tutor, User
@@ -91,8 +90,7 @@ class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(Student)
-class StudentAdmin(AutocompleteAddressMixin, ProfileAdminMixin,
-                   admin.ModelAdmin):
+class StudentAdmin(ProfileAdminMixin, admin.ModelAdmin):
     """Student admin panel."""
 
     class Meta:  # noqa

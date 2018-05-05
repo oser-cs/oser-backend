@@ -8,7 +8,6 @@ import factory.django
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from core.factory import AddressFactory
 from tutoring.factory import TutoringGroupFactory
 from tutoring.models import TutoringGroup
 from utils import printable_only
@@ -64,7 +63,6 @@ class StudentFactory(factory.DjangoModelFactory):
         model = models.Student
 
     user = factory.SubFactory(UserFactory)
-    address = factory.SubFactory(AddressFactory)
 
 
 class StudentInTutoringGroupFactory(StudentFactory):

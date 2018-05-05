@@ -2,7 +2,7 @@
 
 from django.contrib.auth import get_user_model
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import mixins, viewsets
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -16,7 +16,7 @@ User = get_user_model()
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint that allows users to be viewed or edited.
+    """API endpoint that allows users to be viewed.
 
     retrieve:
     Return a user instance.
@@ -48,7 +48,59 @@ class TutorViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class StudentViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint that allows students to be viewed."""
+    """API endpoint that allows students to be viewed.
+
+    list:
+
+    ### Example response
+
+    List of results from `retrieve` (see the example response for `retrieve`).
+
+    retrieve:
+
+    ### Example response
+
+        {
+            "user_id": 4,
+            "user": {
+                "id": 4,
+                "email": "charles.dumont@example.net",
+                "profile_type": null,
+                "first_name": "",
+                "last_name": "",
+                "gender": null,
+                "phone_number": null,
+                "date_of_birth": null,
+                "url": "http://localhost:8000/api/users/4/"
+            },
+            "address": {
+                "line1": "88 bis rue Jules Guesde",
+                "line2": "",
+                "post_code": "93100",
+                "city": "Montreuil",
+                "country": {
+                    "code": "FR",
+                    "name": "France"
+                }
+            },
+            "tutoring_group": 1,
+            "school": "0930965U",
+            "emergency_contact": {
+                "first_name": "Marie-Claude",
+                "last_name": "Perret",
+                "email": null,
+                "home_phone": "+33312344556",
+                "mobile_phone": null
+            },
+            "registration": {
+                "id": 3,
+                "submitted": "2018-05-05T14:15:10.998206+02:00",
+                "validated": false
+            },
+            "visits": [],
+            "url": "http://localhost:8000/api/students/2/"
+        }
+    """
 
     queryset = Student.objects.all()
     serializer_class = StudentSerializer

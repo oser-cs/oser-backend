@@ -22,34 +22,42 @@ class RegistrationViewSet(
 
         [
             {
-                "id": 1,
-                "first_name": "Florimond",
-                "last_name": "Manca",
-                "email": "florimond.manca@student.ecp.fr",
-                "date_of_birth": "1996-09-02",
-                "phone": "xxxxxxxxxx",
+                "id": 3,
+                "email": "charles.dumont@example.net",
+                "first_name": "Charles",
+                "last_name": "Dumont",
+                "date_of_birth": null,
+                "phone": null,
+                "submitted": "2018-05-05T14:15:10.998206+02:00",
                 "address": {
-                    "line1": "3 Rue Joliot Curie",
+                    "line1": "88 bis rue Jules Guesde",
                     "line2": "",
-                    "post_code": "91190",
-                    "city": "Gif-sur-Yvette",
+                    "post_code": "93100",
+                    "city": "Montreuil",
                     "country": {
                         "code": "FR",
                         "name": "France"
                     }
                 },
                 "emergency_contact": {
-                    "first_name": "John",
-                    "last_name": "Doe",
-                    "email": "urgences@oser-cs.fr",
-                    "home_phone": null,
-                    "mobile_phone": "+33612345678"
+                    "first_name": "Marie-Claude",
+                    "last_name": "Perret",
+                    "email": null,
+                    "home_phone": "+33312344556",
+                    "mobile_phone": null
                 }
-                "submitted": "2018-04-07T23:07:05.943305+02:00"
             }
         ]
 
     create:
+
+    This endpoint allows to create a registration for a student.
+
+    In fact, it does three things:
+
+    1. Create a user for the student
+    2. Create the registration
+    3. Create a student profile and link it to the user and the registration.
 
     ### Date of birth
 
@@ -85,8 +93,14 @@ class RegistrationViewSet(
             "mobile_phone": "..."
         }
 
-    NOTE `email` must be a valid email address. Phone format for `home_phone`
+    `email` must be a valid email address. Phone format for `home_phone`
     and `mobile_phone` is not verified.
+
+    ### School and tutoring group
+
+    The values given must be an ID for an existing school and tutoring group
+    to associate with the student profile. If the IDs do not refer
+    to existing objects a `404 error` will be returned.
     """
 
     queryset = Registration.objects.all()

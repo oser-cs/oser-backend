@@ -158,12 +158,6 @@ class Student(ProfileMixin, models.Model):
         verbose_name='utilisateur',
         related_name='student')
 
-    address = models.ForeignKey(
-        'core.Address',
-        on_delete=models.SET_NULL,
-        null=True,
-        verbose_name='adresse')
-
     tutoring_group = models.ForeignKey(
         'tutoring.TutoringGroup',
         on_delete=models.SET_NULL,
@@ -177,6 +171,29 @@ class Student(ProfileMixin, models.Model):
         null=True,
         related_name='students',
         verbose_name='lycée')
+
+    registration = models.OneToOneField(
+        'register.Registration',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="dossier d'inscription",
+        related_name='student',
+    )
+
+    @property
+    def address(self):
+        """Address of the student defined in their registration."""
+        if self.registration:
+            return self.registration.address
+        return None
+
+    @property
+    def emergency_contact(self):
+        """Emergency contact of the student defined in their registration."""
+        if self.registration:
+            return self.registration.emergency_contact
+        return None
 
     class Meta:  # noqa
         verbose_name = 'lycéen'
