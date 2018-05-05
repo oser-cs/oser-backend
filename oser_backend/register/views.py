@@ -41,7 +41,9 @@ class RegistrationViewSet(
                 "emergency_contact": {
                     "first_name": "John",
                     "last_name": "Doe",
-                    "contact": "urgences@oser-cs.fr"
+                    "email": "urgences@oser-cs.fr",
+                    "home_phone": null,
+                    "mobile_phone": "+33612345678"
                 }
                 "submitted": "2018-04-07T23:07:05.943305+02:00"
             }
@@ -51,7 +53,8 @@ class RegistrationViewSet(
 
     ### Date of birth
 
-    Date of birth must be sent in a ISO-compliant format (in Javascript, `Date.toISOString()` can be used for this).
+    Date of birth must be sent in a ISO-compliant format (in Javascript,
+    `Date.toISOString()` can be used for this).
 
     ### Address
 
@@ -77,10 +80,13 @@ class RegistrationViewSet(
         {
             "first_name": "...",
             "last_name": "...",
-            "contact": "..."
+            "email": "...",
+            "home_phone": "...",
+            "mobile_phone": "..."
         }
 
-    Contact is free-form: it can be a phone number, an email address...
+    NOTE `email` must be a valid email address. Phone format for `home_phone`
+    and `mobile_phone` is not verified.
     """
 
     queryset = Registration.objects.all()
