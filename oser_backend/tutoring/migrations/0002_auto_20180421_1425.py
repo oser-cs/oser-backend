@@ -12,15 +12,9 @@ class Migration(migrations.Migration):
         ('tutoring', '0001_initial'),
         ('core', '0005_auto_20180408_1525'),
         ('users', '0001_initial'),
-        ('profiles', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='tutortutoringgroup',
-            name='tutor',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='profiles.Tutor', verbose_name='Tuteur'),
-        ),
         migrations.AddField(
             model_name='tutortutoringgroup',
             name='tutoring_group',
@@ -35,11 +29,6 @@ class Migration(migrations.Migration):
             model_name='tutoringgroup',
             name='school',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tutoring_groups', to='tutoring.School', verbose_name='lycée'),
-        ),
-        migrations.AddField(
-            model_name='tutoringgroup',
-            name='tutors',
-            field=models.ManyToManyField(blank=True, related_name='tutoring_groups', through='tutoring.TutorTutoringGroup', to='profiles.Tutor', verbose_name='tuteurs'),
         ),
         migrations.AddField(
             model_name='school',
