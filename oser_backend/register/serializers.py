@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 from core.models import Address
 from core.serializers import AddressSerializer
-from tutoring.models import School, TutoringGroup
+from tutoring.models import School
 from profiles.models import Student
 
 from .models import EmergencyContact, Registration
@@ -32,19 +32,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
         write_only=True,
         style={'input_type': 'password'},
     )
-    tutoring_group = serializers.PrimaryKeyRelatedField(
-        label='Groupe de tutorat',
-        help_text='Identifiant du groupe de tutorat du lycéen',
-        queryset=TutoringGroup.objects.all(),
-        required=False,
-        write_only=True,
-    )
     school = serializers.PrimaryKeyRelatedField(
         label='Lycée',
-        help_text='Identifiant du lycée du lycéen',
+        help_text='Lycée du lycéen',
         queryset=School.objects.all(),
         required=False,
-        write_only=True,
+        allow_null=True,
     )
     address = AddressSerializer(
         required=False,
@@ -58,7 +51,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = Registration
         fields = ('id', 'email', 'password',
                   'first_name', 'last_name', 'date_of_birth', 'phone',
-                  'tutoring_group', 'school',
+                  'school', 'grade',
                   'submitted', 'validated',
                   'address', 'emergency_contact',)
 
@@ -73,28 +66,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 'User with this email already exists')
         return email
 
-    def validate(self, data):
-        """Validate object-level input data.
-
-        Tutoring group and school:
-        - If the group is given, check the school is also given
-        - The group must belong to the school
-        """
-        data = super().validate(data)
-        tutoring_group = data.get('tutoring_group', None)
-        school = data.get('school', None)
-
-        if tutoring_group:
-            if not school:
-                raise serializers.ValidationError(
-                    'tutoring_group is set: expected school too, none given')
-
-            if tutoring_group.school != school:
-                raise serializers.ValidationError(
-                    'tutoring group must belong to school')
-
-        return data
-
     def create(self, validated_data):
         """Create the registration from validated data.
 
@@ -104,8 +75,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         address_data = validated_data.pop('address', None)
         emergency_contact_data = validated_data.pop('emergency_contact', None)
-        tutoring_group = validated_data.pop('tutoring_group', None)
-        school = validated_data.pop('school', None)
+        school = validated_data.get('school', None)
 
         # The following block will create a bunch of objects and save them
         # in the database. We don't want them to be saved separately.
@@ -150,7 +120,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
             Student.objects.create(
                 user=user,
                 school=school,
-                tutoring_group=tutoring_group,
                 registration=registration,
             )
 
@@ -160,7 +129,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class StudentRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for registration objects, suited to attach to a student."""
 
-    class Meta:
+    class Meta:  # noqa
         model = Registration
         fields = ('id', 'submitted', 'validated',)
 

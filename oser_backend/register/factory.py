@@ -1,11 +1,13 @@
 """Register factories."""
 
+import random
+
 import factory
 import factory.django
 
+from core.factory import AddressFactory
 from utils import printable_only
 
-from core.factory import AddressFactory
 from . import models
 
 
@@ -48,3 +50,9 @@ class RegistrationFactory(factory.DjangoModelFactory):
     date_of_birth = factory.Faker('past_date', start_date='-20y')
     address = factory.SubFactory(AddressFactory)
     emergency_contact = factory.SubFactory(EmergencyContactFactory)
+
+    @factory.lazy_attribute
+    def grade(self):
+        level = random.choice(['Seconde', 'Première', 'Terminale'])
+        section = random.choice(['S', 'L', 'ES', 'Pro'])
+        return f'{level} {section}'

@@ -2,17 +2,17 @@
 
 from django.contrib.auth import get_user_model
 from rest_framework import status
+from tests.utils import SimpleAPITestCase
 
 from core.factory import AddressFactory
 from core.serializers import AddressSerializer
+from profiles.models import Student
 from register.factory import EmergencyContactFactory, RegistrationFactory
 from register.models import Registration
 from register.serializers import (EmergencyContactSerializer,
                                   RegistrationSerializer)
-from tests.utils import SimpleAPITestCase
 from tutoring.factory import SchoolFactory, TutoringGroupFactory
 from users.factory import UserFactory
-from profiles.models import Student
 
 User = get_user_model()
 
@@ -64,16 +64,17 @@ class RegistrationCreateTest(SimpleAPITestCase):
 
     def test_create_simple(self):
         data = self.get_create_data()
-
         response = self._create(data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         response.data)
 
     def test_user_and_student_created(self):
         data = self.get_create_data()
         email = data['email']
 
         response = self._create(data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         response.data)
 
         obj = Registration.objects.get(pk=response.data['id'])
         user = User.objects.get(email=email)
@@ -88,7 +89,8 @@ class RegistrationCreateTest(SimpleAPITestCase):
             emergency_contact).data
 
         response = self._create(data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         response.data)
 
         # Verify that address and emergency contact were set on registration
         pk = response.data['id']
@@ -97,46 +99,27 @@ class RegistrationCreateTest(SimpleAPITestCase):
         self.assertEqual(obj.emergency_contact.first_name,
                          emergency_contact.first_name)
 
+    def test_create_with_school(self):
+        school = SchoolFactory.create()
+        data = self.get_create_data()
+        data['school'] = school.pk
+
+        response = self._create(data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         response.data)
+
+        # Verify that school was set on registration and student
+        pk = response.data['id']
+        obj = Registration.objects.get(pk=pk)
+        self.assertEqual(obj.school.pk, school.pk)
+        self.assertEqual(obj.student.school.pk, school.pk)
+
     def test_if_email_of_existing_user_returns_bad_request(self):
         user = UserFactory.create()
-
         data = self.get_create_data()
         data['email'] = user.email
 
         response = self._create(data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST, response.data)
         self.assertIn('email', response.data)
-
-    def test_if_tutoring_group_then_school_required(self):
-        tutoring_group = TutoringGroupFactory.create()
-
-        data = self.get_create_data()
-        data['tutoring_group'] = tutoring_group.pk
-
-        response = self._create(data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('non_field_errors', response.data)
-
-    def test_if_tutoring_group_belongs_to_school_ok(self):
-        school = SchoolFactory.create()
-        tutoring_group = TutoringGroupFactory.create(school=school)
-
-        data = self.get_create_data()
-        data['tutoring_group'] = tutoring_group.pk
-        data['school'] = school.pk
-
-        response = self._create(data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-    def test_tutoring_group_must_belong_to_school(self):
-        tutoring_group = TutoringGroupFactory.create()
-        school = SchoolFactory.create()
-        self.assertNotEqual(tutoring_group.school, school)
-
-        data = self.get_create_data()
-        data['tutoring_group'] = tutoring_group.pk
-        data['school'] = school.pk
-
-        response = self._create(data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('non_field_errors', response.data)

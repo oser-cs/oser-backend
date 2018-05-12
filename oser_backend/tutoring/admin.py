@@ -47,16 +47,20 @@ class SchoolAdmin(AutocompleteAddressMixin, admin.ModelAdmin):
 
     list_display = ('__str__', 'uai_code',
                     'get_student_count', 'get_groups_count')
+    search_fields = ('name',)
 
     def get_student_count(self, obj):
+        """Display number of students."""
         return obj.students.count()
     get_student_count.short_description = 'Nombre de lycéens'
 
     def get_groups_count(self, obj):
+        """Display number of tutoring groups."""
         return obj.tutoring_groups.count()
     get_groups_count.short_description = 'Nombre de groupes de tutorat'
 
     def get_readonly_fields(self, request, obj=None):
+        """Make the UAI code (school's ID) read-only when editing."""
         if obj is not None:
             return ['uai_code']
         return []

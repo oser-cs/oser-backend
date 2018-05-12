@@ -35,6 +35,18 @@ class Registration(models.Model):
         'core.Address', on_delete=models.CASCADE, blank=True, null=True,
         verbose_name='adresse',
         help_text="Adresse du lycéen")
+    school = models.ForeignKey(
+        'tutoring.School', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='lycée',
+        help_text='Lycée du lycéen',
+    )
+    grade = models.CharField(
+        max_length=200,
+        verbose_name='classe',
+        help_text='Classe/filière du lycéen (texte libre)',
+        blank=True,
+        null=True,
+    )
     emergency_contact = models.OneToOneField(
         'EmergencyContact',
         on_delete=models.CASCADE, blank=True, null=True,
@@ -68,8 +80,12 @@ class Registration(models.Model):
     def has_create_permission(request):
         return True
 
+    @property
+    def full_name(self):
+        return ' '.join([self.first_name, self.last_name])
+
     def __str__(self):
-        return '{o.first_name} {o.last_name} ({o.submitted})'.format(o=self)
+        return '{o.full_name} ({o.submitted})'.format(o=self)
 
 
 class EmergencyContact(models.Model):
