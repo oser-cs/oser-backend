@@ -12,6 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('register', '0015_auto_20180505_1403'),
+        ('tutoring', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

@@ -12,6 +12,7 @@ class Migration(migrations.Migration):
         ('tutoring', '0001_initial'),
         ('core', '0005_auto_20180408_1525'),
         ('users', '0001_initial'),
+        ('profiles', '0001_initial'),
     ]
 
     operations = [
