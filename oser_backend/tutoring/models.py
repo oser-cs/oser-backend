@@ -146,7 +146,6 @@ class School(models.Model):
         return reverse('api:school-detail', args=[str(self.uai_code)])
 
     @staticmethod
-    @authenticated_users
     def has_read_permission(request):
         return True
 

@@ -45,6 +45,14 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
         return queryset
 
 
+class SchoolChoicesSerializer(serializers.ModelSerializer):
+    """Serializer for available schools."""
+
+    class Meta:  # noqa
+        model = School
+        fields = ('uai_code', 'name')
+
+
 class TutoringGroupSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for TutoringGroup."""
 

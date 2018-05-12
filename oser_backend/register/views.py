@@ -28,6 +28,8 @@ class RegistrationViewSet(
                 "last_name": "Dumont",
                 "date_of_birth": null,
                 "phone": null,
+                "school": "0930965U",
+                "grade": "Première S",
                 "submitted": "2018-05-05T14:15:10.998206+02:00",
                 "address": {
                     "line1": "88 bis rue Jules Guesde",
@@ -79,7 +81,7 @@ class RegistrationViewSet(
     `line2` : optional, default is `""`.
 
     `country` : optional, default is `"FR"`. Must be given as a
-    [country code ](https://en.wikipedia.org/wiki/Country_code).
+    [country code](https://en.wikipedia.org/wiki/Country_code).
 
     ### Emergency contact
 
@@ -96,11 +98,11 @@ class RegistrationViewSet(
     `email` must be a valid email address. Phone format for `home_phone`
     and `mobile_phone` is not verified.
 
-    ### School and tutoring group
+    ### School
 
-    The values given must be an ID for an existing school and tutoring group
-    to associate with the student profile. If the IDs do not refer
-    to existing objects a `404 error` will be returned.
+    The value given must be the school's `uai_code`.
+    You can retrieve the list of available schools thanks to the
+    [schools-choices](#schools-choices) endpoint.
     """
 
     queryset = Registration.objects.all()

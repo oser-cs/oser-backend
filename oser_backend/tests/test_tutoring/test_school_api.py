@@ -2,7 +2,6 @@
 
 from rest_framework import status
 from tutoring.factory import SchoolFactory
-from users.factory import UserFactory
 from tests.utils.api import HyperlinkedAPITestCase
 
 from tutoring.serializers import SchoolSerializer
@@ -20,8 +19,9 @@ class SchoolEndpointsTest(HyperlinkedAPITestCase):
         return response
 
     def test_list(self):
-        self.assertRequiresAuth(
+        self.assertRequestResponse(
             self.perform_list,
+            user=None,
             expected_status_code=status.HTTP_200_OK)
 
     def perform_retrieve(self):
@@ -35,23 +35,10 @@ class SchoolEndpointsTest(HyperlinkedAPITestCase):
             self.perform_retrieve,
             expected_status_code=status.HTTP_200_OK)
 
-    def test_list_students(self):
-        pass  # TODO
-
-    def test_list_tutors(self):
-        pass  # TODO
-
-    def test_list_staff(self):
-        pass  # TODO
-
-    def test_list_tutoring_groups(self):
-        pass  # TODO
-
-    def test_list_meetings(self):
-        pass  # TODO
-
-    def test_list_past_meetings(self):
-        pass  # TODO
-
-    def test_list_next_meetings(self):
-        pass  # TODO
+    def test_choices_returns_list_of_uai_codes_and_names(self):
+        self.factory.create_batch(5)
+        url = '/api/schools/choices/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for item in response.data:
+            self.assertSetEqual(set(item), {'uai_code', 'name'})
