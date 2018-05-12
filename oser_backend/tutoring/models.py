@@ -22,7 +22,7 @@ class TutorTutoringGroup(models.Model):
         'TutoringGroup', on_delete=models.CASCADE,
         verbose_name='groupe de tutorat')
     tutor = models.ForeignKey(
-        'profiles.Tutor', on_delete=models.CASCADE, null=True,
+        'profiles.Tutor', on_delete=models.CASCADE,
         verbose_name='Tuteur')
     is_leader = models.BooleanField(default=False, verbose_name='Responsable')
 
@@ -51,7 +51,6 @@ class TutoringGroup(models.Model):
                                     related_name='tutoring_groups',
                                     verbose_name='tuteurs',
                                     blank=True,
-                                    null=True,
                                     through='TutorTutoringGroup')
     school = models.ForeignKey('School', on_delete=models.SET_NULL,
                                null=True,

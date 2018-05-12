@@ -18,7 +18,18 @@ class StudentTestCase(ModelTestCase):
         'tutoring_group': {
             'verbose_name': 'groupe de tutorat',
             'null': True,
+            'blank': True,
         },
+        'school': {
+            'verbose_name': 'lycée',
+            'null': True,
+            'blank': True,
+        },
+        'registration': {
+            'verbose_name': "dossier d'inscription",
+            'null': True,
+            'blank': True,
+        }
     }
     model_tests = {
         'verbose_name': 'lycéen',

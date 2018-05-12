@@ -47,6 +47,7 @@ class Student(ProfileMixin, models.Model):
         'tutoring.TutoringGroup',
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name='students',
         verbose_name='groupe de tutorat')
 
@@ -54,6 +55,7 @@ class Student(ProfileMixin, models.Model):
         'tutoring.School',
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name='students',
         verbose_name='lycée')
 
