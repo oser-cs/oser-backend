@@ -5,8 +5,8 @@ from core.factory import AddressFactory
 from tests.utils import ModelTestCase
 
 
-class ArticleTest(ModelTestCase):
-    """Test the Article model."""
+class AddressTest(ModelTestCase):
+    """Test the Address model."""
 
     model = Address
     field_tests = {

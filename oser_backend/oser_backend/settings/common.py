@@ -66,7 +66,6 @@ PROJECT_APPS = [
     'users.apps.UsersConfig',
     'profiles.apps.ProfilesConfig',
     'tutoring.apps.TutoringConfig',
-    'showcase_site.apps.ShowcaseSiteConfig',
     'visits.apps.VisitsConfig',
     'register.apps.RegisterConfig',
     'api.apps.ApiConfig',

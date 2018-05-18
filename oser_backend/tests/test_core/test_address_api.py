@@ -7,8 +7,8 @@ from core.serializers import AddressSerializer
 from tests.utils import SerializerTestCaseMixin
 
 
-class TestArticleSerializer(SerializerTestCaseMixin, TestCase):
-    """Test the Article serializer."""
+class TestAddressSerializer(SerializerTestCaseMixin, TestCase):
+    """Test the Address serializer."""
 
     serializer_class = AddressSerializer
     factory_class = AddressFactory

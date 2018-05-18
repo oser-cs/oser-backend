@@ -6,14 +6,10 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-import showcase_site.models
 import users.models
 import profiles.models
 import visits.models
 from profiles.factory import StudentFactory, TutorFactory, TutorInGroupFactory
-from showcase_site.factory import (ArticleFactory, CategoryFactory,
-                                   KeyFigureFactory, PartnerFactory,
-                                   TestimonyFactory)
 from visits.factory import PlaceFactory, VisitFactory
 
 from .utils import DataLoader, SeqDataLoader, get_model, watcher
@@ -28,8 +24,6 @@ class Command(BaseCommand):
             get_model,
             (
                 StudentFactory, TutorFactory,
-                CategoryFactory, ArticleFactory, TestimonyFactory,
-                KeyFigureFactory, PartnerFactory,
                 VisitFactory, PlaceFactory,
             )
         ))
@@ -89,44 +83,6 @@ class Command(BaseCommand):
         if not self.known_tutor:
             TutorInGroupFactory.create(**self.known_tutor_data)
 
-    def create_categories(self):
-        category_titles = [
-            title for title in ('Annonces', 'Sorties', 'Focus Europe')
-            if not showcase_site.models.Category.objects.filter(title=title)
-        ]
-        if not category_titles:
-            return
-        for title in category_titles:
-            CategoryFactory.create(title=title)
-
-    def add_random_categories(self, article):
-        ids = tuple(showcase_site.models.Category.objects
-                    .values_list('id', flat=True))
-        amount = min(len(ids), random.randint(0, 3))
-        rand_ids = random.sample(ids, amount)
-        categories = showcase_site.models.Category.objects.filter(
-            id__in=rand_ids)
-        for category in categories:
-            article.categories.add(category)
-        else:
-            self.stdout.write('Added {} categories to {}'
-                              .format(categories.count(), article))
-
-    def create_articles(self):
-        for image in SeqDataLoader('article-{i}.jpg', 5):
-            article = ArticleFactory.create(image=image)
-            self.add_random_categories(article)
-            article.save()
-
-    def create_testimonies(self):
-        TestimonyFactory.create_batch(3)
-
-    def create_key_figures(self):
-        KeyFigureFactory.create_batch(4)
-
-    def create_partners(self):
-        PartnerFactory.create_batch(6)
-
     def create_visits(self):
         with DataLoader().load('visit-factsheet.pdf') as fact_sheet:
             for image in SeqDataLoader('visit-{i}.jpg', 8):
@@ -152,11 +108,6 @@ class Command(BaseCommand):
     def create(self):
         self.create_students()
         self.create_tutors()
-        self.create_categories()
-        self.create_articles()
-        self.create_testimonies()
-        self.create_key_figures()
-        self.create_partners()
         self.create_visits()
         self.add_visit_organizers()
 

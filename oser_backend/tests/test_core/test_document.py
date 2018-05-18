@@ -5,8 +5,8 @@ from core.factory import DocumentFactory
 from tests.utils import ModelTestCase
 
 
-class ArticleTest(ModelTestCase):
-    """Test the Article model."""
+class DocumentTest(ModelTestCase):
+    """Test the Document model."""
 
     model = Document
     field_tests = {
