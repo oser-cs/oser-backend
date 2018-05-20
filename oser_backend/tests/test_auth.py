@@ -24,7 +24,7 @@ class TestTokenAuth(APITestCase):
     def perform_get_token(self):
         post_data = {
             'username': self.user.email,
-            'password': self.fake_password
+            'password': self.fake_password,
         }
         response = self.client.post('/api/auth/get-token/', data=post_data)
         return response

@@ -1,6 +1,8 @@
 """Users tests."""
-from django.contrib.auth import get_user_model
+
+from django.contrib.auth import get_user_model, authenticate
 from django.test import TestCase
+from django.test import RequestFactory
 
 from tests.utils import ModelTestCase
 from users.factory import UserFactory
@@ -11,22 +13,32 @@ User = get_user_model()
 class EmailAuthenticationTest(TestCase):
     """Tests to make sure a user can authenticate with email and password."""
 
+    def setUp(self):
+        self.creds = {
+            'email': 'john.doe@email.net',
+            'password': 'secretpassword',
+        }
+
+    def create_user(self, **kwargs):
+        return User.objects.create_user(**self.creds, **kwargs)
+
     def test_authenticate_with_email_succeeds(self):
-        email, password = 'john.doe@email.net', 'secretpassword'
-        user = User.objects.create(email=email)
-        user.set_password(password)
-        user.save()
-        logged_in = self.client.login(email=email, password=password)
+        self.create_user()
+        logged_in = self.client.login(**self.creds)
         self.assertTrue(logged_in)
 
     def test_authenticate_with_username_fails(self):
-        username = 'johndoe'
-        email, password = 'john.doe@email.net', 'secretpassword'
-        user = User.objects.create(username=username, email=email)
-        user.set_password(password)
-        user.save()
-        logged_in = self.client.login(username=username, password=password)
+        self.creds['username'] = 'johndoe'
+        self.create_user()
+        self.creds.pop('email')
+        logged_in = self.client.login(**self.creds)
         self.assertFalse(logged_in)
+
+    def test_authenticate_with_django_authenticate(self):
+        self.create_user()
+        request = RequestFactory().get('/test')
+        user = authenticate(request=request, **self.creds)
+        self.assertIsNotNone(user)
 
 
 class UserModelTest(ModelTestCase):
