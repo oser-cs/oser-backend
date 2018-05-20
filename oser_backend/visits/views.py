@@ -17,6 +17,9 @@ from .serializers import (ParticipationIdentifySerializer,
 class VisitViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoints that allows visits to be viewed.
 
+    When the current user participates in a visit, a `"participates": true`
+    field is present.
+
     list:
 
     List visits and retrieve partial information about them.
@@ -33,8 +36,8 @@ class VisitViewSet(viewsets.ReadOnlyModelViewSet):
                 "deadline": "2018-05-28T23:59:00+02:00",
                 "passed": false,
                 "registrations_open": true,
-                "participants": 0,
-                "organizers": 1,
+                "participants": [4],
+                "organizers": [3],
                 "image": "http://localhost:8000/media/visits/images/visit-1.jpg",
                 "url": "http://localhost:8000/api/visits/1/"
             }

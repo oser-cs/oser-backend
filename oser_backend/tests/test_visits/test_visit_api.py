@@ -36,12 +36,16 @@ class VisitEndpointsTest(SimpleAPITestCase):
         self.assertRequiresAuth(
             self.perform_retrieve, expected_status_code=status.HTTP_200_OK)
 
-    def test_retrieve_with_participants(self):
+    def perform_retrieve_with_participant(self):
         obj = self.factory.create()
         user = UserFactory.create()
         Participation.objects.create(visit=obj, user=user)
         self.client.force_login(user=user)
         response = self.perform_retrieve(obj=obj)
+        return response
+
+    def test_retrieve_with_participant(self):
+        response = self.perform_retrieve_with_participant()
         self.assertEqual(response.status_code, status.HTTP_200_OK,
                          response.data)
 
@@ -51,6 +55,7 @@ class VisitSerializerTestCase(SerializerTestCaseMixin, TestCase):
 
     serializer_class = VisitSerializer
     factory_class = VisitFactory
+    request_url = '/api/visits/'
 
     expected_fields = (
         'id', 'url',

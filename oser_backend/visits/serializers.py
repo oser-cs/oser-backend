@@ -58,18 +58,16 @@ class VisitListSerializer(serializers.HyperlinkedModelSerializer):
     participants = serializers.SerializerMethodField()
 
     def get_participants(self, obj):
-        """Return number of participants."""
-        return obj.participants.count()
+        return obj.participants.values_list('id', flat=True)
 
     organizers = serializers.SerializerMethodField()
 
     def get_organizers(self, obj):
-        """Return number of organizers."""
-        return obj.organizers.count()
+        return obj.organizers.values_list('user__id', flat=True)
 
     passed = serializers.SerializerMethodField()
 
-    def get_passed(self, obj):
+    def get_passed(self, obj: Visit) -> bool:
         """Return true if the visit already happened, false otherwise."""
         return obj.date < now()
 
@@ -94,7 +92,8 @@ class VisitSerializer(VisitListSerializer):
         fields = ('id', 'title', 'summary', 'description', 'place',
                   'date', 'deadline', 'passed', 'registrations_open',
                   'participants', 'organizers',
-                  'attached_files', 'image', 'fact_sheet', 'url',)
+                  'attached_files', 'image', 'fact_sheet',
+                  'url',)
 
 
 class ParticipationWriteSerializer(serializers.ModelSerializer):
