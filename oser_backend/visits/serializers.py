@@ -4,87 +4,101 @@ from django.utils.timezone import now
 from rest_framework import serializers
 
 from core.markdown import MarkdownField
+from core.serializers import AddressSerializer
+from profiles.models import Tutor
 from users.models import User
+from users.serializers import UserSerializer
 
-from .models import Place, Visit, VisitAttachedFile, VisitParticipant
+from .models import AttachedFile, Participation, Place, Visit
 
 
 class PlaceSerializer(serializers.ModelSerializer):
     """Serializer for Place."""
 
     description = MarkdownField()
+    address = AddressSerializer()
 
     class Meta:  # noqa
         model = Place
         fields = ('id', 'name', 'address', 'description')
 
 
+class ParticipationSerializer(serializers.ModelSerializer):
+    """Serializer for visit participations."""
+
+    user = UserSerializer()
+
+    class Meta:  # noqa
+        model = Participation
+        fields = ('id', 'user', 'present', 'accepted',)
+
+
 class VisitOrganizerSerializer(serializers.ModelSerializer):
+    """Serializer for visit organizers."""
+
+    user = UserSerializer()
 
     class Meta:  # noqa
-        model = User
-        fields = ('id', 'first_name', 'last_name', 'gender', 'phone_number')
+        model = Tutor
+        fields = ('id', 'user',)
 
 
-class VisitAttachedFileSerializer(serializers.ModelSerializer):
+class AttachedFileSerializer(serializers.ModelSerializer):
+    """Serializer for required attached files on visits."""
 
     class Meta:  # noqa
-        model = VisitAttachedFile
+        model = AttachedFile
         fields = ('id', 'name', 'required')
 
 
-class VisitSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer for Visit."""
+class VisitListSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for lists of visits."""
 
-    participants = serializers.StringRelatedField(many=True)
+    place = serializers.StringRelatedField()
+    participants = serializers.SerializerMethodField()
+
+    def get_participants(self, obj):
+        """Return number of participants."""
+        return obj.participants.count()
+
+    organizers = serializers.SerializerMethodField()
+
+    def get_organizers(self, obj):
+        """Return number of organizers."""
+        return obj.organizers.count()
+
     passed = serializers.SerializerMethodField()
-    place = PlaceSerializer(read_only=True)
-    organizers = VisitOrganizerSerializer(source='organizers_group.user_set',
-                                          read_only=True,
-                                          many=True)
-    attached_files = VisitAttachedFileSerializer(read_only=True, many=True)
 
     def get_passed(self, obj):
+        """Return true if the visit already happened, false otherwise."""
         return obj.date < now()
 
     class Meta:  # noqa
         model = Visit
+        fields = ('id', 'title', 'summary', 'place', 'date', 'deadline',
+                  'passed', 'registrations_open', 'participants', 'organizers',
+                  'image', 'url')
+        extra_kwargs = {'url': {'view_name': 'api:visit-detail'}}
+
+
+class VisitSerializer(VisitListSerializer):
+    """Serializer for Visit."""
+
+    participants = ParticipationSerializer(source='participations', many=True)
+    place = PlaceSerializer()
+    organizers = VisitOrganizerSerializer(many=True)
+    attached_files = AttachedFileSerializer(many=True)
+
+    class Meta(VisitListSerializer.Meta):  # noqa
+        depth = 1
         fields = ('id', 'title', 'summary', 'description', 'place',
-                  'date', 'passed',
-                  'deadline', 'registrations_open',
-                  'participants',
-                  'organizers',
-                  'attached_files',
-                  'image',
-                  'fact_sheet',
-                  'url',)
-        extra_kwargs = {
-            'url': {'view_name': 'api:visit-detail'},
-        }
+                  'date', 'deadline', 'passed', 'registrations_open',
+                  'participants', 'organizers',
+                  'attached_files', 'image', 'fact_sheet', 'url',)
 
 
-class VisitParticipantReadSerializer(serializers.HyperlinkedModelSerializer):
-    """Readable serializer for visit participants."""
-
-    user = serializers.HyperlinkedRelatedField(
-        'api:user-detail',
-        read_only=True,
-    )
-    visit = serializers.HyperlinkedRelatedField(
-        'api:visit-detail',
-        read_only=True,
-    )
-
-    class Meta:  # noqa
-        model = VisitParticipant
-        fields = ('id', 'user', 'visit', 'present', 'url')
-        extra_kwargs = {
-            'url': {'view_name': 'api:visit-participants-detail'},
-        }
-
-
-class VisitParticipantWriteSerializer(serializers.ModelSerializer):
-    """Writable serializer for visit participants."""
+class ParticipationWriteSerializer(serializers.ModelSerializer):
+    """Serializer for adding participants to visits."""
 
     user_id = serializers.PrimaryKeyRelatedField(
         source='user',
@@ -96,38 +110,16 @@ class VisitParticipantWriteSerializer(serializers.ModelSerializer):
         help_text='Identifier for the visit')
 
     class Meta:  # noqa
-        model = VisitParticipant
+        model = Participation
         fields = ('id', 'user_id', 'visit_id', 'present')
 
 
-class VisitParticipantDetailSerializer(serializers.ModelSerializer):
-    """Serializer with detailed information about visit participants."""
-
-    user_id = serializers.PrimaryKeyRelatedField(
-        source='user.id',
-        queryset=User.objects.all(),
-        label='Utilisateur')
-    first_name = serializers.CharField(
-        source='user.first_name', read_only=True)
-    last_name = serializers.CharField(
-        source='user.last_name', read_only=True)
-    phone_number = serializers.CharField(
-        source='user.phone_number', read_only=True)
-    email = serializers.EmailField(source='user.email',
-                                   read_only=True)
-
-    class Meta:  # noqa
-        model = VisitParticipant
-        fields = ('user_id', 'first_name', 'last_name',
-                  'phone_number', 'email', 'present',)
-
-
-class VisitParticipantIdentifySerializer(serializers.ModelSerializer):
+class ParticipationIdentifySerializer(serializers.ModelSerializer):
     """Serializer for the specialized get_id() view."""
 
     user_id = serializers.IntegerField()
     visit_id = serializers.IntegerField()
 
     class Meta:  # noqa
-        model = VisitParticipant
+        model = Participation
         fields = ('user_id', 'visit_id',)

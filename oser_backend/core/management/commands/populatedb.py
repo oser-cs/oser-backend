@@ -6,11 +6,12 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-import users.models
 import profiles.models
+import users.models
 import visits.models
 from profiles.factory import StudentFactory, TutorFactory, TutorInGroupFactory
 from visits.factory import PlaceFactory, VisitFactory
+from visits.models import VisitOrganizer
 
 from .utils import DataLoader, SeqDataLoader, get_model, watcher
 
@@ -91,18 +92,15 @@ class Command(BaseCommand):
     def add_visit_organizers(self):
         tutors = profiles.models.Tutor.objects.all()
 
-        def add_to_organizers(visit, user):
-            visit.organizers_group.user_set.add(user)
-
         for visit in visits.models.Visit.objects.all():
             # add 2 organizers to each visit
             for tutor in random.choices(tutors, k=2):
-                add_to_organizers(visit, tutor.user)
+                VisitOrganizer.objects.create(visit=visit, tutor=tutor)
         # add known tutor to organizers of a visit.
         # use last visit so to be sure it will have open registrations.
         visit = visits.models.Visit.objects.last()
-        if visit.organizers_group not in self.known_tutor.user.groups.all():
-            add_to_organizers(visit, self.known_tutor.user)
+        if self.known_tutor not in visit.organizers.all():
+            VisitOrganizer.objects.create(visit=visit, tutor=self.known_tutor)
 
     @watcher(*affected)
     def create(self):

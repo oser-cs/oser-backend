@@ -6,6 +6,8 @@ import factory.django
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from . import models
+from core.factory import AddressFactory
+
 
 User = get_user_model()
 
@@ -18,7 +20,7 @@ class PlaceFactory(factory.DjangoModelFactory):
         exclude = ('_description',)
 
     name = factory.Faker('company', locale='fr')
-    address = factory.Faker('address', locale='fr')
+    address = factory.SubFactory(AddressFactory)
     _description = factory.Faker('paragraphs', nb=3, locale='fr')
     description = factory.LazyAttribute(lambda o: '\n'.join(o._description))
 
@@ -73,17 +75,17 @@ class VisitWithClosedRegistrationsFactory(VisitFactory):
     deadline_random_range = (-10, -6)  # guaranteed to be before today
 
 
-class VisitParticipantFactory(factory.DjangoModelFactory):
+class ParticipationFactory(factory.DjangoModelFactory):
     """Visit participant object factory.
 
     Users and visit are picked from pre-existing objects,
     instead of being created from scratch.
     This means the database must have at least one user and one visit to
-    create a VisitParticipant object.
+    create a Participation object.
     """
 
     class Meta:  # noqa
-        model = models.VisitParticipant
+        model = models.Participation
 
     @factory.lazy_attribute
     def user(self):

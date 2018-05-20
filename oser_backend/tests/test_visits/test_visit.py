@@ -69,12 +69,8 @@ class VisitTest(ModelTestCase):
         visit = VisitWithClosedRegistrationsFactory.create()
         self.assertFalse(visit.registrations_open)
 
-    def test_organizers_group_name_contains_visit_id(self):
-        self.assertIn(str(self.obj.id), self.obj.organizers_group_name)
-
-    def test_organizers_group_name_contains_visit_title(self):
-        # limit to 50 characters, the group name being limited to 80
-        self.assertIn(self.obj.title[:50], self.obj.organizers_group_name)
+    def test_organizers(self):
+        self.assertEqual(0, self.obj.organizers.count())
 
     def test_attched_files_relationship(self):
         self.assertIsNotNone(getattr(self.obj, 'attached_files', None))

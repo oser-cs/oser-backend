@@ -39,8 +39,8 @@ router.register('registrations', register_views.RegistrationViewSet)
 
 # Visits views
 router.register('visits', visits_views.VisitViewSet)
-router.register('visit-participants', visits_views.VisitParticipantsViewSet,
-                base_name='visit-participants')
+router.register('participants', visits_views.ParticipationsViewSet,
+                base_name='participants')
 router.register('places', visits_views.PlaceViewSet)
 
 # Core views

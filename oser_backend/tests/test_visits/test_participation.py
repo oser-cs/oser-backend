@@ -1,16 +1,17 @@
-"""VisitParticipant model tests."""
+"""Participation model tests."""
 
 from django.db.utils import IntegrityError
-from visits.models import VisitParticipant
 from tests.utils import ModelTestCase
-from visits.factory import VisitFactory
+
 from users.factory import UserFactory
+from visits.factory import VisitFactory
+from visits.models import Participation
 
 
-class VisitParticipantTest(ModelTestCase):
-    """Test the VisitParticipant model."""
+class ParticipationTest(ModelTestCase):
+    """Test the Participation model."""
 
-    model = VisitParticipant
+    model = Participation
     field_tests = {
         'user': {
             'verbose_name': 'utilisateur',
@@ -28,14 +29,13 @@ class VisitParticipantTest(ModelTestCase):
         },
     }
     model_tests = {
-        'verbose_name': 'participant à la sortie',
-        'verbose_name_plural': 'participants à la sortie',
+        'verbose_name': 'participation',
         'unique_together': (('user', 'visit'),),
     }
 
     def create(self):
-        return VisitParticipant.objects.create(user=self.user,
-                                               visit=self.visit)
+        return Participation.objects.create(user=self.user,
+                                            visit=self.visit)
 
     def setUp(self):
         self.user = UserFactory.create()
@@ -51,11 +51,3 @@ class VisitParticipantTest(ModelTestCase):
 
     def test_str_contains_visit(self):
         self.assertIn(str(self.visit), str(self.obj))
-
-    def test_get_absolute_url(self):
-        self.client.force_login(UserFactory.create())
-        url = self.obj.get_absolute_url()
-        expected = '/api/visit-participants/{}/'.format(self.obj.visit.pk)
-        self.assertEqual(url, expected)
-        response = self.client.get(url)
-        self.assertEqual(200, response.status_code)

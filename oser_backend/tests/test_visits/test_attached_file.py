@@ -1,13 +1,13 @@
-"""VisitAttachedFile model tests."""
+"""AttachedFile model tests."""
 from tests.utils import ModelTestCase
 from visits.factory import VisitFactory
-from visits.models import VisitAttachedFile
+from visits.models import AttachedFile
 
 
-class VisitAttachedFileTest(ModelTestCase):
-    """Test the VisitAttachedFile model."""
+class AttachedFileTest(ModelTestCase):
+    """Test the AttachedFile model."""
 
-    model = VisitAttachedFile
+    model = AttachedFile
     field_tests = {
         'name': {
             'verbose_name': 'nom',
@@ -30,7 +30,7 @@ class VisitAttachedFileTest(ModelTestCase):
     @classmethod
     def setUpTestData(cls):
         visit = VisitFactory.create()
-        cls.obj = VisitAttachedFile.objects.create(name='My attached file',
+        cls.obj = AttachedFile.objects.create(name='My attached file',
                                                    visit=visit,
                                                    required=True)
 

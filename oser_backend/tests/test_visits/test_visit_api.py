@@ -2,9 +2,11 @@
 
 from django.test import TestCase
 from rest_framework import status
+from tests.utils import SerializerTestCaseMixin, SimpleAPITestCase
 
-from tests.utils import SimpleAPITestCase, SerializerTestCaseMixin
+from users.factory import UserFactory
 from visits.factory import VisitFactory
+from visits.models import Participation
 from visits.serializers import VisitSerializer
 
 
@@ -23,8 +25,9 @@ class VisitEndpointsTest(SimpleAPITestCase):
         self.assertRequiresAuth(
             self.perform_list, expected_status_code=status.HTTP_200_OK)
 
-    def perform_retrieve(self):
-        obj = self.factory.create()
+    def perform_retrieve(self, obj=None):
+        if obj is None:
+            obj = self.factory.create()
         url = '/api/visits/{obj.pk}/'.format(obj=obj)
         response = self.client.get(url)
         return response
@@ -33,12 +36,14 @@ class VisitEndpointsTest(SimpleAPITestCase):
         self.assertRequiresAuth(
             self.perform_retrieve, expected_status_code=status.HTTP_200_OK)
 
-    def perform_list_participants(self, obj=None):
-        if obj is None:
-            obj = self.factory.create()
-        url = '/api/visits/{obj.pk}/participants/'.format(obj=obj)
-        response = self.client.get(url)
-        return response
+    def test_retrieve_with_participants(self):
+        obj = self.factory.create()
+        user = UserFactory.create()
+        Participation.objects.create(visit=obj, user=user)
+        self.client.force_login(user=user)
+        response = self.perform_retrieve(obj=obj)
+        self.assertEqual(response.status_code, status.HTTP_200_OK,
+                         response.data)
 
 
 class VisitSerializerTestCase(SerializerTestCaseMixin, TestCase):

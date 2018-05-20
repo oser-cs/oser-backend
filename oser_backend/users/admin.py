@@ -3,15 +3,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
-from guardian.admin import GuardedModelAdminMixin
 
-from visits.admin import VisitParticipantInline
+from visits.admin import ParticipationInline
 
 from .models import User
 
 
-class UserVisitParticipantInline(VisitParticipantInline):
-    """Inline for VisitParticipant on the User admin panel.
+class UserParticipationInline(ParticipationInline):
+    """Inline for Participation on the User admin panel.
 
     All fields are read-only.
     """
@@ -25,7 +24,7 @@ class UserVisitParticipantInline(VisitParticipantInline):
 
 
 @admin.register(User)
-class CustomUserAdmin(GuardedModelAdminMixin, UserAdmin):
+class CustomUserAdmin(UserAdmin):
     """Customized user admin panel."""
 
     # The fields to be used in displaying the User model.
@@ -58,4 +57,4 @@ class CustomUserAdmin(GuardedModelAdminMixin, UserAdmin):
          ),
     )
 
-    inlines = (UserVisitParticipantInline, )
+    inlines = (UserParticipationInline, )

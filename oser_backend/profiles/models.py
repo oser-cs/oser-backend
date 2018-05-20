@@ -71,16 +71,12 @@ class Student(ProfileMixin, models.Model):
     @property
     def address(self):
         """Address of the student defined in their registration."""
-        if self.registration:
-            return self.registration.address
-        return None
+        return getattr(self.registration, 'address', None)
 
     @property
     def emergency_contact(self):
         """Emergency contact of the student defined in their registration."""
-        if self.registration:
-            return self.registration.emergency_contact
-        return None
+        return getattr(self.registration, 'emergency_contact', None)
 
     class Meta:  # noqa
         verbose_name = 'lycéen'

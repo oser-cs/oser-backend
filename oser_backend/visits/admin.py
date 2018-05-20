@@ -2,9 +2,7 @@
 
 from django import forms
 from django.contrib import admin
-from guardian.admin import GuardedModelAdmin
-from guardian.shortcuts import get_objects_for_user
-from .models import Visit, Place, VisitAttachedFile
+from .models import Visit, Place, AttachedFile, Participation
 
 # Register your models here.
 
@@ -55,40 +53,56 @@ class VisitForm(forms.ModelForm):
             self.add_error('deadline', error)
 
 
-class VisitParticipantInline(admin.StackedInline):
-    """Inline for VisitParticipant."""
+class ParticipationInline(admin.StackedInline):
+    """Inline for Participation."""
 
     model = Visit.participants.through
     extra = 0
 
 
-class VisitAttachedFileInline(admin.TabularInline):
-    """Inline for VisitAttachedFile."""
+class AttachedFileInline(admin.TabularInline):
+    """Inline for AttachedFile."""
 
-    model = VisitAttachedFile
+    model = AttachedFile
+    extra = 0
+
+
+@admin.register(Participation)
+class ParticipationAdmin(admin.ModelAdmin):
+    """Admin panel for visit participations."""
+
+    list_display = ('visit', 'user', 'accepted', 'present')
+    list_filter = ('visit',)
+
+
+@admin.register(Visit.organizers.through)
+class VisitOrganizersAdmin(admin.ModelAdmin):
+    """Admin panel for visit organizers."""
+
+    list_display = ('visit', 'tutor',)
+
+
+class OrganizersInline(admin.TabularInline):
+    """Inline for visit organizers."""
+
+    model = Visit.organizers.through
     extra = 0
 
 
 @admin.register(Visit)
-class VisitAdmin(GuardedModelAdmin):
+class VisitAdmin(admin.ModelAdmin):
     """Admin panel for visits."""
 
     # IDEA create a dashboard using:
     # https://medium.com/@hakibenita/how-to-turn-django-admin-into-a-lightweight-dashboard-a0e0bbf609ad
 
     form = VisitForm
-    inlines = (VisitParticipantInline, VisitAttachedFileInline,)
+    inlines = (OrganizersInline, ParticipationInline, AttachedFileInline,)
     list_display = ('__str__', 'place', 'date', 'deadline',
                     '_registrations_open', 'num_participants')
     list_filter = ('date', RegistrationsOpenFilter)
     search_fields = ('title', 'place',)
-    exclude = ('participants', 'organizers_group',)
-
-    def get_queryset(self, request):
-        if request.user.is_superuser:
-            return super().get_queryset(request)
-        # show only visits that user can manage
-        return get_objects_for_user(request.user, 'visits.manage_visit')
+    exclude = ('participants', 'organizers',)
 
     def num_participants(self, obj):
         return obj.participants.count()

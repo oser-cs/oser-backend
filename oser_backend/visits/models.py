@@ -40,15 +40,18 @@ class VisitQuerySet(models.QuerySet):
         return self.filter(date__gt=now())
 
 
-class VisitParticipant(models.Model):
-    """Through-model for visit participants.
+class Participation(models.Model):
+    """Represents the participation of a user to a visit.
 
-    Allows to store whether the user was present to the visit.
+    Allows to store whether the user was present to the visit,
+    and whether their files were validated.
     """
 
     user = models.ForeignKey('users.User', verbose_name='utilisateur',
+                             related_name='participations',
                              on_delete=models.CASCADE, null=True)
     visit = models.ForeignKey('Visit', verbose_name='sortie',
+                              related_name='participations',
                               on_delete=models.CASCADE)
     accepted = models.NullBooleanField(
         'dossier validé',
@@ -61,14 +64,9 @@ class VisitParticipant(models.Model):
     )
 
     class Meta:  # noqa
-        verbose_name = 'participant à la sortie'
-        verbose_name_plural = 'participants à la sortie'
+        verbose_name = 'participation'
         # prevent a user from participating visit multiple times
         unique_together = (('user', 'visit'),)
-
-    def get_absolute_url(self):
-        return reverse('api:visit-participants-detail',
-                       args=[str(self.visit.pk)])
 
     # Permissions
 
@@ -94,14 +92,29 @@ class VisitParticipant(models.Model):
         return '{} participates in {}'.format(self.user, self.visit)
 
 
-class VisitAttachedFile(models.Model):
+class VisitOrganizer(models.Model):
+    """Represent a tutor who organizes a visit."""
+
+    tutor = models.ForeignKey(
+        'profiles.Tutor', on_delete=models.CASCADE, verbose_name='tuteur')
+    visit = models.ForeignKey(
+        'Visit', on_delete=models.CASCADE, verbose_name='sortie')
+
+    class Meta:  # noqa
+        verbose_name = 'organisateur'
+
+    def __str__(self):
+        return str(self.tutor)
+
+
+class AttachedFile(models.Model):
     """Represents a file that a visit requires a participant to provide.
 
     This is only used to manage required files for a visit.
     => This model does not contain an actual file field.
 
     Actual files will be given through
-    VisitParticipantAttachedFile objects when a user participates in a visit.
+    ParticipationAttachedFile objects when a user participates in a visit.
     """
 
     name = models.CharField('nom', max_length=200)
@@ -169,32 +182,21 @@ class Visit(models.Model):
         help_text="Formats supportés : PDF",
         upload_to='visits/fact_sheets/')
     participants = models.ManyToManyField('users.User',
-                                          through='VisitParticipant')
-    organizers_group = models.OneToOneField('auth.Group',
-                                            on_delete=models.SET_NULL,
-                                            null=True,
-                                            verbose_name='organisateurs')
+                                          through='Participation')
+    organizers = models.ManyToManyField('profiles.Tutor',
+                                        through='VisitOrganizer',
+                                        related_name='organized_visits')
 
     def _registrations_open(self):
         return now() < self.deadline
-    # to display fancy icon instead of True/False
+    # display fancy icon in admin instead of True/False
     _registrations_open.boolean = True
-    # don't define property directly because prop.fget.boolean doesn't work
     registrations_open = property(_registrations_open)
     registrations_open.fget.short_description = 'Inscriptions ouvertes'
-
-    @property
-    def organizers_group_name(self):
-        group_name = 'Organisateurs - {} : {}'.format(self.id, self.title)
-        # limit group name to 80 characters (i.e. Group.name.max_length)
-        return group_name[:80]
 
     class Meta:  # noqa
         ordering = ('date',)
         verbose_name = 'sortie'
-        permissions = (
-            ('manage_visit', 'Can manage visit'),
-        )
 
     # Read-only permissions
 
@@ -227,18 +229,18 @@ class Place(models.Model):
     """Represents a place a visit happens at."""
 
     name = models.CharField('nom', max_length=200)
-    address = models.CharField(
-        'adresse', max_length=200,
-        help_text=(
-            "L'adresse complète de ce lieu : "
-            "numéro, rue ou voie, code postal, ville, pays si pertinent."
-        ))
+    address = models.ForeignKey(
+        'core.Address', on_delete=models.CASCADE, null=True,
+        verbose_name='adresse',
+        help_text='Adresse complète de ce lieu'
+    )
     description = MarkdownxField(
         default='', blank=True,
         help_text=(
             "Une description de ce lieu : de quoi s'agit-il ? "
             "Ce champ supporte Markdown."
-        ))
+        )
+    )
 
     class Meta:  # noqa
         verbose_name = 'lieu'

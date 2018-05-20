@@ -16,7 +16,6 @@ class PlaceTest(ModelTestCase):
         },
         'address': {
             'verbose_name': 'adresse',
-            'max_length': 200,
         },
         'description': {
             'default': '',
