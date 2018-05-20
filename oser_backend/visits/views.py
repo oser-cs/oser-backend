@@ -1,16 +1,10 @@
 """Visits API views."""
 
-from django.shortcuts import get_object_or_404
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import list_route
-from rest_framework.response import Response
-
-from users.models import User
+from rest_framework import mixins, viewsets
 
 from .models import Participation, Place, Visit
-from .serializers import (ParticipationIdentifySerializer,
-                          ParticipationWriteSerializer, PlaceSerializer,
+from .serializers import (ParticipationSerializer, PlaceSerializer,
                           VisitListSerializer, VisitSerializer)
 
 
@@ -87,6 +81,7 @@ class VisitViewSet(viewsets.ReadOnlyModelViewSet):
                         "date_of_birth": null,
                         "url": "http://localhost:8000/api/users/4/"
                     },
+                    "visit": 1,
                     "present": null,
                     "accepted": null
                 }
@@ -135,38 +130,48 @@ class VisitViewSet(viewsets.ReadOnlyModelViewSet):
 class ParticipationsViewSet(mixins.CreateModelMixin,
                             mixins.DestroyModelMixin,
                             viewsets.GenericViewSet):
-    """API endpoints to manage participants of visits."""
+    """API endpoints to manage visit participations.
 
-    permission_classes = [DRYPermissions]
+    create:
+
+    Add a participant to a visit.
+
+    ### Example payload
+
+        {
+            "user": 3,
+            "visit": 1
+        }
+
+    ### Example response
+
+        {
+            "id": 5,
+            "visit": 1,
+            "user": {
+                "id": 3,
+                "email": "john.doe@example.com",
+                "profile_type": null,
+                "first_name": "John",
+                "last_name": "Doe",
+                "gender": null,
+                "phone_number": null,
+                "date_of_birth": null,
+                "url": "http://localhost:8000/api/users/3/"
+            },
+            "present": null,
+            "accepted": null
+        }
+
+    destroy:
+
+    Remove a participant from a visit. No response data returned.
+
+    """
+
     queryset = Participation.objects.all()
-
-    def get_serializer_class(self):
-        """Return the right serializer class for each action."""
-        if self.action == 'get_id':
-            return ParticipationIdentifySerializer
-        else:
-            return ParticipationWriteSerializer
-
-    @list_route(methods=['put'], url_path='get-id')
-    def get_id(self, request):
-        """Get ID of participant from user and visit.
-
-        Useful to perform a DELETE request afterwards (which only accepts
-        a participant ID).
-        """
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            user = get_object_or_404(
-                User, pk=serializer.validated_data['user_id'])
-            visit = get_object_or_404(
-                Visit, pk=serializer.validated_data['visit_id'])
-            participant = get_object_or_404(Participation,
-                                            user=user,
-                                            visit=visit)
-            return Response({'id': participant.id}, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+    serializer_class = ParticipationSerializer
+    permission_classes = [DRYPermissions]
 
 
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):

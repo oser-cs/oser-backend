@@ -23,14 +23,50 @@ class PlaceSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'address', 'description')
 
 
-class ParticipationSerializer(serializers.ModelSerializer):
-    """Serializer for visit participations."""
+class ParticipationWriteSerializer(serializers.ModelSerializer):
+    """Serializer for adding participants to visits."""
 
-    user = UserSerializer()
+    user_id = serializers.PrimaryKeyRelatedField(
+        source='user',
+        queryset=User.objects.all(),
+        help_text='Identifier for the user')
+    visit_id = serializers.PrimaryKeyRelatedField(
+        source='visit',
+        queryset=Visit.objects.all(),
+        help_text='Identifier for the visit')
 
     class Meta:  # noqa
         model = Participation
-        fields = ('id', 'user', 'present', 'accepted',)
+        fields = ('id', 'user_id', 'visit_id', 'present')
+
+
+class UserField(serializers.Field):
+    """Custom user field used by ParticipationSerializer."""
+
+    def to_internal_value(self, user_id: int) -> User:
+        """Write from an ID as a user."""
+        return User.objects.get(id=user_id)
+
+    def to_representation(self, user: User) -> dict:
+        """Read from a user as serialized user data."""
+        request = self.context['request']
+        return UserSerializer(user, context={'request': request}).data
+
+
+class ParticipationSerializer(serializers.ModelSerializer):
+    """Serializer for visit participations."""
+
+    user = UserField(
+        label='Utilisateur',
+        help_text='Identifier for the user that participates.')
+    visit = serializers.PrimaryKeyRelatedField(
+        queryset=Visit.objects.all(),
+        label='Sortie',
+        help_text='Identifier for the associated visit.')
+
+    class Meta:  # noqa
+        model = Participation
+        fields = ('id', 'user', 'visit', 'present', 'accepted',)
 
 
 class VisitOrganizerSerializer(serializers.ModelSerializer):
@@ -94,31 +130,3 @@ class VisitSerializer(VisitListSerializer):
                   'participants', 'organizers',
                   'attached_files', 'image', 'fact_sheet',
                   'url',)
-
-
-class ParticipationWriteSerializer(serializers.ModelSerializer):
-    """Serializer for adding participants to visits."""
-
-    user_id = serializers.PrimaryKeyRelatedField(
-        source='user',
-        queryset=User.objects.all(),
-        help_text='Identifier for the user')
-    visit_id = serializers.PrimaryKeyRelatedField(
-        source='visit',
-        queryset=Visit.objects.all(),
-        help_text='Identifier for the visit')
-
-    class Meta:  # noqa
-        model = Participation
-        fields = ('id', 'user_id', 'visit_id', 'present')
-
-
-class ParticipationIdentifySerializer(serializers.ModelSerializer):
-    """Serializer for the specialized get_id() view."""
-
-    user_id = serializers.IntegerField()
-    visit_id = serializers.IntegerField()
-
-    class Meta:  # noqa
-        model = Participation
-        fields = ('user_id', 'visit_id',)
