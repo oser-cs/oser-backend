@@ -63,7 +63,10 @@ class VisitViewSet(viewsets.ReadOnlyModelViewSet):
                 },
                 "description": ""
             },
-            "date": "2018-05-30T14:00:00+02:00",
+            "date": "2018-05-30",
+            "start_time": "14:00:00",
+            "end_time": "16:00:00",
+            "meeting": "Devant les escaliers de l'entrée principale",
             "passed": false,
             "deadline": "2018-05-28T23:59:00+02:00",
             "registrations_open": true,
@@ -102,15 +105,9 @@ class VisitViewSet(viewsets.ReadOnlyModelViewSet):
                     }
                 }
             ],
-            "attached_files": [
-                {
-                    "id": 1,
-                    "name": "Autorisation de sortie",
-                    "required": true
-                }
-            ],
             "image": "http://localhost:8000/media/visits/images/visit1.jpg",
-            "fact_sheet": "http://localhost:8000/media/visits/fact_sheets/visit1-factsheet.pdf",
+            "fact_sheet": "http://localhost:8000/media/visits/fact_sheets/visit1.pdf",
+            "permission": "http://localhost:8000/media/visits/visit_permissions/visit1.pdf",
             "url": "http://localhost:8000/api/visits/1/"
         }
 

@@ -9,7 +9,7 @@ from profiles.models import Tutor
 from users.models import User
 from users.serializers import UserSerializer
 
-from .models import AttachedFile, Participation, Place, Visit
+from .models import Participation, Place, Visit
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -79,14 +79,6 @@ class VisitOrganizerSerializer(serializers.ModelSerializer):
         fields = ('id', 'user',)
 
 
-class AttachedFileSerializer(serializers.ModelSerializer):
-    """Serializer for required attached files on visits."""
-
-    class Meta:  # noqa
-        model = AttachedFile
-        fields = ('id', 'name', 'required')
-
-
 class VisitListSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for lists of visits."""
 
@@ -105,13 +97,16 @@ class VisitListSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_passed(self, obj: Visit) -> bool:
         """Return true if the visit already happened, false otherwise."""
-        return obj.date < now()
+        return obj.date < now().date() and obj.end_time < now().time()
 
     class Meta:  # noqa
         model = Visit
-        fields = ('id', 'title', 'summary', 'place', 'date', 'deadline',
-                  'passed', 'registrations_open', 'participants', 'organizers',
-                  'image', 'url')
+        fields = (
+            'id', 'title', 'summary',
+            'place', 'date', 'start_time', 'end_time',
+            'deadline', 'passed', 'registrations_open',
+            'participants', 'organizers',
+            'image', 'url')
         extra_kwargs = {'url': {'view_name': 'api:visit-detail'}}
 
 
@@ -121,12 +116,13 @@ class VisitSerializer(VisitListSerializer):
     participants = ParticipationSerializer(source='participations', many=True)
     place = PlaceSerializer()
     organizers = VisitOrganizerSerializer(many=True)
-    attached_files = AttachedFileSerializer(many=True)
 
     class Meta(VisitListSerializer.Meta):  # noqa
         depth = 1
-        fields = ('id', 'title', 'summary', 'description', 'place',
-                  'date', 'deadline', 'passed', 'registrations_open',
-                  'participants', 'organizers',
-                  'attached_files', 'image', 'fact_sheet',
-                  'url',)
+        fields = (
+            'id', 'title', 'summary', 'description',
+            'place', 'date', 'start_time', 'end_time', 'meeting',
+            'deadline', 'passed', 'registrations_open',
+            'participants', 'organizers',
+            'image', 'fact_sheet', 'permission',
+            'url',)

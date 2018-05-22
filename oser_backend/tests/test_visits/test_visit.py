@@ -30,6 +30,17 @@ class VisitTest(ModelTestCase):
         'place': {
             'verbose_name': 'lieu',
         },
+        'start_time': {
+            'verbose_name': 'heure de début',
+        },
+        'end_time': {
+            'verbose_name': 'heure de fin',
+        },
+        'meeting': {
+            'verbose_name': 'lieu de rendez-vous',
+            'max_length': 100,
+            'default': '',
+        },
         'deadline': {
             'verbose_name': "date limite d'inscription",
         },
@@ -40,6 +51,11 @@ class VisitTest(ModelTestCase):
         },
         'fact_sheet': {
             'verbose_name': 'fiche sortie',
+            'blank': True,
+            'null': True,
+        },
+        'permission': {
+            'verbose_name': 'autorisation de sortie',
             'blank': True,
             'null': True,
         },
@@ -71,9 +87,6 @@ class VisitTest(ModelTestCase):
 
     def test_organizers(self):
         self.assertEqual(0, self.obj.organizers.count())
-
-    def test_attched_files_relationship(self):
-        self.assertIsNotNone(getattr(self.obj, 'attached_files', None))
 
     def test_str_is_title(self):
         self.assertEqual(str(self.obj), str(self.obj.title))

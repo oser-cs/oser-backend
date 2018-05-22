@@ -2,7 +2,7 @@
 
 from django import forms
 from django.contrib import admin
-from .models import Visit, Place, AttachedFile, Participation
+from .models import Visit, Place, Participation
 
 # Register your models here.
 
@@ -41,29 +41,33 @@ class VisitForm(forms.ModelForm):
         fields = '__all__'
 
     def clean(self):
-        """Validate that the deadline is before the date date."""
+        """Validate dates and time.
+
+        - Deadline must be before the date
+        - End time must be after start time
+        """
         cleaned_data = super().clean()
         date = cleaned_data.get('date')
         deadline = cleaned_data.get('deadline')
-        if deadline >= date:
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+        if deadline.date() >= date:
             error = forms.ValidationError(
                 "La date limite d'inscription doit être avant la "
                 "date de la sortie."
             )
             self.add_error('deadline', error)
+        if end_time <= start_time:
+            error = forms.ValidationError(
+                "L'heure de fin doit être après l'heure de début.")
+            self.add_error('start_time', error)
+            self.add_error('end_time', error)
 
 
 class ParticipationInline(admin.StackedInline):
     """Inline for Participation."""
 
     model = Visit.participants.through
-    extra = 0
-
-
-class AttachedFileInline(admin.TabularInline):
-    """Inline for AttachedFile."""
-
-    model = AttachedFile
     extra = 0
 
 
@@ -97,8 +101,8 @@ class VisitAdmin(admin.ModelAdmin):
     # https://medium.com/@hakibenita/how-to-turn-django-admin-into-a-lightweight-dashboard-a0e0bbf609ad
 
     form = VisitForm
-    inlines = (OrganizersInline, ParticipationInline, AttachedFileInline,)
-    list_display = ('__str__', 'place', 'date', 'deadline',
+    inlines = (OrganizersInline, ParticipationInline,)
+    list_display = ('__str__', 'place', 'date', 'start_time', 'deadline',
                     '_registrations_open', 'num_participants')
     list_filter = ('date', RegistrationsOpenFilter)
     search_fields = ('title', 'place',)

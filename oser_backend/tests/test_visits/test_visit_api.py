@@ -60,7 +60,8 @@ class VisitSerializerTestCase(SerializerTestCaseMixin, TestCase):
     expected_fields = (
         'id', 'url',
         'title', 'summary', 'description',
-        'place', 'date', 'passed', 'deadline', 'registrations_open',
+        'place', 'date', 'start_time', 'end_time', 'meeting',
+        'passed', 'deadline', 'registrations_open',
         'participants', 'organizers',
-        'attached_files', 'image', 'fact_sheet',
+        'image', 'fact_sheet', 'permission',
     )

@@ -1,13 +1,16 @@
 """Visits factories."""
 
 import random
+from datetime import datetime
+
 import factory
 import factory.django
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from . import models
+
 from core.factory import AddressFactory
 
+from . import models
 
 User = get_user_model()
 
@@ -28,19 +31,23 @@ class PlaceFactory(factory.DjangoModelFactory):
 class VisitFactory(factory.DjangoModelFactory):
     """Visit object factory."""
 
-    date_random_range = (-20, 30)
     deadline_random_range = (-5, -1)
 
     class Meta:  # noqa
         model = models.Visit
-        exclude = ('date_random_range', 'deadline_random_range',
+        exclude = ('deadline_random_range',
                    '_summary', '_description')
 
     title = factory.Faker('sentence', locale='fr')
     _summary = factory.Faker('sentences', nb=2, locale='fr')
     summary = factory.LazyAttribute(lambda o: ' '.join(o._summary))
+
     _description = factory.Faker('paragraphs', nb=5, locale='fr')
     description = factory.LazyAttribute(lambda o: '\n'.join(o._description))
+
+    date = factory.LazyFunction(lambda: timezone.now().date())
+    start_time = factory.LazyFunction(lambda: timezone.now().time())
+    end_time = factory.LazyFunction(lambda: timezone.now().time())
 
     @factory.lazy_attribute
     def place(self):
@@ -52,26 +59,25 @@ class VisitFactory(factory.DjangoModelFactory):
         return PlaceFactory.create()
 
     @factory.lazy_attribute
-    def date(self):
-        return timezone.now() + timezone.timedelta(
-            days=random.randint(*self.date_random_range))
-
-    @factory.lazy_attribute
     def deadline(self):
-        return self.date + timezone.timedelta(
+        initial = datetime.combine(self.date, self.start_time,
+                                   tzinfo=timezone.now().tzinfo)
+        return initial + timezone.timedelta(
             days=random.randint(*self.deadline_random_range))
 
 
 class VisitWithOpenRegistrationsFactory(VisitFactory):
     """Visit with open registrations object factory."""
 
-    date_random_range = (10, 30)
+    date = factory.LazyFunction(lambda: (
+        timezone.now() + timezone.timedelta(days=30)).date())
 
 
 class VisitWithClosedRegistrationsFactory(VisitFactory):
     """Visit with closed registrations object factory."""
 
-    date_random_range = (0, 5)
+    date = factory.LazyFunction(lambda: (
+        timezone.now() + timezone.timedelta(days=5)).date())
     deadline_random_range = (-10, -6)  # guaranteed to be before today
 
 

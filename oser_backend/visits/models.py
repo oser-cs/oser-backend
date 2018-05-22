@@ -7,27 +7,23 @@ from dry_rest_permissions.generics import authenticated_users
 
 from markdownx.models import MarkdownxField
 
-utc = pytz.UTC
-
-# Create your models here.
-
 
 class VisitQuerySet(models.QuerySet):
     """Custom Visit queryset."""
 
-    def registrations_open(self, state):
+    def registrations_open(self, open: bool):
         """Filter visits whose registrations are open or closed.
 
-        Equivalent to: queryset.filter(registrations_open=state)
+        Equivalent to: queryset.filter(registrations_open=open)
         (Django does not allow this syntax because
         registrations_open is a property.)
 
-        state : boolean
+        open : bool
             True corresponds to open registrations,
             False to closed registrations.
         """
         today = now()
-        if state:
+        if open:
             return self.filter(deadline__gte=today)
         else:
             return self.filter(deadline__lt=today)
@@ -37,7 +33,7 @@ class VisitQuerySet(models.QuerySet):
 
         A visit is passed if its date is strictly after today.
         """
-        return self.filter(date__gt=now())
+        return self.filter(date__gt=now().date())
 
 
 class Participation(models.Model):
@@ -107,32 +103,6 @@ class VisitOrganizer(models.Model):
         return str(self.tutor)
 
 
-class AttachedFile(models.Model):
-    """Represents a file that a visit requires a participant to provide.
-
-    This is only used to manage required files for a visit.
-    => This model does not contain an actual file field.
-
-    Actual files will be given through
-    ParticipationAttachedFile objects when a user participates in a visit.
-    """
-
-    name = models.CharField('nom', max_length=200)
-    required = models.BooleanField('requis', default=True)
-    visit = models.ForeignKey('Visit',
-                              on_delete=models.CASCADE,
-                              related_name='attached_files',
-                              verbose_name='sortie')
-
-    class Meta:  # noqa
-        verbose_name = 'pièce jointe'
-        verbose_name_plural = 'pièces jointes'
-        ordering = ('visit',)
-
-    def __str__(self):
-        return str(self.name)
-
-
 class Visit(models.Model):
     """Represents a visit that users can attend."""
 
@@ -151,36 +121,45 @@ class Visit(models.Model):
         ))
     description = MarkdownxField(
         blank=True, default='',
-        help_text=(
-            "Une description plus complète des activités proposées durant "
-            "la sortie. Ce champ supporte Markdown."
-        ))
-    # TODO Place model
+        help_text=('Une description plus complète des activités proposées '
+                   'durant la sortie. Ce champ supporte Markdown.'))
     place = models.ForeignKey(
         'Place',
         verbose_name='lieu',
         on_delete=models.SET_NULL,
         null=True)
-    date = models.DateTimeField(
-        help_text="Heure de début de la sortie. Format de l'heure : hh:mm.")
+    date = models.DateField(
+        help_text="Date de la sortie.")
+    start_time = models.TimeField(
+        'heure de début',
+        help_text='Heure de début de la sortie. Format : hh:mm.')
+    end_time = models.TimeField(
+        'heure de fin',
+        help_text='Heure de fin de la sortie. Format : hh:mm.')
+    meeting = models.CharField(
+        'lieu de rendez-vous',
+        max_length=100, blank=True, default='',
+        help_text=('Indiquez aux tutorés où ils devront vous retrouver. '
+                   'Exemple : "devant le musée".'))
     deadline = models.DateTimeField(
         "date limite d'inscription",
-        help_text=(
-            "Note : les lycéens ne pourront plus s'inscrire "
-            "passé cette date. Format de l'heure : hh:mm."
-        ))
+        help_text=("Note : les lycéens ne pourront plus s'inscrire "
+                   "passée cette date. Format de l'heure : hh:mm."))
     image = models.ImageField(
         'illustration',
         blank=True, null=True,
-        help_text=(
-            "Une illustration représentative de la sortie. "
-            "Dimensions : ???x???"
-        ),
+        help_text='Une illustration représentative de la sortie.',
         upload_to='visits/images/')
     fact_sheet = models.FileField(
         'fiche sortie', blank=True, null=True,
-        help_text="Formats supportés : PDF",
-        upload_to='visits/fact_sheets/')
+        upload_to='visits/fact_sheets/',
+        help_text=('Informe le lycéen de détails sur la sortie. '
+                   'Tous formats supportés, PDF recommandé.'))
+    permission = models.FileField(
+        'autorisation de sortie', blank=True, null=True,
+        upload_to='visits/visit_permissions/',
+        help_text=('À mettre à disposition pour que le lycéen la remplisse. '
+                   'Tout format supporté, PDF recommandé.'))
     participants = models.ManyToManyField('users.User',
                                           through='Participation')
     organizers = models.ManyToManyField('profiles.Tutor',
