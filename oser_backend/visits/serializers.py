@@ -149,13 +149,16 @@ class AbandonSerializer(serializers.Serializer):
     recipient = serializers.CharField(read_only=True)
 
     def create(self, validated_data):
+        user = validated_data['user']
+        visit = validated_data['visit']
+        reason = validated_data['reason']
+
         context = {
-            'user': str(validated_data['user']),
-            'reason': validated_data['reason'],
-            'visit': str(validated_data['visit']),
+            'user': user,
+            'reason': reason,
+            'visit': visit,
         }
-        visit = context['visit']
-        subject = f'Désistement à la sortie: {visit.title}'
+        subject = f'Désistement à la sortie: {visit}'
 
         # Render the email from template
         plain_message = render_to_string(
@@ -167,9 +170,9 @@ class AbandonSerializer(serializers.Serializer):
             recipient_list=[settings.TEAM_EMAIL])
 
         return {
-            'user': validated_data['user'],
-            'visit': validated_data['visit'],
-            'reason': validated_data['reason'],
+            'user': user,
+            'visit': visit,
+            'reason': reason,
             'recipient': settings.TEAM_EMAIL,
             'sent': str(now()),
         }

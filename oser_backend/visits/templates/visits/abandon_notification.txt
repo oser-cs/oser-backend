@@ -1,6 +1,6 @@
 Bonjour,
 
-Vous recevez cet email car {{ user.get_full_name }} s'est désinscrit(e) de la sortie "{{ visit.title }}" organisée le {{ visit.date }}. Voici la raison de son désistement :
+Vous recevez cet email car {{ user }} (email: {{ user.email }}) s'est désinscrit(e) de la sortie "{{ visit.title }}" organisée le {{ visit.date }}. Voici la raison de son désistement :
 
 "{{ reason }}"
 
