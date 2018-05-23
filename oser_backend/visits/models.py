@@ -50,8 +50,9 @@ class Participation(models.Model):
                               related_name='participations',
                               on_delete=models.CASCADE)
     accepted = models.NullBooleanField(
-        'dossier validé',
-        help_text="Cocher si les pièces jointes envoyées sont valides.")
+        'accepté',
+        help_text=(
+            "Cocher pour confirmer au tutoré sa participation à la sortie."))
     present = models.NullBooleanField(
         'présent',
         help_text=(

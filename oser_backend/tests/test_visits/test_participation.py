@@ -24,7 +24,7 @@ class ParticipationTest(ModelTestCase):
             'null': True,
         },
         'accepted': {
-            'verbose_name': 'dossier validé',
+            'verbose_name': 'accepté',
             'null': True,
         },
     }
