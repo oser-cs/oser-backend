@@ -1,11 +1,15 @@
 """Visits API views."""
 
+
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import Participation, Place, Visit
-from .serializers import (ParticipationSerializer, PlaceSerializer,
-                          VisitListSerializer, VisitSerializer)
+from .serializers import (AbandonSerializer, ParticipationSerializer,
+                          PlaceSerializer, VisitListSerializer,
+                          VisitSerializer)
 
 
 class VisitViewSet(viewsets.ReadOnlyModelViewSet):
@@ -167,8 +171,43 @@ class ParticipationsViewSet(mixins.CreateModelMixin,
     """
 
     queryset = Participation.objects.all()
-    serializer_class = ParticipationSerializer
     permission_classes = [DRYPermissions]
+
+    def get_serializer_class(self):
+        if self.action == 'abandon':
+            return AbandonSerializer
+        return ParticipationSerializer
+
+    @action(methods=['post'], detail=False)
+    def abandon(self, request):
+        """Notify the visits team that a student abandoned a participation.
+
+        An email will be sent to the visits team's email address.
+
+        ### Example payload
+
+            {
+                "user": 3,
+                "reason": "Désolé, je ne peux plus venir…",
+                "visit": 1
+            }
+
+        ### Example response
+
+            {
+                "user": "John Doe",
+                "reason": "Désolé, je ne peux plus venir…",
+                "visit": "Visite du Palais de la Découverte",
+                "sent": "2018-05-23 22:27:06.313137+00:00",
+                "recipient": "oser.geek@gmail.com"
+            }
+        """
+        serializer = AbandonSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED)
 
 
 class PlaceViewSet(viewsets.ReadOnlyModelViewSet):

@@ -1,14 +1,17 @@
 """Visits serializers."""
 
+from django.template.loader import render_to_string
 from django.utils.timezone import now
 from rest_framework import serializers
 
 from core.markdown import MarkdownField
 from core.serializers import AddressSerializer
+from mails.utils import send_mail_notification
 from profiles.models import Tutor
 from users.models import User
 from users.serializers import UserSerializer
 
+from . import settings
 from .models import Participation, Place, Visit
 
 
@@ -126,3 +129,50 @@ class VisitSerializer(VisitListSerializer):
             'participants', 'organizers',
             'image', 'fact_sheet', 'permission',
             'url',)
+
+
+class AbandonSerializer(serializers.Serializer):
+    """Serializer for abandon notifications."""
+
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        label='User',
+        help_text='ID of the user who does not participate anymore.')
+    reason = serializers.CharField(
+        label='Reason',
+        help_text='An explanation of why the user abandonned.')
+    visit = serializers.PrimaryKeyRelatedField(
+        label='Visit',
+        help_text='ID of the visit the user has quit.',
+        queryset=Visit.objects.all())
+    sent = serializers.DateTimeField(read_only=True)
+    recipient = serializers.CharField(read_only=True)
+
+    def create(self, validated_data):
+        context = {
+            'user': str(validated_data['user']),
+            'reason': validated_data['reason'],
+            'visit': str(validated_data['visit']),
+        }
+        visit = context['visit']
+        subject = f'Désistement à la sortie: {visit.title}'
+
+        # Render the email from template
+        plain_message = render_to_string(
+            'visits/abandon_notification.txt', context)
+
+        send_mail_notification(
+            subject=subject,
+            message=plain_message,
+            recipient_list=[settings.TEAM_EMAIL])
+
+        return {
+            'user': validated_data['user'],
+            'visit': validated_data['visit'],
+            'reason': validated_data['reason'],
+            'recipient': settings.TEAM_EMAIL,
+            'sent': str(now()),
+        }
+
+    class Meta:  # noqa
+        model = Participation
