@@ -73,3 +73,4 @@ class AbandonTest(APITestCase):
         response = self.perform()
         self.assertEqual(response.status_code, 201, response.data)
         self.assertSetEqual(set(response.data), {'sent', 'timestamp'})
+        self.assertTrue(response.data['sent'])
