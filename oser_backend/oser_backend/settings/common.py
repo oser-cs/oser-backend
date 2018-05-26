@@ -199,6 +199,7 @@ SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 # Mails app config
 MAILS_ENABLED = True
 MAILS_NOTIFICATIONS_ADDRESS = 'notifications@oser-cs.fr'
+MAILS_RAISE_EXCEPTIONS = True
 
 # Visits app config
 VISITS_TEAM_EMAIL = os.environ.get('VISITS_TEAM_EMAIL',

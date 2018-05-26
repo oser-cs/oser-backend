@@ -1,5 +1,6 @@
 """Mails app signals."""
 
+from django.conf import settings
 from django.dispatch import Signal, receiver
 from python_http_client import HTTPError
 
@@ -33,3 +34,5 @@ def log_failed(sender, exception, **kwargs):
         logger.exception(exception.body)
     else:
         logger.exception(exception)
+    if settings.MAILS_RAISE_EXCEPTIONS:
+        raise exception
