@@ -24,7 +24,7 @@ Nous te recontacterons si des places se libèrent suite à des désistements.
 {% endblock %}
 
 {% block signature %}
-À très bientôt,
+À très bientôt,  
 Les organisateurs  
 
 Nous contacter : oser.sortie@gmail.fr
