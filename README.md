@@ -28,7 +28,6 @@ Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien dém
 - [Guides et documentation](#guides-et-documentation)
 - [Déploiement](#déploiement)
 - [Dépendances principales](#dépendances-principales)
-- [Contribuer](#contribuer)
 - [À propos d'OSER](#À-propos-doser)
 
 ## Installation
@@ -257,12 +256,6 @@ Les paramètres S3 sont définis dans les variables d'environnement de l'applica
 Le [Django REST Framework](http://www.django-rest-framework.org) (DRF) permet d'écrire facilement des API REST avec Django.
 
 Le site d'OSER utilise le DRF en version 3.8+.
-
-## Contribuer
-
-Le backlog est recensé sur le [Trello OSER_Geek](https://trello.com/b/bYlju4gE/site-internet-backlog).
-
-Consultez la [documentation technique](http://oser-tech-docs.readthedocs.io/fr/latest/) pour plus d'informations sur le développement du site et l'installation d'un serveur de développement.
 
 ## À propos d'OSER
 
