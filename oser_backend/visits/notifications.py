@@ -34,10 +34,10 @@ class Confirm(Notification):
     args = ('participation',)
 
     def get_subject(self):
-        return f'Participation à la sortie : {self.visit}'
+        return f'Participation à la sortie : {self.participation.visit}'
 
     def get_recipients(self):
-        return [self.user.email]
+        return [self.participation.user.email]
 
     @classmethod
     def example(cls):
