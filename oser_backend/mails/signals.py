@@ -1,6 +1,7 @@
 """Mails app signals."""
 
 from django.dispatch import Signal, receiver
+from django.db.models.signals import post_save
 from python_http_client.exceptions import HTTPError
 
 from logs import get_logger
@@ -33,3 +34,8 @@ def log_failed(sender, exception, **kwargs):
         logger.exception(exception.read())
     else:
         logger.exception(exception)
+
+
+@receiver(post_save)
+def test_logger(sender, **kwargs):
+    logger.info('TEST')
