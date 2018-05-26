@@ -9,8 +9,8 @@ from profiles.models import Tutor
 from users.models import User
 from users.serializers import UserSerializer
 
-from .notifications import ParticipationCancelled
 from .models import Participation, Place, Visit
+from .notifications import ParticipationCancelled
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -22,23 +22,6 @@ class PlaceSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Place
         fields = ('id', 'name', 'address', 'description')
-
-
-class ParticipationWriteSerializer(serializers.ModelSerializer):
-    """Serializer for adding participants to visits."""
-
-    user_id = serializers.PrimaryKeyRelatedField(
-        source='user',
-        queryset=User.objects.all(),
-        help_text='Identifier for the user')
-    visit_id = serializers.PrimaryKeyRelatedField(
-        source='visit',
-        queryset=Visit.objects.all(),
-        help_text='Identifier for the visit')
-
-    class Meta:  # noqa
-        model = Participation
-        fields = ('id', 'user_id', 'visit_id', 'present')
 
 
 class UserField(serializers.Field):
@@ -59,7 +42,7 @@ class ParticipationSerializer(serializers.ModelSerializer):
 
     user = UserField(
         label='Utilisateur',
-        help_text='Identifier for the user that participates.')
+        help_text='Identifier for the user who participates.')
     visit = serializers.PrimaryKeyRelatedField(
         queryset=Visit.objects.all(),
         label='Sortie',
@@ -67,7 +50,7 @@ class ParticipationSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = Participation
-        fields = ('id', 'user', 'visit', 'present', 'accepted',)
+        fields = ('id', 'submitted', 'user', 'visit', 'present', 'accepted',)
 
 
 class VisitOrganizerSerializer(serializers.ModelSerializer):

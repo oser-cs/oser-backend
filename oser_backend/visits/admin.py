@@ -107,8 +107,9 @@ reject_selected_participations.short_description = (
 class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
-    list_display = ('visit', 'user', 'accepted', 'present')
-    list_filter = ('visit',)
+    list_display = ('submitted', 'visit', 'user',
+                    'accepted', 'present')
+    list_filter = ('submitted', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
 
 

@@ -27,10 +27,15 @@ class ParticipationTest(ModelTestCase):
             'verbose_name': 'accepté',
             'null': True,
         },
+        'submitted': {
+            'null': True,
+            'editable': False,
+        },
     }
     model_tests = {
         'verbose_name': 'participation',
         'unique_together': (('user', 'visit'),),
+        'ordering': ('-submitted',),
     }
 
     def create(self):

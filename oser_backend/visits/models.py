@@ -48,6 +48,10 @@ class Participation(models.Model):
     visit = models.ForeignKey('Visit', verbose_name='sortie',
                               related_name='participations',
                               on_delete=models.CASCADE)
+    submitted = models.DateTimeField(
+        auto_now_add=True, null=True,
+        verbose_name='soumis le',
+        help_text='Date de soumission de la participation')
     accepted = models.NullBooleanField(
         'accepté',
         help_text=(
@@ -56,13 +60,13 @@ class Participation(models.Model):
         'présent',
         help_text=(
             "Une fois la sortie passée, indiquer si le lycéen était présent."
-        )
-    )
+        ))
 
     class Meta:  # noqa
         verbose_name = 'participation'
         # prevent a user from participating visit multiple times
         unique_together = (('user', 'visit'),)
+        ordering = ('-submitted',)
 
     def __init__(self, *args, **kwargs):
         """Store the initial value of `accepted` to detect changes."""

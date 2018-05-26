@@ -2,14 +2,14 @@
 
 
 from dry_rest_permissions.generics import DRYPermissions
-from rest_framework import mixins, viewsets, status
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Participation, Place, Visit
-from .serializers import (ParticipationCancelledSerializer, ParticipationSerializer,
-                          PlaceSerializer, VisitListSerializer,
-                          VisitSerializer)
+from .serializers import (ParticipationCancelledSerializer,
+                          ParticipationSerializer, PlaceSerializer,
+                          VisitListSerializer, VisitSerializer)
 
 
 class VisitViewSet(viewsets.ReadOnlyModelViewSet):

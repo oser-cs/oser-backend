@@ -5,7 +5,7 @@ Bonjour{% if user.first_name %} {{ user.first_name }}{% endif %},
 {% endblock %}
 
 {% block body %}
-Tu as demandé à t'inscrire à la sortie **{{ visit.title }}** organisée le **{{ visit.date|date }}**.
+{% if visit.submitted %}Le {{ visit.submitted|date}}, tu{% else %}Tu{% endif%} as demandé à t'inscrire à la sortie **{{ visit.title }}** organisée le **{{ visit.date|date }}**.
 
 {% if accepted %}
 Bonne nouvelle : nous avons validé ta participation à la sortie. ✅
