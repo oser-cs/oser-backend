@@ -24,12 +24,6 @@ SECURE_BROWSER_XSS_FILTER = True
 # Mails
 MAILS_ENABLED = True
 
-# Sendgrid
-sandbox_mode = os.environ.get('SENDGRID_SANDBOX_MODE_IN_DEBUG', True)
-if sandbox_mode in ('0', 'False', 'false'):
-    sandbox_mode = False
-SENDGRID_SANDBOX_MODE_IN_DEBUG = bool(sandbox_mode)
-
 # Celery settings
 
 CELERY_BEAT_SCHEDULE = {
