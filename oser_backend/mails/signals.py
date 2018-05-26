@@ -1,6 +1,7 @@
 """Mails app signals."""
 
 from django.dispatch import Signal, receiver
+from python_http_client import HTTPError
 
 from logs import get_logger
 
@@ -28,4 +29,7 @@ def log_app_disabled(sender, subject, recipient_list, **kwargs):
 @receiver(failed)
 def log_failed(sender, exception, **kwargs):
     """Log an exception that occurred during a mail delivery."""
-    logger.exception(exception)
+    if isinstance(exception, HTTPError):
+        logger.exception(exception.body)
+    else:
+        logger.exception(exception)
