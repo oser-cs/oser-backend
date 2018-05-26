@@ -64,18 +64,14 @@ class Participation(models.Model):
         # prevent a user from participating visit multiple times
         unique_together = (('user', 'visit'),)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.accepted is not None:
-            self.notify_participation()
+    def __init__(self, *args, **kwargs):
+        """Store the initial value of `accepted` to detect changes."""
+        super().__init__(*args, **kwargs)
+        self.initial_accepted = self.accepted
 
-    def notify_participation(self):
-        if self.accepted is True:
-            from .notifications import Accepted
-            Accepted(user=self.user, visit=self.visit).send()
-        elif self.accepted is False:
-            from .notifications import Rejected
-            Rejected(user=self.user, visit=self.visit).send()
+    def accepted_changed(self):
+        """Return whether the `accepted` field has changed."""
+        return self.initial_accepted != self.accepted
 
     # Permissions
 

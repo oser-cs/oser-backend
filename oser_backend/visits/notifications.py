@@ -34,7 +34,7 @@ class Participation(Notification):
     accepted: bool
 
     def get_organizers(self):
-        return self.visit.organizers.values_list('first_name', flat=True)
+        return self.visit.organizers.values_list('user__first_name', flat=True)
 
     def get_context(self):
         context = super().get_context()

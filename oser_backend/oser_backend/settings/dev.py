@@ -22,5 +22,7 @@ STATICFILES_DIRS = [
 # Media files config
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-# Mails
+# Mails config
+
+# However emails won't be delivered by SendGrid (use dev_sendgrid settings)
 MAILS_ENABLED = True

@@ -1,7 +1,7 @@
 """Generic notification functionalities."""
 
 import os
-from typing import Callable, List
+from typing import List
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -9,10 +9,9 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.html import strip_tags
 
-from logs import get_logger
 from markdown import markdown
 
-logger = get_logger('notifications')
+from .signals import app_disabled, delivered, notification_sent
 
 
 def send_notification(subject, message, recipient_list,
@@ -25,19 +24,29 @@ def send_notification(subject, message, recipient_list,
     -------
     sent : bool
 
+    Signals
+    -------
+    mails_disabled :
+        If the mails app is not enabled (MAILS_ENABLED is not True).
+    mail_delievered :
+        After the mail has been successfully sent.
+
     """
-    recipients = ', '.join(recipient_list)
     if not settings.MAILS_ENABLED:
-        logger.warning(
-            ('Email "%s" not sent to %s because'
-             'MAILS_ENABLED is set to False'), subject, recipients)
+        app_disabled.send(None, subject=subject,
+                          recipient_list=recipient_list)
         return False
+
     if html:
         kwargs['html_message'] = message
         message = strip_tags(message)
-    send_mail(subject, message, settings.MAILS_NOTIFICATIONS_ADDRESS,
-              recipient_list, **kwargs)
-    logger.info('Sent email "%s" to %s', subject, recipients)
+
+    mail_from = settings.MAILS_NOTIFICATIONS_ADDRESS
+
+    send_mail(subject, message, mail_from, recipient_list, **kwargs)
+    delivered.send(None, mail_from=mail_from,
+                   recipient_list=recipient_list, subject=subject)
+
     return True
 
 
@@ -75,10 +84,6 @@ class Notification:
     subject_format : str, optional
         The notification email subject format string.
         Should contain a `subject` key.
-    send_function : callable, optional
-        The function used to send the actual notification email.
-        Required signature:
-            (subject, message, recipient_list, **kwargs) -> None
     """
 
     template_name: str
@@ -86,7 +91,6 @@ class Notification:
     recipients: List[str] = []
 
     subject_format: str = '[OSER] {subject}'
-    send_function: Callable = send_notification
     args: List[str] = ()
 
     def __init__(self, **kwargs):
@@ -110,6 +114,8 @@ class Notification:
             setattr(self, arg, value)
         self.html = False
         self.forced = False
+        self.sent = None
+        self.timestamp = None
 
     @checkattr('template_name')
     def get_template(self) -> str:
@@ -158,31 +164,22 @@ class Notification:
         self.recipients = recipients
         self.forced = True
 
-    def send(self) -> dict:
-        """Send the notification email.
-
-        Returns
-        -------
-        results : dict
-            Contains the kwargs, the recipients and the sent date.
-
-        """
+    def send(self) -> None:
+        """Send the notification email."""
         subject = self.subject_format.format(subject=self.get_subject())
         message = self.render()
+
         if self.forced:
             recipients = self.recipients
         else:
             recipients = self.get_recipients()
-        sent = type(self).send_function(
+
+        self.sent = send_notification(
             subject, message, recipients, html=self.html)
-        result = {
-            **self.kwargs,
-            'recipients': recipients,
-            'sent': sent,
-        }
-        if sent:
-            result['timestamp'] = timezone.now()
-        return result
+        self.timestamp = timezone.now()
+
+        if self.sent:
+            notification_sent.send(sender=self.__class__, instance=self)
 
     @classmethod
     def example(cls):
