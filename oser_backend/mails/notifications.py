@@ -8,10 +8,11 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.html import strip_tags
+from django.utils.text import Truncator
 
 from markdown import markdown
 
-from .signals import app_disabled, delivered, notification_sent
+from .signals import app_disabled, delivered, notification_sent, failed
 
 
 def send_notification(subject, message, recipient_list,
@@ -43,7 +44,12 @@ def send_notification(subject, message, recipient_list,
 
     mail_from = settings.MAILS_NOTIFICATIONS_ADDRESS
 
-    send_mail(subject, message, mail_from, recipient_list, **kwargs)
+    try:
+        send_mail(subject, message, mail_from, recipient_list, **kwargs)
+    except Exception as e:
+        failed.send(None, exception=e)
+        return False
+
     delivered.send(None, mail_from=mail_from,
                    recipient_list=recipient_list, subject=subject)
 
@@ -167,6 +173,9 @@ class Notification:
     def send(self) -> None:
         """Send the notification email."""
         subject = self.subject_format.format(subject=self.get_subject())
+        # Subject must not be longer than 78 characters
+        # See https://github.com/sendgrid/sendgrid-python/issues/187
+        subject = Truncator(subject).chars(75)
         message = self.render()
 
         if self.forced:

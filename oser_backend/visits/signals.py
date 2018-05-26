@@ -22,7 +22,7 @@ def notify_participation(sender, instance: Participation, **kwargs):
 
     The notification is only sent if the participation status has changed.
     """
-    if instance.accepted is True:
-        Accepted(user=instance.user, visit=instance.visit).send()
-    elif instance.accepted is False:
-        Rejected(user=instance.user, visit=instance.visit).send()
+    if instance.accepted is None:
+        return
+    notification_cls = Accepted if instance.accepted else Rejected
+    notification_cls(user=instance.user, visit=instance.visit).send()

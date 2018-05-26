@@ -1,6 +1,6 @@
 """Render a notification."""
 
-from .base import MailsCommandMixin
+from ..base import MailsCommandMixin
 from django.core.management import BaseCommand
 
 
