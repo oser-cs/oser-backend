@@ -6,7 +6,7 @@ from tests.utils.mixins import SignalTestMixin
 from mails.signals import notification_sent
 from users.factory import UserFactory
 from visits.factory import ParticipationFactory, VisitFactory
-from visits.notifications import Accepted, Rejected
+from visits.notifications import Confirm
 from visits.signals import accepted_changed
 
 
@@ -29,10 +29,10 @@ class NotifyParticipationTest(SignalTestMixin, TestCase):
         with self.assertCalled(accepted_changed):
             ParticipationFactory.create(accepted=True)
 
-    def test_notification_sent_is_called_by_accepted(self):
-        with self.assertCalled(notification_sent, sender=Accepted):
+    def test_notification_sent_is_called_by_confirm(self):
+        with self.assertCalled(notification_sent, sender=Confirm):
             self.change(accepted=True)
 
-    def test_notification_sent_is_called_by_rejected(self):
-        with self.assertCalled(notification_sent, sender=Rejected):
+    def test_notification_sent_is_called_by_confirm(self):
+        with self.assertCalled(notification_sent, sender=Confirm):
             self.change(accepted=False)

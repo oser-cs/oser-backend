@@ -1,16 +1,16 @@
 {% extends 'mails/notification.md' %}
 
 {% block greeting %}
-Bonjour{% if user.first_name %} {{ user.first_name }}{% endif %},
+Bonjour{% if participation.user.first_name %} {{ participation.user.first_name }}{% endif %},
 {% endblock %}
 
 {% block body %}
-{% if visit.submitted %}Le {{ visit.submitted|date}}, tu{% else %}Tu{% endif%} as demandé à t'inscrire à la sortie **{{ visit.title }}** organisée le **{{ visit.date|date }}**.
+{% if participation.submitted %}Le {{ participation.submitted|date }}, tu{% else %}Tu{% endif%} as demandé à t'inscrire à la sortie **{{ participation.visit }}** organisée le **{{ participation.visit.date|date }}**.
 
-{% if accepted %}
+{% if participation.accepted %}
 Bonne nouvelle : nous avons validé ta participation à la sortie. ✅
 
-En te rendant sur [l'espace sorties]({{ visit.get_site_url }}), tu peux dès à présent:
+En te rendant sur [l'espace sorties]({{ participation.visit.get_site_url }}), tu peux dès à présent:
 
 - Consulter les informations pratiques ;
 - Télécharger la fiche sortie ;

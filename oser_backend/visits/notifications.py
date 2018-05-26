@@ -6,7 +6,7 @@ from django.utils.timezone import now
 
 from mails import Notification
 
-from .models import Visit
+from .models import Visit, Participation
 
 User = get_user_model()
 
@@ -27,16 +27,11 @@ class ParticipationCancelled(Notification):
                    reason='Je ne peux plus venir...')
 
 
-class Participation(Notification):
+class Confirm(Notification):
+    """Confirm whether a user can participate to a visit."""
 
-    template_name = 'visits/participation.md'
-    args = ('user', 'visit',)
-    accepted: bool
-
-    def get_context(self):
-        context = super().get_context()
-        context['accepted'] = self.accepted
-        return context
+    template_name = 'visits/confirm_participation.md'
+    args = ('participation',)
 
     def get_subject(self):
         return f'Participation à la sortie : {self.visit}'
@@ -48,14 +43,6 @@ class Participation(Notification):
     def example(cls):
         user = User(email='john.doe@example.com', first_name='John')
         visit = Visit(title='Visite du Palais de la Découverte', date=now())
-        return cls(user=user, visit=visit)
-
-
-class Accepted(Participation):
-
-    accepted = True
-
-
-class Rejected(Participation):
-
-    accepted = False
+        participation = Participation(
+            user=user, visit=visit, accepted=True, submitted=now())
+        return cls(participation=participation)
