@@ -14,9 +14,8 @@ class NotifyParticipationTest(SignalTestMixin, TestCase):
     """Test the notify_participation signal handler."""
 
     def setUp(self):
-        VisitFactory.create()
-        user = UserFactory.create()
-        self.obj = ParticipationFactory.create(user=user, accepted=None)
+        VisitFactory.create_batch(5)
+        self.obj = ParticipationFactory.create(accepted=None)
 
     def change(self, accepted=True):
         self.obj.accepted = accepted
@@ -26,10 +25,14 @@ class NotifyParticipationTest(SignalTestMixin, TestCase):
         with self.assertCalled(accepted_changed):
             self.change()
 
-    def test_notification_sent_called_by_accepted(self):
+    def test_accepted_changed_called_when_creating_accepted_partipant(self):
+        with self.assertCalled(accepted_changed):
+            ParticipationFactory.create(accepted=True)
+
+    def test_notification_sent_is_called_by_accepted(self):
         with self.assertCalled(notification_sent, sender=Accepted):
             self.change(accepted=True)
 
-    def test_notification_sent_called_by_rejected(self):
+    def test_notification_sent_is_called_by_rejected(self):
         with self.assertCalled(notification_sent, sender=Rejected):
             self.change(accepted=False)

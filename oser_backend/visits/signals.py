@@ -10,9 +10,9 @@ accepted_changed = Signal()
 
 
 @receiver(post_save, sender=Participation)
-def fire_accepted_changed(sender, instance: Participation, **kwargs):
+def fire_accepted_changed(sender, instance: Participation, created, **kwargs):
     """Fire an event if the participation status has changed."""
-    if instance.accepted_changed():
+    if created or instance.accepted_changed():
         accepted_changed.send(sender=sender, instance=instance)
 
 
