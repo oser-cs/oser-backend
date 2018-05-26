@@ -1,17 +1,15 @@
 """Visits serializers."""
 
-from django.template.loader import render_to_string
 from django.utils.timezone import now
 from rest_framework import serializers
 
 from core.markdown import MarkdownField
 from core.serializers import AddressSerializer
-from mails.utils import send_mail_notification
 from profiles.models import Tutor
 from users.models import User
 from users.serializers import UserSerializer
 
-from . import settings
+from .notifications import Abandon
 from .models import Participation, Place, Visit
 
 
@@ -153,31 +151,11 @@ class AbandonSerializer(serializers.Serializer):
         visit = validated_data['visit']
         reason = validated_data['reason']
 
-        context = {
-            'user': user,
-            'email': user.email,
-            'visit': str(visit),
-            'date': visit.date,
-            'reason': reason,
-        }
-        subject = f'Désistement à la sortie: {visit}'
+        notification = Abandon(
+            user=user, user_email=user.email, visit=visit,
+            date=visit.date, reason=reason)
 
-        # Render the email from template
-        plain_message = render_to_string(
-            'mails/visits/abandon.txt', context)
-
-        send_mail_notification(
-            subject=subject,
-            message=plain_message,
-            recipient_list=[settings.TEAM_EMAIL])
-
-        return {
-            'user': user,
-            'visit': visit,
-            'reason': reason,
-            'recipient': settings.TEAM_EMAIL,
-            'sent': str(now()),
-        }
+        return notification.send()
 
     class Meta:  # noqa
         model = Participation

@@ -1,7 +1,0 @@
-{% block greeting %}Bonjour,{% endblock %}
-{% block body %}{% endblock %}
-{% block signature %}À bientôt,
-
-Le site OSER
-{% endblock %}
-{% block postscriptum %}P.S. : ceci est un email automatique du service de notifications.{% endblock %}

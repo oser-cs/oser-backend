@@ -18,3 +18,4 @@ boto3
 whitenoise
 celery[redis]
 django-countries
+django-sendgrid-v5

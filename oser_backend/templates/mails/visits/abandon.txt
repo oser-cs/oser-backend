@@ -1,7 +1,0 @@
-{% extends 'mails/notification.txt' %}
-
-{% block body %}
-Vous recevez cet email car {% if user %}{{ user }}{% else %}[utilisateur inconnu]{% endif %}{% if email %} (email: {{ email }}){% endif %} s'est désinscrit(e) de la sortie {% if visit %}"{{ visit }}"{% else %}[sortie inconnue]{% endif %} organisée le {% if date %}{{ date|date }}{% else %}[date inconnue]{% endif %}. Voici la raison de son désistement :
-
-{% if reason %}"{{ reason }}"{% else %}[Raison inconnue]{% endif %}
-{% endblock %}

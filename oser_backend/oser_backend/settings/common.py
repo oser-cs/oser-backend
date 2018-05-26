@@ -69,6 +69,7 @@ PROJECT_APPS = [
     'visits.apps.VisitsConfig',
     'register.apps.RegisterConfig',
     'api.apps.ApiConfig',
+    'mails.apps.MailsConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
@@ -192,14 +193,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Email configuration
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 # Mails app config
 MAILS_ENABLED = True
+MAILS_NOTIFICATIONS_ADDRESS = 'notifications@oser-cs.fr'
 
 # Visits app config
 VISITS_TEAM_EMAIL = os.environ.get('VISITS_TEAM_EMAIL',

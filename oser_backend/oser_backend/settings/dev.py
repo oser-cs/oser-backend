@@ -21,3 +21,6 @@ STATICFILES_DIRS = [
 
 # Media files config
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+# Mails
+MAILS_ENABLED = True

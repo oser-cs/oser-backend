@@ -1,5 +1,4 @@
 """Visits models."""
-import pytz
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.timezone import now
@@ -64,6 +63,19 @@ class Participation(models.Model):
         verbose_name = 'participation'
         # prevent a user from participating visit multiple times
         unique_together = (('user', 'visit'),)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.accepted is not None:
+            self.notify_participation()
+
+    def notify_participation(self):
+        if self.accepted is True:
+            from .notifications import Accepted
+            Accepted(user=self.user, visit=self.visit).send()
+        elif self.accepted is False:
+            from .notifications import Rejected
+            Rejected(user=self.user, visit=self.visit).send()
 
     # Permissions
 
@@ -200,6 +212,9 @@ class Visit(models.Model):
 
     def get_absolute_url(self):
         return reverse('api:visit-detail', args=[str(self.pk)])
+
+    def get_site_url(self):
+        return f'http://oser-cs.fr/visits/{self.pk}'
 
     def __str__(self):
         return str(self.title)

@@ -1,5 +1,0 @@
-{% extends 'mails/notification.txt' %}
-
-{% block body %}
-Today is {{ date|date }}.
-{% endblock %}

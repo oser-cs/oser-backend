@@ -24,8 +24,10 @@ Si vous venez d'arriver, vous trouverez ci-dessous les ressources pour bien dém
 
 ## Table des matières
 
-- [Documentation](#documentation)
-- [Dépendances](#dépendances)
+- [Installation](#installation)
+- [Guides et documentation](#guides-et-documentation)
+- [Déploiement](#déploiement)
+- [Dépendances principales](#dépendances-principales)
 - [Contribuer](#contribuer)
 - [À propos d'OSER](#À-propos-doser)
 
@@ -90,9 +92,9 @@ $ python manage.py runserver
 
 Celui-ci sera accessible à l'adresse http://localhost:8000.
 
-## Documentation
+## Guides et documentation
 
-La documentation complète du backend est disponible dans la documentation technique hébergée sur [ReadTheDocs](http://oser-tech-docs.readthedocs.io/fr/latest/).
+<!-- La documentation complète du backend est disponible dans la documentation technique hébergée sur [ReadTheDocs](http://oser-tech-docs.readthedocs.io/fr/latest/). -->
 
 ### Accéder à l'administration
 
@@ -129,12 +131,10 @@ Pour communiquer avec l'API, un client (une application Javascript par exemple) 
 Le principe est le suivant :
 
 - Le client s'authentifie en utilisant un nom d'utilisateur et un mot de passe.
-- Le backend génère un *token* et le renvoie au client.
-- Le client peut alors utiliser le *token* pour réaliser d'autres requêtes qui nécessitent d'être authentifié.
+- Le backend génère un token (une chaîne de caractères unique) et le renvoie au client.
+- Le client peut alors utiliser le token pour réaliser d'autres requêtes qui nécessitent d'être authentifié.
 
-> Quel intérêt par rapport à une authentification username/password basique ?
-
-L'avantage est de pouvoir stocker ce token dans un cookie ou dans le stockage local du navigateur, et ainsi éviter de redemander le nom d'utilisateur/mot de passe à chaque réouverture du navigateur.
+Le client est responsable de stocker le token pour le réutiliser. En général, on préfère le stocker dans le `localStorage` ou le `sessionStorage`.
 
 #### Dans la pratique
 
@@ -148,16 +148,16 @@ Du point de vue d'un client, la procédure d'authentification est la suivante :
 
 #### Exemple
 
-Nous allons nous identifier avec un utilisateur fictif en utilisant l'outil `curl` (disponible Linux/macOS).
+Nous allons nous identifier avec un utilisateur fictif en utilisant cURL (disponible sur Linux/macOS).
 
-On envoie la requête d'authentification qui nous répond avec le token :
+On envoie la requête d'authentification qui nous répond avec le token et les informations sur l'utilisateur (ici tronquées) :
 
 ```
 $ curl -X POST -d "username=user&password=pass" localhost:8000/api/auth/get-token/
-{"token":"b6302cebe7817532987e7a8767611b2600414915"}
+{"token":"b6302cebe7817532987e7a8767611b2600414915", "user": {...}}
 ```
 
-Nous voilà authentifiés ! On peut ensuite utiliser ce token pour effectuer d'autres requêtes :
+Nous voilà authentifiés ! On peut maintenant utiliser ce token pour effectuer d'autres requêtes :
 
 ```
 $ curl -X GET "localhost:8000/api/articles/" -H "Authorization: Token b6302cebe7817532987e7a8767611b2600414915"
@@ -166,7 +166,7 @@ $ curl -X GET "localhost:8000/api/articles/" -H "Authorization: Token b6302cebe7
 
 ### Tâches de fond
 
-Le daemon Celery gère le calendrier tâches de fond (nettoyage des fichiers de médias non-utilisés ou autres tâches définies dans le `settings.py`). Pour fonctionner, Celery nécessite un serveur de messages, on utilise ici Redis.
+Le daemon Celery gère le calendrier des tâches de fond (nettoyage des fichiers de médias non-utilisés ou autres tâches définies dans le `settings.py`). Pour fonctionner, Celery nécessite un serveur de messages, on utilise ici Redis.
 
 Les opérations nécessaires pour lancer Celery ainsi que la configuration avec Redis sont rassemblées dans le fichier `supervisord.conf`. Assurez-vous donc d'avoir installé Redis et Supervisor puis démarrez Supervisor au même niveau que le fichier `supervisord.conf` :
 
@@ -187,19 +187,76 @@ $ supervisorctl tail celery
 [2018-04-29 10:59:32,657: INFO/MainProcess] celery@MacBook-Pro-de-Florimond-2.local ready.
 ```
 
-## Dépendances
+### Envoi de mails
+
+Le backend utilise le plan gratuit de [SendGrid](https://sendgrid.com) (jusqu'à 100 emails par jour) pour envoyer des emails et notifications aux utilisateurs.
+
+La documentation de cette application est consultable ici : [oser_backend/mails/README.md](oser_backend/mails/README.md).
+
+> En développement, utilisez la configuration `dev_sendgrid` pour [activer le mode bac à sable](https://github.com/sklarsa/django-sendgrid-v5#other-settings).
+> ```
+> $ python manage.py sendnotification mails.example.Today --settings=oser_backend.settings.dev_sendgrid
+> ```
+
+## Intégration continue
+
+Ce repo utilise le service d'intégration continue [TravisCI](https://travis-ci.org/oser-cs/oser-backend).
+
+Lorsque vous effectuez un push sur le repo, un build est déclenché. En cas d'échec ou d'erreur lors du build, vous recevrez un email de TravisCI.
+
+> Les builds durent en général 1 à 2 minutes.
+
+Vous pouvez consulter les logs publics ou accéder à l'interface sur [le site de TravisCI](https://travis-ci.org/oser-cs/oser-backend).
+
+## Déploiement
+
+Le backend est déployé sur Heroku dans deux applications : staging et production.
+
+### Déploiement automatique
+
+Après un build réussi sur `master` ou `staging`, TravisCI provoque un nouveau déploiement sur Heroku.
+
+### Accéder aux applications sur le Dashboard Heroku
+
+Pour accéder aux applications Heroku, faites la demande au responsable du secteur Geek. Elles apparaîtront alors sur votre [dashboard Heroku](https://dashboard.heroku.com).
+
+### Heroku CLI
+
+Je vous conseille d'installer [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) qui vous permettra de récupérer des variables d'environnement ou d'effectuer des opérations sur les applications. Consultez la documentation pour en savoir plus !
+
+### Addons
+
+Les addons sont consultables sur l'onglet "Ressources" d'une application.
+
+#### PostgreSQL
+
+Heroku provisionne la base de données PostgreSQL via un addon.
+
+Les identifiants de la base de données sont stockées dans les variables d'environnement de l'application.
+
+#### SendGrid
+
+C'est sur Heroku que les comptes SendGrid sont configurés via un addon.
+
+Le backend utilise [django-sendgrid-v5](https://github.com/sklarsa/django-sendgrid-v5) pour utiliser l'API Web de SendGrid, plus rapide que SMTP.
+
+### Stockage de fichiers
+
+Heroku ne fournit pas de système de fichiers persistant, c'est pourquoi les fichiers uploadés sur le site (documents PDFs, images) sont stockés sur Amazon Web Services S3.
+
+Les paramètres S3 sont définis dans les variables d'environnement de l'application.
+
+## Dépendances principales
 
 ### Django
 
 [Django](https://www.djangoproject.com) est un framework de développement web pour Python. Le site d'OSER utilise Django en version 2.0.
 
-> Note aux devs : il y a quelques changements non-rétrocompatibles de Django 2.0 par rapport à la version précédente 1.11. Faites attention à vérifier la version de Django supportée par des bibliothèques tierces que vous voudriez utiliser.
-
 ### Django REST Framework
 
 Le [Django REST Framework](http://www.django-rest-framework.org) (DRF) permet d'écrire facilement des API REST avec Django.
 
-Le site d'OSER utilise le DRF en version 3.7.3+. Cette version est entièrement compatible avec Django 2.0+.
+Le site d'OSER utilise le DRF en version 3.8+.
 
 ## Contribuer
 
