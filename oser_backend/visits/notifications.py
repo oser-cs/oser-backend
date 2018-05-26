@@ -11,10 +11,10 @@ from .models import Visit
 User = get_user_model()
 
 
-class Abandon(Notification):
+class ParticipationCancelled(Notification):
 
-    args = ('user', 'user_email', 'visit', 'date', 'reason',)
-    template_name = 'mails/visits/abandon.md'
+    args = ('user', 'visit', 'reason',)
+    template_name = 'visits/participation_cancelled.md'
     recipients = [settings.VISITS_TEAM_EMAIL]
 
     def get_subject(self):
@@ -22,14 +22,14 @@ class Abandon(Notification):
 
     @classmethod
     def example(cls):
-        return cls(user='John Doe', user_email='john.doe@example.com',
+        return cls(user='John Doe',
                    visit='Visite du Palais de la Découverte',
-                   date=now(), reason='Je ne peux plus venir...')
+                   reason='Je ne peux plus venir...')
 
 
 class Participation(Notification):
 
-    template_name = 'mails/visits/participation.md'
+    template_name = 'visits/participation.md'
     args = ('user', 'visit',)
     accepted: bool
 

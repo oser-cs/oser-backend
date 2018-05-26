@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Participation, Place, Visit
-from .serializers import (AbandonSerializer, ParticipationSerializer,
+from .serializers import (ParticipationCancelledSerializer, ParticipationSerializer,
                           PlaceSerializer, VisitListSerializer,
                           VisitSerializer)
 
@@ -174,35 +174,39 @@ class ParticipationsViewSet(mixins.CreateModelMixin,
     permission_classes = [DRYPermissions]
 
     def get_serializer_class(self):
-        if self.action == 'abandon':
-            return AbandonSerializer
+        if self.action == 'notify_cancelled':
+            return ParticipationCancelledSerializer
         return ParticipationSerializer
 
-    @action(methods=['post'], detail=False)
-    def abandon(self, request):
-        """Notify the visits team that a student abandoned a participation.
+    @action(methods=['post'], detail=True)
+    def notify_cancelled(self, request, pk=True):
+        """Notify the visits team that a user cancelled their participation.
 
         An email will be sent to the visits team's email address.
+
+        You should:
+
+        - Call this endpoint **before** you delete the associated
+        participation.
+        - Only call this endpoint if the participation has `accepted = True`,
+        as this is not checked for.
 
         ### Example payload
 
             {
-                "user": 3,
-                "reason": "Désolé, je ne peux plus venir…",
-                "visit": 1
+                "reason": "Désolé, je ne peux plus venir…"
             }
 
         ### Example response
 
             {
-                "user": "John Doe",
-                "reason": "Désolé, je ne peux plus venir…",
-                "visit": "Visite du Palais de la Découverte",
                 "sent": "2018-05-23 22:27:06.313137+00:00",
                 "recipient": "oser.geek@gmail.com"
             }
         """
-        serializer = AbandonSerializer(data=request.data)
+        participation = self.get_object()
+        serializer = ParticipationCancelledSerializer(
+            participation, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(

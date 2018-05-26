@@ -1,8 +1,10 @@
 """Visits admin panel configuration."""
 
 from django import forms
-from django.contrib import admin
-from .models import Visit, Place, Participation
+from django.contrib import admin, messages
+from django.template.defaultfilters import pluralize
+
+from .models import Participation, Place, Visit
 
 # Register your models here.
 
@@ -71,12 +73,43 @@ class ParticipationInline(admin.StackedInline):
     extra = 0
 
 
+def accept_selected_participations(modeladmin, request, queryset):
+    """Accept selected participations in list view."""
+    for obj in queryset:
+        obj.accepted = True
+        obj.save()
+    count = queryset.count()
+    s = pluralize(count)
+    messages.add_message(request, messages.SUCCESS,
+                         f'{count} participation{s} acceptée{s} avec succès.')
+
+
+accept_selected_participations.short_description = (
+    'Accepter les participations sélectionnées')
+
+
+def reject_selected_participations(modeladmin, request, queryset):
+    """Reject selected participations in list view."""
+    for obj in queryset:
+        obj.accepted = False
+        obj.save()
+    count = queryset.count()
+    s = pluralize(count)
+    messages.add_message(request, messages.SUCCESS,
+                         f'{count} participation{s} acceptée{s} avec succès.')
+
+
+reject_selected_participations.short_description = (
+    'Rejeter les participations sélectionnées')
+
+
 @admin.register(Participation)
 class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
     list_display = ('visit', 'user', 'accepted', 'present')
     list_filter = ('visit',)
+    actions = [accept_selected_participations, reject_selected_participations]
 
 
 @admin.register(Visit.organizers.through)

@@ -16,7 +16,7 @@ def fire_accepted_changed(sender, instance: Participation, created, **kwargs):
         accepted_changed.send(sender=sender, instance=instance)
 
 
-@receiver(accepted_changed, sender=Participation)
+@receiver(accepted_changed)
 def notify_participation(sender, instance: Participation, **kwargs):
     """Send notification to user depending on their participation status.
 

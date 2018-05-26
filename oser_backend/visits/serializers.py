@@ -9,8 +9,8 @@ from profiles.models import Tutor
 from users.models import User
 from users.serializers import UserSerializer
 
+from .notifications import ParticipationCancelled
 from .models import Participation, Place, Visit
-from .notifications import Abandon
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -129,35 +129,23 @@ class VisitSerializer(VisitListSerializer):
             'url',)
 
 
-class AbandonSerializer(serializers.Serializer):
-    """Serializer for abandon notifications."""
+class ParticipationCancelledSerializer(serializers.Serializer):
+    """Serializer for sending participation cancelled notifications."""
 
-    user = serializers.PrimaryKeyRelatedField(
-        write_only=True,
-        queryset=User.objects.all(),
-        label='User',
-        help_text='ID of the user who does not participate anymore.')
     reason = serializers.CharField(
         write_only=True,
         label='Reason',
-        help_text='An explanation of why the user abandonned.')
-    visit = serializers.PrimaryKeyRelatedField(
-        write_only=True,
-        label='Visit',
-        help_text='ID of the visit the user has quit.',
-        queryset=Visit.objects.all())
+        help_text='Explain why the user cancelled their participation.')
 
     sent = serializers.BooleanField(read_only=True)
     timestamp = serializers.DateTimeField(read_only=True)
 
-    def create(self, validated_data):
-        user = validated_data['user']
-        visit = validated_data['visit']
+    def update(self, instance: Participation, validated_data):
+        """Send a notification as the user cancelled their participation."""
         reason = validated_data['reason']
 
-        notification = Abandon(
-            user=user, user_email=user.email, visit=visit,
-            date=visit.date, reason=reason)
+        notification = ParticipationCancelled(
+            user=instance.user, visit=instance.visit, reason=reason)
         notification.send()
 
         return notification

@@ -49,23 +49,18 @@ class ParticipationEndpointsTest(HyperlinkedAPITestCase):
             expected_status_code=status.HTTP_204_NO_CONTENT)
 
 
-class AbandonTest(APITestCase):
+class ParticipationCancelledTest(APITestCase):
     """Test endpoint to notify a user does not participate to visit anymore."""
 
     def setUp(self):
         self.user = UserFactory.create()
-        self.visit = VisitFactory.create()
-        self.reason = (
-            "Désolé, je ne peux plus venir à cause d'un rendez-vous médical.")
+        VisitFactory.create()
+        self.obj = ParticipationFactory.create()
 
     def perform(self):
-        data = {
-            'user': self.user.pk,
-            'visit': self.visit.pk,
-            'reason': self.reason,
-        }
-        response = self.client.post('/api/participations/abandon/', data=data,
-                                    format='json')
+        data = {'reason': 'Désolé, je ne peux plus venir.'}
+        url = f'/api/participations/{self.obj.pk}/notify_cancelled/'
+        response = self.client.post(url, data=data, format='json')
         return response
 
     def test(self):
