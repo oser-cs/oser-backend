@@ -155,14 +155,16 @@ class AbandonSerializer(serializers.Serializer):
 
         context = {
             'user': user,
+            'email': user.email,
+            'visit': str(visit),
+            'date': visit.date,
             'reason': reason,
-            'visit': visit,
         }
         subject = f'Désistement à la sortie: {visit}'
 
         # Render the email from template
         plain_message = render_to_string(
-            'visits/abandon_notification.txt', context)
+            'mails/visits/abandon.txt', context)
 
         send_mail_notification(
             subject=subject,
