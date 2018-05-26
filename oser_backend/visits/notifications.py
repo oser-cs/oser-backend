@@ -22,13 +22,13 @@ class ParticipationCancelled(Notification):
 
     @classmethod
     def example(cls):
-        return cls(user='John Doe',
-                   visit='Visite du Palais de la Découverte',
-                   reason='Je ne peux plus venir...')
+        user = User(email='john.doe@example.com', first_name='John')
+        visit = Visit(title='Visite du Palais de la Découverte', date=now())
+        return cls(user=user, visit=visit, reason='Je ne peux plus venir...')
 
 
-class Confirm(Notification):
-    """Confirm whether a user can participate to a visit."""
+class ConfirmParticipation(Notification):
+    """ConfirmParticipation whether a user can participate to a visit."""
 
     template_name = 'visits/confirm_participation.md'
     args = ('participation',)

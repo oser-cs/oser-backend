@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import Signal, receiver
 
 from .models import Participation
-from .notifications import Confirm
+from .notifications import ConfirmParticipation
 
 accepted_changed = Signal()
 
@@ -24,4 +24,4 @@ def notify_participation(sender, instance: Participation, **kwargs):
     """
     if instance.accepted is None:
         return
-    Confirm(participation=instance).send()
+    ConfirmParticipation(participation=instance).send()

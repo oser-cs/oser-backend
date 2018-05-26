@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.text import Truncator
+from django.utils import translation
 
 from markdown import markdown
 
@@ -153,6 +154,7 @@ class Notification:
 
     def render(self) -> str:
         """Render the template and return the notification message body."""
+        translation.activate('fr_FR')  # force usage of French
         template = self.get_template()
         context = self.get_context()
         content = render_to_string(template, context)
