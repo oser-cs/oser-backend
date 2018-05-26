@@ -33,13 +33,9 @@ class Participation(Notification):
     args = ('user', 'visit',)
     accepted: bool
 
-    def get_organizers(self):
-        return self.visit.organizers.values_list('user__first_name', flat=True)
-
     def get_context(self):
         context = super().get_context()
         context['accepted'] = self.accepted
-        context['organizers'] = self.get_organizers()
         return context
 
     def get_subject(self):
@@ -50,14 +46,9 @@ class Participation(Notification):
 
     @classmethod
     def example(cls):
-        class Example(cls):
-
-            def get_organizers(self):
-                return ['Julien', 'Louise']
-
         user = User(email='john.doe@example.com', first_name='John')
         visit = Visit(title='Visite du Palais de la Découverte', date=now())
-        return Example(user=user, visit=visit)
+        return cls(user=user, visit=visit)
 
 
 class Accepted(Participation):

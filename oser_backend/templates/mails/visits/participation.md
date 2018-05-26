@@ -18,7 +18,6 @@ En te rendant sur [l'espace sorties]({{ visit.get_site_url }}), tu peux dès à 
 
 {% else %}
 Malheureusement, en raison du nombre de places limité, tu ne pourras pas participer à cette sortie. 😔
-
 Nous te recontacterons si des places se libèrent suite à des désistements.
 {% endif %}
 {% endblock %}
@@ -27,7 +26,6 @@ Nous te recontacterons si des places se libèrent suite à des désistements.
 À bientôt,
 
 Les organisateurs  
-{% if organizers %}{{ organizers|join:', '}}{% endif %}
 
 Nous contacter : oser.sortie@gmail.fr
 {% endblock %}
