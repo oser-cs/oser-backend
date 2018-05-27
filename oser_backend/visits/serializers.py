@@ -81,7 +81,10 @@ class VisitListSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_passed(self, obj: Visit) -> bool:
         """Return true if the visit already happened, false otherwise."""
-        return obj.date < now().date() and obj.end_time < now().time()
+        now_date = now().date()
+        if obj.date == now_date:
+            return now().time() > obj.end_time
+        return now_date > obj.date
 
     class Meta:  # noqa
         model = Visit
