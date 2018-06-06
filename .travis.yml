@@ -40,7 +40,7 @@ deploy:
   app:
     # direct each branch to the corresponding app
     master: oser-backend
-    staging: oser-backend-staging
+    dev: oser-backend-dev
   run:
     # automatically run new migrations
     - 'python manage.py migrate'

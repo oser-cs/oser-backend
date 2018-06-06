@@ -208,11 +208,11 @@ Vous pouvez consulter les logs publics ou accéder à l'interface sur [le site d
 
 ## Déploiement
 
-Le backend est déployé sur Heroku dans deux applications : staging et production.
+Le backend est déployé sur Heroku dans deux applications : dev et production.
 
 ### Déploiement automatique
 
-Après un build réussi sur `master` ou `staging`, TravisCI provoque un nouveau déploiement sur Heroku.
+Après un build réussi sur `master` ou `dev`, TravisCI provoque un nouveau déploiement sur Heroku.
 
 ### Accéder aux applications sur le Dashboard Heroku
 

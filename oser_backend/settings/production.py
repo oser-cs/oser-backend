@@ -13,7 +13,7 @@ DEBUG = os.environ.get('DEBUG', False)
 ALLOWED_HOSTS = [
     'localhost',
     'oser-backend.herokuapp.com',
-    'oser-backend-staging.herokuapp.com',
+    'oser-backend-dev.herokuapp.com',
     'oser-cs.fr',
 ]
 
