@@ -12,7 +12,9 @@ services:
 
 install:
   - pip install -r requirements.txt
-  - pip install supervisor
+  # Supervisor < 4 does not support python 3 but Supervisor 4 is not
+  # released to PyPI yet. => Install from Github
+  - pip install git+https://github.com/Supervisor/supervisor.git
 
 before_script:
   # Start Celery using the supervisor config
