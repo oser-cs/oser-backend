@@ -12,9 +12,7 @@ services:
 
 install:
   - pip install -r requirements.txt
-  # Supervisor < 4 does not support python 3 but Supervisor 4 is not
-  # released to PyPI yet. => Install from Github
-  - pip install git+https://github.com/Supervisor/supervisor.git
+  - pip install supervisor
 
 before_script:
   # Start Celery using the supervisor config
@@ -31,12 +29,7 @@ before_script:
   - python manage.py migrate
 
 script:
-  # Run tests
   - python manage.py test
-
-before_deploy:
-  # Return the repository root
-  - cd .. && ls
 
 deploy:
   # Deploy to Heroku once the tests have passed
