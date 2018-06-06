@@ -23,8 +23,8 @@ __pycache__/
 # .env
 
 # media and collected static files
-oser_backend/media/
-oser_backend/static/
+media/
+static/
 
 # Supervisor
 supervisord.pid

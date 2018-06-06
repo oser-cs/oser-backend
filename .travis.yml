@@ -27,8 +27,6 @@ before_script:
   # - the one set up in settings/default.py
   - psql -c 'create database oser_backend_db;' -U postgres
 
-  # Go to the project root directory
-  - cd oser_backend
   # Apply database migrations
   - python manage.py migrate
 
@@ -50,7 +48,7 @@ deploy:
     staging: oser-backend-staging
   run:
     # automatically run new migrations
-    - 'python oser_backend/manage.py migrate'
+    - 'python manage.py migrate'
   api_key:
     # Encrypted API key obtained from the following command
     # (requires TravisCI and Heroku CLI installed)

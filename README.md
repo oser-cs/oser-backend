@@ -80,7 +80,6 @@ $ pip install -r requirements.txt
 - Configurez la base de données en exécutant les migrations (rappelez-vous : *le serveur PostgreSQL doit être actif*) :
 
 ```bash
-$ cd oser_backend
 $ python manage.py migrate
 ```
 
@@ -190,7 +189,7 @@ $ supervisorctl tail celery
 
 Le backend utilise le plan gratuit de [SendGrid](https://sendgrid.com) (jusqu'à 100 emails par jour) pour envoyer des emails et notifications aux utilisateurs.
 
-La documentation de cette application est consultable ici : [oser_backend/mails/README.md](oser_backend/mails/README.md).
+La documentation de cette application est consultable ici : [mails/README.md](mails/README.md).
 
 > En développement, utilisez la configuration `dev_sendgrid` pour [activer le mode bac à sable](https://github.com/sklarsa/django-sendgrid-v5#other-settings).
 > ```
