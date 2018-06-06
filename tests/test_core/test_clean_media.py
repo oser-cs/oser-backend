@@ -9,7 +9,7 @@ from core.management.commands.utils import DataLoader
 
 
 class CleanMediaTest(TestCase):
-    """Test the clean_media command."""
+    """Test the cleanmedia command."""
 
     ref_file_name = 'visit-factsheet.pdf'
     safe_location = 'you_will_not_find_me'
@@ -36,7 +36,7 @@ class CleanMediaTest(TestCase):
         self.assertTrue(default_storage.exists(self.non_ref_file_path))
 
         # call the command
-        call_command('clean_media', top=self.safe_location, verbosity=0)
+        call_command('cleanmedia', top=self.safe_location, verbosity=0)
 
         # file under test_files/ without reference must have been deleted
         self.assertFalse(default_storage.exists(self.non_ref_file_path))

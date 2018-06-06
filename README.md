@@ -54,7 +54,7 @@ Après avoir installé PostgreSQL, démarrez le serveur en ouvrant pgAdmin, l'in
 
 Le backend Django est relié à [Celery](http://www.celeryproject.org), une librairie Python permet d'effectuer des traitements ou opérations en tâche de fond.
 
-> NOTE : Pour l'instant, Celery n'est utilisé que pour effectuer un nettoyage périodique des fichiers de médias inutilisés, opération qui peut de toute façon être déclenchée par `$ python manage.py clean_media`. Il n'est donc **pas obligatoire d'installer ce qui suit en développement.**
+> NOTE : Pour l'instant, Celery n'est utilisé que pour effectuer un nettoyage périodique des fichiers de médias inutilisés, opération qui peut de toute façon être déclenchée par `$ python manage.py cleanmedia`. Il n'est donc **pas obligatoire d'installer ce qui suit en développement.**
 
 Celery a besoin d'un système de *messaging* pour fonctionner, on utilise donc ici [Redis](https://redis.io).
 

@@ -35,7 +35,7 @@ SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 CELERY_BEAT_SCHEDULE = {
     # Clean media files every day at 22:00
     'clean-media-every-hour': {
-        'task': 'core.tasks.clean_media',
+        'task': 'core.tasks.cleanmedia',
         'schedule': crontab(minute='0', hour='22'),
     },
 }

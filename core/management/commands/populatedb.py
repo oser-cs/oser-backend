@@ -117,7 +117,7 @@ class Command(BaseCommand):
 
     def clean(self):
         self._clean()
-        call_command('clean_media')
+        call_command('cleanmedia')
         self.stdout.write(self.style.SUCCESS('Cleaned populated database.'))
 
     def preview(self):

@@ -1,9 +1,10 @@
 """Projects models."""
 
 from django.db import models
-from django.utils import timezone
 
 from markdownx.models import MarkdownxField
+
+from .utils import this_year
 
 
 class Project(models.Model):
@@ -14,6 +15,7 @@ class Project(models.Model):
         help_text='Le nom du projet.')
 
     description = MarkdownxField(
+        blank=True, default='',
         help_text='Une description générale du projet')
 
     logo = models.ImageField(
@@ -26,13 +28,24 @@ class Project(models.Model):
         verbose_name = 'projet'
         ordering = ('name',)
 
-    def __str__(self):
+    def total_participations(self, state: str=None) -> int:
+        """Return the total number of accepted participations for this project.
+
+        Parameters
+        ----------
+        state : str, optional
+            If passed, only the participations in this state will be counted.
+
+        """
+        state = state or Participation.STATE_ACCEPTED
+        filter = models.Q(participations__state=state)
+        return self.editions.aggregate(
+            t=models.Count('participations', filter=filter)
+        )['t']
+
+    def __str__(self) -> str:
+        """Represent by its name."""
         return str(self.name)
-
-
-def this_year() -> int:
-    """Return the current year."""
-    return timezone.now().year()
 
 
 class Edition(models.Model):
@@ -52,6 +65,7 @@ class Edition(models.Model):
         help_text='Le projet dont ceci est une édition.')
 
     description = MarkdownxField(
+        blank=True, default='',
         help_text=(
             'Une description spécifique pour cette édition.'
         ))
@@ -64,6 +78,7 @@ class Edition(models.Model):
     class Meta:  # noqa
         ordering = ('-year',)
         verbose_name = 'édition'
+        get_latest_by = 'year'
 
     def __str__(self) -> str:
         """Represent using the project name, the year and the edition name."""
@@ -73,37 +88,64 @@ class Edition(models.Model):
         return s
 
 
+class ParticipationQuerySet(models.QuerySet):
+    """Custom QuerySet for participations."""
+
+    def pending(self):
+        """Return pending participations only."""
+        return self.filter(state=Participation.STATE_PENDING)
+
+    def validated(self):
+        """Return validated participations only."""
+        return self.filter(state=Participation.STATE_VALIDATED)
+
+    def accepted(self):
+        """Return accepted participations only."""
+        return self.filter(state=Participation.STATE_ACCEPTED)
+
+    def rejected(self):
+        """Return rejected participations only."""
+        return self.filter(state=Participation.STATE_REJECTED)
+
+    def cancelled(self):
+        """Return cancelled participations only."""
+        return self.filter(state=Participation.STATE_CANCELLED)
+
+
 class Participation(models.Model):
     """Represents the participation of a user (a student) to a project."""
+
+    objects = ParticipationQuerySet.as_manager()
 
     user = models.ForeignKey(
         'users.User', on_delete=models.CASCADE, verbose_name='utilisateur',
         related_name='project_participations')
 
     edition = models.ForeignKey(
-        'Edition', on_delete=models.CASCADE, verbose_name='sortie',
+        'Edition', on_delete=models.CASCADE, verbose_name='édition',
         related_name='participations')
 
     submitted = models.DateTimeField(
         auto_now_add=True, verbose_name='soumis le',
         help_text='Date de soumission de la participation')
 
-    STATUS_PENDING = 'pending'
-    STATUS_VALIDATED = 'valid'
-    STATUS_ACCEPTED = 'accepted'
-    STATUS_REJECTED = 'rejected'
-    STATUS_CANCELLED = 'cancelled'
-    _STATUS_CHOICES = (
-        (STATUS_PENDING, 'En attente'),
-        (STATUS_VALIDATED, 'Validé'),
-        (STATUS_ACCEPTED, 'Accepté'),
-        (STATUS_REJECTED, 'Refusé'),
-        (STATUS_CANCELLED, 'Annulé'),
+    STATE_PENDING = 'pending'
+    STATE_VALIDATED = 'valid'
+    STATE_ACCEPTED = 'accepted'
+    STATE_REJECTED = 'rejected'
+    STATE_CANCELLED = 'cancelled'
+    _STATE_CHOICES = (
+        (STATE_PENDING, 'En attente'),
+        (STATE_VALIDATED, 'Validé'),
+        (STATE_ACCEPTED, 'Accepté'),
+        (STATE_REJECTED, 'Refusé'),
+        (STATE_CANCELLED, 'Annulé'),
     )
-    status = models.CharField(
-        'statut', max_length=10, choices=_STATUS_CHOICES,
+    state = models.CharField(
+        'état', max_length=10, choices=_STATE_CHOICES,
+        blank=False, default=STATE_PENDING,
         help_text=(
-            "L'état de la participation. "
+            "État de la participation. "
             "En attente = en cours de validation par les organisateurs. "
             "Validé = toutes les pièces ont été reçues et sont conformes. "
             "Accepté = le lycéen a été sélectionné pour participer. "
@@ -115,6 +157,7 @@ class Participation(models.Model):
         ordering = ('-submitted',)
 
     def __str__(self):
+        """Represent by its user."""
         return str(self.user)
 
 
@@ -130,4 +173,5 @@ class EditionOrganizer(models.Model):
         verbose_name = 'organisateur'
 
     def __str__(self):
+        """Represent by its user."""
         return str(self.user)
