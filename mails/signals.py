@@ -1,17 +1,17 @@
 """Mails app signals."""
 
+import logging
 from django.conf import settings
 from django.dispatch import Signal, receiver
 from python_http_client import HTTPError
 
-from logs import get_logger
 
 delivered = Signal(providing_args=['mail_from', 'subject', 'recipient_list'])
 app_disabled = Signal(providing_args=['subject', 'recipient_list'])
 failed = Signal(providing_args=['exception'])
 notification_sent = Signal(providing_args=['instance', 'result'])
 
-logger = get_logger('notifications')
+logger = logging.getLogger('web.notifications')
 
 
 @receiver(delivered)

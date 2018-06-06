@@ -13,9 +13,6 @@ import pymdownx.emoji
 dn = os.path.dirname
 BASE_DIR = dn(dn(dn(os.path.abspath(__file__))))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 # One way to do this is to store it in an environment variable on the server
 SECRET_KEY = os.environ.get('SECRET_KEY',
@@ -177,7 +174,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -193,11 +189,43 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Logging
+
+# NOTE: all loggers within this project should be named 'web.<logger_name>'
+# so that the same configuration is applied to them.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'web': {
+            'handlers': ['console'],
+            'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
+}
+
+
 # Email configuration
+
 EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 # Mails app config
+
 MAILS_ENABLED = True
 MAILS_NOTIFICATIONS_ADDRESS = 'notifications@oser-cs.fr'
 MAILS_RAISE_EXCEPTIONS = True
@@ -207,7 +235,6 @@ VISITS_TEAM_EMAIL = os.environ.get('VISITS_TEAM_EMAIL',
                                    'florimond.manca@gmail.com')
 
 # Internationalization
-# https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'fr-fr'
 TIME_ZONE = 'Europe/Paris'
