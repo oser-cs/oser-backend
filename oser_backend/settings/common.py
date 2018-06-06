@@ -67,6 +67,7 @@ PROJECT_APPS = [
     'register.apps.RegisterConfig',
     'api.apps.ApiConfig',
     'mails.apps.MailsConfig',
+    'projects.apps.ProjectsConfig',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
