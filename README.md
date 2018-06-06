@@ -1,6 +1,6 @@
 # Site internet d'OSER - Backend
 
-<p align="center"><img width=40% src="media/logo.png"></p>
+<p align="center"><img width=40% src="repo/logo.png"></p>
 
 <!-- Badges issus de Shields.io.
 
@@ -120,7 +120,7 @@ Vous pouvez aussi librement parcourir l'API à l'adresse http://localhost:8000/a
 
 Vous pouvez également accéder à la documentation de [l'API en production](http://oser-backend.herokuapp.com/api/docs).
 
-![API Docs](media/api-docs.png)
+![API Docs](repo/api-docs.png)
 
 ### Authentification
 
