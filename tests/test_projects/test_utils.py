@@ -7,5 +7,5 @@ from projects.utils import this_year
 class ThisYearTest(TestCase):
     """Test the this_year() function."""
 
-    def test_is_integer(self):
+    def test_returns_int(self):
         self.assertIsInstance(this_year(), int)
