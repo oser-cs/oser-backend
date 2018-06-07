@@ -1,7 +1,7 @@
 """Editions API tests."""
 
 from rest_framework import status
-from tests.utils import SimpleAPITestCase
+from tests.utils import SimpleAPITestCase, logged_in
 
 from projects.factory import EditionFactory
 
@@ -29,12 +29,22 @@ class EditionEndpointsTest(SimpleAPITestCase):
         response = self.client.get(url)
         return response
 
+    def test_list_requires_authentication(self):
+        self.assertRequiresAuth(
+            self.perform_list, expected_status_code=status.HTTP_200_OK)
+
+    @logged_in
     def test_list_returns_expected_fields(self):
         response = self.perform_list()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         fields = set(response.data[0])
         self.assertSetEqual(fields, self.read_expected_fields)
 
+    def test_retrieve_requires_authentication(self):
+        self.assertRequiresAuth(
+            self.perform_retrieve, expected_status_code=status.HTTP_200_OK)
+
+    @logged_in
     def test_retrieve_returns_expected_fields(self):
         response = self.perform_retrieve()
         self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -3,7 +3,7 @@
 from django.utils.timezone import now
 from rest_framework import serializers
 
-from core.markdown import MarkdownField
+from core.fields import MarkdownField
 from core.serializers import AddressSerializer
 from profiles.models import Tutor
 from users.fields import UserField

@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 
+from core.fields import MarkdownField
 from users.fields import UserField
 from users.serializers import UserSerializer
 
@@ -10,6 +11,8 @@ from .models import Edition, Participation, Project
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for Project objects."""
+
+    description = MarkdownField()
 
     class Meta:  # noqa
         model = Project
@@ -34,14 +37,28 @@ class ParticipationSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Participation
         fields = ('id', 'submitted', 'user', 'edition', 'state',)
+        extra_kwargs = {
+            'state': {
+                'label': 'State of the participation.'
+            }
+        }
 
 
-class EditionSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer for Edition objects."""
+class EditionListSerializer(serializers.HyperlinkedModelSerializer):
+    """List serializer for Edition objects."""
 
+    description = MarkdownField()
     project = ProjectSerializer()
-    organizers = UserSerializer(many=True)
-    participations = ParticipationSerializer(many=True)
+    organizers = serializers.SerializerMethodField()
+    participations = serializers.SerializerMethodField()
+
+    def get_organizers(self, obj: Edition) -> int:
+        """Return the number of organizers."""
+        return obj.organizers.count()
+
+    def get_participations(self, obj: Edition) -> int:
+        """Return the number of participations."""
+        return obj.participations.count()
 
     class Meta:  # noqa
         model = Edition
@@ -50,3 +67,10 @@ class EditionSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {'view_name': 'api:edition-detail'},
         }
+
+
+class EditionDetailSerializer(EditionListSerializer):
+    """Detail serializer for Edition objects."""
+
+    organizers = UserSerializer(many=True)
+    participations = ParticipationSerializer(many=True)

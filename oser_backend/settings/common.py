@@ -57,6 +57,8 @@ THIRD_PARTY_APPS = [
     'storages',
     # Country fields
     'django_countries',
+    # Easy filtering on the API
+    'django_filters',
 ]
 PROJECT_APPS = [
     'core.apps.CoreConfig',

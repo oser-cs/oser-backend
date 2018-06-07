@@ -1,8 +1,8 @@
 """Markdown utilities."""
 
-from pathlib import Path
+from typing import Generator as Gen
 import re
-from rest_framework import serializers
+from pathlib import Path
 
 
 class MdFileRef:
@@ -11,12 +11,12 @@ class MdFileRef:
     str_format = '[{legend}]({file_path})'
     pattern = r'\[(?P<legend>.*?)\]\((?P<file_path>.*?)\)'
 
-    def __init__(self, legend='', file_path=''):
+    def __init__(self, legend: str='', file_path: str=''):
         self.legend = legend
         self.file_path = file_path
 
     @classmethod
-    def find(cls, text):
+    def find(cls, text: str) -> Gen['cls', None, None]:
         """Find all file references in text.
 
         Returns iterable of MdFileRef objects.
@@ -27,7 +27,7 @@ class MdFileRef:
                       file_path=match.group('file_path'))
 
     @property
-    def filename(self):
+    def filename(self) -> str:
         return Path(self.file_path).name
 
     def __repr__(self):
@@ -45,13 +45,13 @@ class MdImageRef(MdFileRef):
     pattern = r'!' + MdFileRef.pattern
 
 
-def extract_md_file_refs(markdown_text):
+def extract_md_file_refs(markdown_text: str) -> Gen[MdImageRef, None, None]:
     """Return iterator of file (and image) references in markdown text."""
     for ref in MdFileRef.find(markdown_text):
         yield ref
 
 
-def extract_image_refs(markdown_text):
+def extract_image_refs(markdown_text: str) -> Gen[MdImageRef, None, None]:
     """Return iterator of image references in markdown text."""
     for ref in MdImageRef.find(markdown_text):
         yield ref
@@ -62,7 +62,7 @@ def _get_domain(request):
     return schema + request.get_host()
 
 
-def add_domain_to_image_files(request, content):
+def add_domain_to_image_files(request, content: str) -> str:
     """Add domain to image file path in image references.
 
     This allows to get full URL to image inside ![]() tags,
@@ -78,17 +78,3 @@ def add_domain_to_image_files(request, content):
                              file_path=domain + ref.file_path)
         content = content.replace(str(ref), str(new_ref))
     return content
-
-
-class MarkdownField(serializers.Field):
-    """Custom field for char fields that contain Markdown text.
-
-    Should be used on markdownx.MarkdownxField.
-    """
-
-    def to_representation(self, obj):
-        request = self.context['request']
-        return add_domain_to_image_files(request, obj)
-
-    def to_internal_value(self, data):
-        return data

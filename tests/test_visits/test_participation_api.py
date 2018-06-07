@@ -66,6 +66,7 @@ class ParticipationCancelledTest(APITestCase):
     def test(self):
         self.client.force_login(self.user)
         response = self.perform()
-        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED,
+                         response.data)
         self.assertSetEqual(set(response.data), {'sent', 'timestamp'})
         self.assertTrue(response.data['sent'])
