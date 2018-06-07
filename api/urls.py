@@ -9,6 +9,7 @@ from register import views as register_views
 from tutoring import views as tutoring_views
 from users import views as users_views
 from visits import views as visits_views
+import projects.views
 
 app_name = 'api'
 
@@ -41,6 +42,11 @@ router.register('registrations', register_views.RegistrationViewSet)
 router.register('visits', visits_views.VisitViewSet)
 router.register('participations', visits_views.ParticipationsViewSet)
 router.register('places', visits_views.PlaceViewSet)
+
+# Projects views
+router.register('projects', projects.views.ProjectViewSet)
+router.register('project-participations', projects.views.ParticipationViewSet)
+router.register('editions', projects.views.EditionViewSet)
 
 # Core views
 router.register('documents', core_views.DocumentViewSet)

@@ -6,7 +6,7 @@ from rest_framework import serializers
 from core.markdown import MarkdownField
 from core.serializers import AddressSerializer
 from profiles.models import Tutor
-from users.models import User
+from users.fields import UserField
 from users.serializers import UserSerializer
 
 from .models import Participation, Place, Visit
@@ -22,19 +22,6 @@ class PlaceSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Place
         fields = ('id', 'name', 'address', 'description')
-
-
-class UserField(serializers.Field):
-    """Custom user field used by ParticipationSerializer."""
-
-    def to_internal_value(self, user_id: int) -> User:
-        """Write from an ID as a user."""
-        return User.objects.get(id=user_id)
-
-    def to_representation(self, user: User) -> dict:
-        """Read from a user as serialized user data."""
-        request = self.context['request']
-        return UserSerializer(user, context={'request': request}).data
 
 
 class ParticipationSerializer(serializers.ModelSerializer):
