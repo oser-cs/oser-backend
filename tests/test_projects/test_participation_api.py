@@ -3,7 +3,8 @@
 from rest_framework import status
 from tests.utils import SimpleAPITestCase, logged_in
 
-from projects.factory import ParticipationFactory
+from projects.factory import EditionFactory, ParticipationFactory
+from users.factory import UserFactory
 
 
 class ParticipationReadTest(SimpleAPITestCase):
@@ -50,3 +51,27 @@ class ParticipationReadTest(SimpleAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         fields = set(response.data)
         self.assertSetEqual(fields, self.read_expected_fields)
+
+
+class ParticipationCreateTest(SimpleAPITestCase):
+
+    def perform_create(self):
+        user = UserFactory.create()
+        edition = EditionFactory.create()
+        payload = {
+            'user': user.pk,
+            'edition': edition.pk,
+        }
+        return self.client.post('/api/project-participations/',
+                                data=payload, format='json')
+
+    def test_create_requires_authentication(self):
+        self.assertRequiresAuth(
+            self.perform_create, expected_status_code=status.HTTP_201_CREATED)
+
+    @logged_in
+    def test_returns_expected_fields(self):
+        response = self.perform_create()
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        expected = {'id', 'user', 'edition', 'state', 'submitted'}
+        self.assertSetEqual(expected, set(response.data))
