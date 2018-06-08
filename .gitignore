@@ -20,7 +20,7 @@ __pycache__/
 *.rdb
 
 # private
-# .env
+.env
 
 # media and collected static files
 media/
