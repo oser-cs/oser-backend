@@ -54,10 +54,7 @@ class VisitListSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for lists of visits."""
 
     place = serializers.StringRelatedField()
-    participants = serializers.SerializerMethodField()
-
-    def get_participants(self, obj):
-        return obj.participants.values_list('id', flat=True)
+    participants = ParticipationSerializer(source='participations', many=True)
 
     organizers = serializers.SerializerMethodField()
 
@@ -87,7 +84,6 @@ class VisitListSerializer(serializers.HyperlinkedModelSerializer):
 class VisitSerializer(VisitListSerializer):
     """Serializer for Visit."""
 
-    participants = ParticipationSerializer(source='participations', many=True)
     place = PlaceSerializer()
     organizers = VisitOrganizerSerializer(many=True)
 
