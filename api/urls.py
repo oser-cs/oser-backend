@@ -10,6 +10,7 @@ from tutoring import views as tutoring_views
 from users import views as users_views
 from visits import views as visits_views
 import projects.views
+import dynamicforms.views
 
 app_name = 'api'
 
@@ -48,7 +49,12 @@ router.register('projects', projects.views.ProjectViewSet)
 router.register('project-participations', projects.views.ParticipationViewSet)
 router.register('editions', projects.views.EditionViewSet)
 
+# Dynamic forms views
+router.register('forms', dynamicforms.views.FormViewSet)
+router.register('form-entries', dynamicforms.views.FormEntryViewSet)
+
 # Core views
 router.register('documents', core_views.DocumentViewSet)
+
 
 urlpatterns += router.urls
