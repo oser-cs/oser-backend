@@ -10,27 +10,34 @@ A user can reply to a form by submitting a form entry, made of
 multiple answers (one per question).
 """
 
-from django.utils.text import Truncator
 from django.db import models
+from django.utils.text import Truncator, slugify
+
+from .utils import file_upload_to
 
 
 class Form(models.Model):
     """Represents a form with multiple questions."""
 
     title = models.CharField('titre', max_length=300)
+    slug = models.SlugField(max_length=100, blank=True, default='')
     created = models.DateTimeField('créé le', auto_now_add=True)
 
     class Meta:  # noqa
         ordering = ('-created',)
         verbose_name = 'formulaire'
 
+    def clean(self):
+        if not self.pk:
+            self.slug = slugify(self.title)
+
+    def __str__(self):
+        return str(self.title)
+
     @property
     def entries_count(self) -> int:
         """Return the number of entries in this form."""
         return self.entries.count()
-
-    def __str__(self):
-        return str(self.title)
 
 
 class Section(models.Model):
@@ -117,3 +124,20 @@ class Answer(models.Model):
     def __str__(self):
         answer = Truncator(self.answer).chars(140)
         return f'{self.question} : {answer}'
+
+
+class File(models.Model):
+    """Represents a file downloadable by form respondants."""
+
+    name = models.CharField('nom', max_length=300)
+    file = models.FileField('fichier', upload_to=file_upload_to)
+    form = models.ForeignKey(
+        'Form', on_delete=models.CASCADE, related_name='files',
+        verbose_name='formulaire')
+
+    class Meta:  # noqa
+        verbose_name = 'fichier'
+        verbose_name_plural = 'fichiers'
+
+    def __str__(self):
+        return str(self.name)

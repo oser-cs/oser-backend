@@ -1,7 +1,7 @@
 """Dynamic forms serializers."""
 
 from rest_framework import serializers
-from .models import Form, Section, Question, Answer, FormEntry
+from .models import Form, Section, Question, Answer, FormEntry, File
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -19,7 +19,15 @@ class SectionSerializer(serializers.ModelSerializer):
 
     class Meta:  # noqa
         model = Section
-        fields = ('id', 'title', 'questions',)
+        fields = ('id', 'title', 'questions', 'form')
+
+
+class FileSerializer(serializers.ModelSerializer):
+    """Serializer for form files."""
+
+    class Meta:  # noqa
+        model = File
+        fields = ('id', 'name', 'file', 'form')
 
 
 class FormSerializer(serializers.HyperlinkedModelSerializer):
@@ -27,7 +35,7 @@ class FormSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:  # noqa
         model = Form
-        fields = ('id', 'url', 'title', 'entries_count',)
+        fields = ('id', 'url', 'slug', 'title', 'entries_count',)
         extra_kwargs = {
             'url': {'view_name': 'api:form-detail'},
         }
@@ -37,9 +45,10 @@ class FormDetailSerializer(FormSerializer):
     """Serializer for form detail."""
 
     sections = SectionSerializer(many=True)
+    files = FileSerializer(many=True)
 
     class Meta(FormSerializer.Meta):  # noqa
-        fields = FormSerializer.Meta.fields + ('sections',)
+        fields = FormSerializer.Meta.fields + ('sections', 'files',)
 
 
 class AnswerSerializer(serializers.ModelSerializer):

@@ -1,7 +1,7 @@
 """Dynamic forms admin panels."""
 
 from django.contrib import admin
-from .models import Form, Section, Question, FormEntry, Answer
+from .models import Form, Section, Question, FormEntry, Answer, File
 
 
 class SectionInline(admin.StackedInline):
@@ -18,14 +18,22 @@ class QuestionInline(admin.StackedInline):
     extra = 0
 
 
+class FileInline(admin.TabularInline):
+    """Inline for form files."""
+
+    model = File
+    extra = 0
+
+
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
     """Admin panel for forms."""
 
     list_display = ('title', 'created',)
     list_filter = ('created',)
+    readonly_fields = ('slug',)
     search_fields = ('title',)
-    inlines = (SectionInline,)
+    inlines = (SectionInline, FileInline,)
 
 
 @admin.register(Section)
@@ -63,3 +71,12 @@ class AnswerAdmin(admin.ModelAdmin):
     list_display = ('answer', 'question', 'entry')
     list_filter = ('entry__form',)
     search_fields = ('answer', 'question__text',)
+
+
+@admin.register(File)
+class FileAdmin(admin.ModelAdmin):
+    """Admin panel for form files."""
+
+    list_display = ('name', 'file', 'form')
+    list_filter = ('form',)
+    search_fields = ('name',)

@@ -88,6 +88,14 @@ class Edition(models.Model):
         return s
 
 
+# class EditionForm(models.Model):
+#     """Participation form to a project's edition."""
+#
+#     form = models.ForeignKey(
+#         'dyanmicforms.Form', on_delete=models.CASCADE,
+#         verbose_name='formulaire')
+
+
 class ParticipationQuerySet(models.QuerySet):
     """Custom QuerySet for participations."""
 
