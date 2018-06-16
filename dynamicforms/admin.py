@@ -1,19 +1,20 @@
 """Dynamic forms admin panels."""
 
 from django.contrib import admin
+from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import Answer, File, Form, FormEntry, Question, Section
 from .views import download_multiple_forms_entries
 
 
-class SectionInline(admin.StackedInline):
+class SectionInline(SortableInlineAdminMixin, admin.StackedInline):
     """Inline for sections."""
 
     model = Section
     extra = 0
 
 
-class QuestionInline(admin.StackedInline):
+class QuestionInline(SortableInlineAdminMixin, admin.StackedInline):
     """Inline for questions."""
 
     model = Question

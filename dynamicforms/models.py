@@ -59,7 +59,16 @@ class Section(models.Model):
         verbose_name='formulaire',
         help_text="Formulaire associé à la section.")
 
+    order = models.PositiveIntegerField(
+        'position',
+        default=0,
+        blank=False,
+        null=False)
+
     questions: models.Manager
+
+    class Meta:  # noqa
+        ordering = ('order',)
 
     def __str__(self):
         return str(self.title)
@@ -108,7 +117,16 @@ class Question(models.Model):
         verbose_name='section',
         help_text="Section de formulaire associée à la question.")
 
+    order = models.PositiveIntegerField(
+        'position',
+        default=0,
+        blank=False,
+        null=False)
+
     answers: models.Manager
+
+    class Meta:  # noqa
+        ordering = ('order',)
 
     def __str__(self) -> str:
         return f'{self.text}{self.required and "*" or ""}'
