@@ -12,7 +12,8 @@ class EditionEndpointsTest(SimpleAPITestCase):
     factory = EditionFactory
 
     read_expected_fields = {'id', 'url', 'name', 'year', 'project',
-                            'description', 'organizers', 'participations'}
+                            'description', 'organizers', 'participations',
+                            'edition_form',}
 
     def setUp(self):
         self.factory.create_batch(3)

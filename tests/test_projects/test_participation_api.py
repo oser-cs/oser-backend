@@ -5,6 +5,7 @@ from tests.utils import SimpleAPITestCase, logged_in
 
 from projects.factory import EditionFactory, ParticipationFactory
 from users.factory import UserFactory
+from dynamicforms.models import Form
 
 
 class ParticipationReadTest(SimpleAPITestCase):
@@ -58,9 +59,15 @@ class ParticipationCreateTest(SimpleAPITestCase):
     def perform_create(self):
         user = UserFactory.create()
         edition = EditionFactory.create()
+        form = Form.objects.create(title="What's up?")
+        entry = {
+            'form': form.pk,
+            'answers': [],
+        }
         payload = {
             'user': user.pk,
             'edition': edition.pk,
+            'entry': entry,
         }
         return self.client.post('/api/project-participations/',
                                 data=payload, format='json')

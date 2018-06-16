@@ -44,7 +44,7 @@ class ProjectEndpointsTest(SimpleAPITestCase):
 
     @logged_in
     def test_retrieve_returns_expected_fields(self):
-        expected = {'id', 'url', 'name', 'logo', 'description'}
+        expected = {'id', 'url', 'name', 'logo', 'description', 'editions'}
         response = self.perform_retrieve()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         fields = set(response.data)
