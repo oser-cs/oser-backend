@@ -26,6 +26,7 @@ class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin):
     """Tutor admin panel."""
 
     inlines = (TutorTutoringGroupsInline,)
+    autocomplete_fields = ('address',)
 
     class Meta:  # noqa
         model = Tutor

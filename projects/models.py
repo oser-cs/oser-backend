@@ -1,9 +1,11 @@
 """Projects models."""
 
 from django.db import models
+from django.core.validators import ValidationError
 
 from markdownx.models import MarkdownxField
 
+from profiles.models import Tutor
 from .utils import this_year
 
 
@@ -88,12 +90,51 @@ class Edition(models.Model):
         return s
 
 
-# class EditionForm(models.Model):
-#     """Participation form to a project's edition."""
-#
-#     form = models.ForeignKey(
-#         'dyanmicforms.Form', on_delete=models.CASCADE,
-#         verbose_name='formulaire')
+def _validate_address_is_set(recipient_id: int):
+    recipient = Tutor.objects.filter(pk=recipient_id).first()
+    if recipient and not recipient.address:
+        raise ValidationError("Le destinataire doit avoir une adresse.")
+
+
+validate_address_is_set = _validate_address_is_set
+
+
+class EditionForm(models.Model):
+    """Participation form for a project's edition."""
+
+    edition = models.OneToOneField(
+        'Edition',
+        on_delete=models.CASCADE,
+        verbose_name='édition')
+
+    form = models.OneToOneField(
+        'dynamicforms.Form',
+        on_delete=models.CASCADE,
+        verbose_name='formulaire')
+
+    deadline = models.DateField(
+        'date butoir',
+        help_text="Les lycéens ne pourront plus s'inscrire après cette date.")
+
+    recipient = models.ForeignKey(
+        'profiles.Tutor',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        verbose_name='destinataire',
+        validators=[_validate_address_is_set],
+        help_text=(
+            'Tuteur/tutrice à qui envoyer les pièces justificatives. '
+            'Son adresse doit être renseignée dans son profil.'
+        ))
+
+    class Meta:  # noqa
+        ordering = ('deadline',)
+        verbose_name = 'formulaire projet'
+        verbose_name_plural = 'formulaires projet'
+
+    def __str__(self):
+        return str(self.form)
 
 
 class ParticipationQuerySet(models.QuerySet):
@@ -137,11 +178,14 @@ class Participation(models.Model):
         auto_now_add=True, verbose_name='soumis le',
         help_text='Date de soumission de la participation')
 
+    # TODO link to the edition form? to a form entry?
+
     STATE_PENDING = 'pending'
     STATE_VALIDATED = 'valid'
     STATE_ACCEPTED = 'accepted'
     STATE_REJECTED = 'rejected'
     STATE_CANCELLED = 'cancelled'
+
     _STATE_CHOICES = (
         (STATE_PENDING, 'En attente'),
         (STATE_VALIDATED, 'Validé'),
@@ -149,6 +193,7 @@ class Participation(models.Model):
         (STATE_REJECTED, 'Refusé'),
         (STATE_CANCELLED, 'Annulé'),
     )
+
     state = models.CharField(
         'état', max_length=10, choices=_STATE_CHOICES,
         blank=False, default=STATE_PENDING,
@@ -174,6 +219,7 @@ class EditionOrganizer(models.Model):
 
     user = models.ForeignKey(
         'users.User', on_delete=models.CASCADE, verbose_name='utilisateur')
+
     edition = models.ForeignKey(
         'Edition', on_delete=models.CASCADE, verbose_name='édition')
 

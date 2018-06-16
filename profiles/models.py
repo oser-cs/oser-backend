@@ -94,6 +94,13 @@ class Tutor(ProfileMixin, models.Model):
         verbose_name='utilisateur',
         related_name='tutor')
 
+    address = models.OneToOneField(
+        'core.Address',
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='adresse',
+        related_name='tutor')
+
     PROMOTION_CHOICES = tuple(
         (year, str(year)) for year in get_promotion_range()
     )

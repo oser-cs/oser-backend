@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from .models import Edition, Participation, Project
+from .models import Edition, Participation, Project, EditionForm
 
 
 @admin.register(Project)
@@ -69,6 +69,14 @@ class EditionAdmin(admin.ModelAdmin):
         """Return number of cancelled participations."""
         return obj.participations.cancelled().count()
     num_cancelled.short_description = 'Annulés'
+
+
+@admin.register(EditionForm)
+class EditionFormAdmin(admin.ModelAdmin):
+    """Admin panel for edition forms."""
+
+    list_display = ('form', 'deadline', 'recipient',)
+    list_filter = ('edition', 'deadline',)
 
 
 @admin.register(Participation)
