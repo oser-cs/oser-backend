@@ -1,5 +1,6 @@
 """Dynamic forms serializers."""
 
+from typing import List
 from rest_framework import serializers
 from .models import Form, Section, Question, Answer, FormEntry, File
 
@@ -73,6 +74,21 @@ class FormEntrySerializer(serializers.ModelSerializer):
         queryset=Form.objects.all(),
     )
     answers = AnswerSerializer(many=True)
+
+    def create(self, validated_data: dict) -> FormEntry:
+        """Create a form entry for validated input data."""
+        form = validated_data['form']
+        answers: List[dict] = validated_data['answers']
+        answer_serializer = AnswerSerializer()
+
+        form_entry = FormEntry.objects.create(form=form)
+
+        # Assign the newly created entry to each answer
+        for answer_data in answers:
+            answer = answer_serializer.create(answer_data)
+            form_entry.answers.add(answer)
+
+        return form_entry
 
     class Meta:  # noqa
         model = FormEntry

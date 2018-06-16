@@ -141,6 +141,7 @@ class Answer(models.Model):
     entry = models.ForeignKey(
         'FormEntry',
         on_delete=models.CASCADE,
+        null=True,
         related_name='answers',
         verbose_name='entrée',
         help_text="Entrée associée à la réponse.")

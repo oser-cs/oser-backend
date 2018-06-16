@@ -85,4 +85,5 @@ class ParticipationAdmin(admin.ModelAdmin):
 
     list_display = ('user', 'edition', 'submitted', 'state')
     list_filter = ('edition', 'submitted', 'state',)
+    readonly_fields = ('submitted',)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',)

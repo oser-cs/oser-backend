@@ -180,7 +180,14 @@ class Participation(models.Model):
         auto_now_add=True, verbose_name='soumis le',
         help_text='Date de soumission de la participation')
 
-    # TODO link to the edition form? to a form entry?
+    entry = models.OneToOneField(
+        'dynamicforms.FormEntry',
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='project_participation',
+        verbose_name='entrée',
+        help_text="Réponses au formulaire d'inscription",
+    )
 
     STATE_PENDING = 'pending'
     STATE_VALIDATED = 'valid'

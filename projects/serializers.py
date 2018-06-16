@@ -1,12 +1,13 @@
 """Projects serializers."""
 
+from django.db import transaction
 from rest_framework import serializers
 
 from core.fields import MarkdownField
 from users.fields import UserField
 from users.serializers import UserSerializer
 from profiles.serializers import TutorSerializer
-from dynamicforms.serializers import FormDetailSerializer
+from dynamicforms.serializers import FormDetailSerializer, FormEntrySerializer
 
 from .models import Edition, Participation, Project, EditionForm
 
@@ -36,9 +37,26 @@ class ParticipationSerializer(serializers.ModelSerializer):
         label='Édition',
         help_text='Identifier for the associated edition.')
 
+    entry = FormEntrySerializer(write_only=True)
+
+    def create(self, validated_data: dict) -> Participation:
+        """Explicitly create as entry is a nested serializer."""
+        with transaction.atomic():
+            entry_data = validated_data['entry']
+            entry = FormEntrySerializer().create(entry_data)
+
+            participation = Participation.objects.create(
+                user=validated_data['user'],
+                edition=validated_data['edition'],
+                state=Participation.STATE_PENDING,
+                entry=entry,
+            )
+
+        return participation
+
     class Meta:  # noqa
         model = Participation
-        fields = ('id', 'submitted', 'user', 'edition', 'state',)
+        fields = ('id', 'submitted', 'user', 'edition', 'state', 'entry',)
         extra_kwargs = {
             'state': {
                 'label': 'State of the participation.'
