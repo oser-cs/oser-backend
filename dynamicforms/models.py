@@ -25,6 +25,10 @@ class Form(models.Model):
 
     created = models.DateTimeField('créé le', auto_now_add=True)
 
+    sections: models.Manager
+    entries: models.Manager
+    files: models.Manager
+
     class Meta:  # noqa
         ordering = ('-created',)
         verbose_name = 'formulaire'
@@ -54,6 +58,8 @@ class Section(models.Model):
         related_name='sections',
         verbose_name='formulaire',
         help_text="Formulaire associé à la section.")
+
+    questions: models.Manager
 
     def __str__(self):
         return str(self.title)
@@ -102,6 +108,8 @@ class Question(models.Model):
         verbose_name='section',
         help_text="Section de formulaire associée à la question.")
 
+    answers: models.Manager
+
     def __str__(self) -> str:
         return f'{self.text}{self.required and "*" or ""}'
 
@@ -120,6 +128,8 @@ class FormEntry(models.Model):
         'soumis le',
         auto_now_add=True,
         help_text="Date et heure de soumission de l'entrée.")
+
+    answers: models.Manager
 
     class Meta:  # noqa
         ordering = ('-submitted',)

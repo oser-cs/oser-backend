@@ -1,7 +1,9 @@
 """Dynamic forms views and API endpoints."""
 
+from django.http import HttpResponse
 from rest_framework import mixins, viewsets
 
+from .exports import write_zip
 from .models import Form, FormEntry
 from .serializers import (FormDetailSerializer, FormEntrySerializer,
                           FormSerializer)
@@ -24,3 +26,20 @@ class FormEntryViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
     serializer_class = FormEntrySerializer
     queryset = FormEntry.objects.all()
+
+
+def download_multiple_forms_entries(request, queryset):
+    """Download form entries in a ZIP file containing CSV files.
+
+    Note: this is not a proper Django view as it expects a queryset.
+    """
+    stream = write_zip(queryset, folder='reponses')
+    stream.seek(0)
+    contents = stream.read()
+    filename = 'responses.zip'
+
+    response = HttpResponse(contents,
+                            content_type='application/x-zip-compressed')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    return response

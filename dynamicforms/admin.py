@@ -1,7 +1,9 @@
 """Dynamic forms admin panels."""
 
 from django.contrib import admin
-from .models import Form, Section, Question, FormEntry, Answer, File
+
+from .models import Answer, File, Form, FormEntry, Question, Section
+from .views import download_multiple_forms_entries
 
 
 class SectionInline(admin.StackedInline):
@@ -31,9 +33,18 @@ class FormAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'created',)
     list_filter = ('created',)
-    readonly_fields = ('slug',)
+    readonly_fields = ('slug', 'created',)
     search_fields = ('title',)
     inlines = (SectionInline, FileInline,)
+
+    actions = ['download_csv']
+
+    def download_csv(self, request, queryset):
+        """Download entries of selected forms under a ZIP file."""
+        return download_multiple_forms_entries(request, queryset)
+
+    download_csv.short_description = (
+        'Télécharger les résponses des formulaires sélectionnés')
 
 
 @admin.register(Section)
@@ -61,6 +72,7 @@ class FormEntryAdmin(admin.ModelAdmin):
 
     list_display = ('form', 'submitted',)
     list_filter = ('form', 'submitted',)
+    readonly_fields = ('submitted',)
     search_fields = ('form__title',)
 
 
