@@ -105,6 +105,7 @@ class EditionForm(models.Model):
     edition = models.OneToOneField(
         'Edition',
         on_delete=models.CASCADE,
+        related_name='edition_form',
         verbose_name='édition')
 
     form = models.OneToOneField(

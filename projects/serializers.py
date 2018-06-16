@@ -5,8 +5,10 @@ from rest_framework import serializers
 from core.fields import MarkdownField
 from users.fields import UserField
 from users.serializers import UserSerializer
+from profiles.serializers import TutorSerializer
+from dynamicforms.serializers import FormDetailSerializer
 
-from .models import Edition, Participation, Project
+from .models import Edition, Participation, Project, EditionForm
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -48,7 +50,7 @@ class EditionListSerializer(serializers.HyperlinkedModelSerializer):
     """List serializer for Edition objects."""
 
     description = MarkdownField()
-    project = ProjectSerializer()
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     organizers = serializers.SerializerMethodField()
     participations = serializers.SerializerMethodField()
 
@@ -69,8 +71,32 @@ class EditionListSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
+class EditionFormSerializer(serializers.ModelSerializer):
+    """Serializer for edition form objects."""
+
+    form = FormDetailSerializer()
+    edition = serializers.PrimaryKeyRelatedField(read_only=True)
+    recipient = TutorSerializer()
+
+    class Meta:  # noqa
+        model = EditionForm
+        fields = ('id', 'edition', 'deadline', 'recipient', 'form')
+
+
 class EditionDetailSerializer(EditionListSerializer):
     """Detail serializer for Edition objects."""
 
     organizers = UserSerializer(many=True)
     participations = ParticipationSerializer(many=True)
+    edition_form = EditionFormSerializer()
+
+    class Meta(EditionListSerializer.Meta):  # noqa
+        fields = EditionListSerializer.Meta.fields + ('edition_form',)
+
+
+class ProjectDetailSerializer(ProjectSerializer):
+
+    editions = EditionListSerializer(many=True)
+
+    class Meta(ProjectSerializer.Meta):  # noqa
+        fields = ProjectSerializer.Meta.fields + ('editions',)

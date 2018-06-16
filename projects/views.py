@@ -1,11 +1,13 @@
 """Projects views."""
 
+from rest_framework import mixins, permissions, viewsets
+
 from django_filters import rest_framework as filters
-from rest_framework import mixins, viewsets, permissions
 
 from .models import Edition, Participation, Project
 from .serializers import (EditionDetailSerializer, EditionListSerializer,
-                          ParticipationSerializer, ProjectSerializer)
+                          ParticipationSerializer, ProjectDetailSerializer,
+                          ProjectSerializer)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -51,8 +53,12 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     """
 
     queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ProjectDetailSerializer
+        return ProjectSerializer
 
 
 class EditionViewSet(viewsets.ReadOnlyModelViewSet):

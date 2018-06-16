@@ -17,10 +17,11 @@ class TutorSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer()
     tutoring_groups = serializers.PrimaryKeyRelatedField(
         many=True, read_only=True)
+    address = AddressSerializer()
 
     class Meta:  # noqa
         model = Tutor
-        fields = ('user', 'promotion', 'tutoring_groups', 'url',)
+        fields = ('user', 'address', 'promotion', 'tutoring_groups', 'url',)
         extra_kwargs = {
             'url': {'view_name': 'api:tutor-detail'},
         }
