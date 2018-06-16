@@ -70,7 +70,7 @@ class Question(models.Model):
 
     TYPES = (
         (TYPE_TEXT_SMALL, 'Texte court'),
-        (TYPE_TEXT_SMALL, 'Texte long'),
+        (TYPE_TEXT_LONG, 'Texte long'),
         (TYPE_YES_NO, 'Oui/Non'),
         (TYPE_DATE, 'Date'),
         (TYPE_SEX, 'Sexe'),
@@ -103,7 +103,7 @@ class Question(models.Model):
         help_text="Section de formulaire associée à la question.")
 
     def __str__(self) -> str:
-        return f'{self.text}{self.required and "*"}'
+        return f'{self.text}{self.required and "*" or ""}'
 
 
 class FormEntry(models.Model):

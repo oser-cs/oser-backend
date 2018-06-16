@@ -111,7 +111,8 @@ class EditionForm(models.Model):
     form = models.OneToOneField(
         'dynamicforms.Form',
         on_delete=models.CASCADE,
-        verbose_name='formulaire')
+        null=True, blank=True,
+        verbose_name="formulaire d'inscription")
 
     deadline = models.DateField(
         'date butoir',

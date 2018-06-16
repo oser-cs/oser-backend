@@ -46,6 +46,26 @@ class ParticipationSerializer(serializers.ModelSerializer):
         }
 
 
+class EditionFormSerializer(serializers.ModelSerializer):
+    """Serializer for edition form objects."""
+
+    edition = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:  # noqa
+        model = EditionForm
+        fields = ('id', 'edition', 'deadline')
+
+
+class EditionFormDetailSerializer(EditionFormSerializer):
+    """Detail serializer for edition form objects."""
+
+    form = FormDetailSerializer()
+    recipient = TutorSerializer()
+
+    class Meta(EditionFormSerializer.Meta):  # noqa
+        fields = EditionFormSerializer.Meta.fields + ('form', 'recipient',)
+
+
 class EditionListSerializer(serializers.HyperlinkedModelSerializer):
     """List serializer for Edition objects."""
 
@@ -53,6 +73,7 @@ class EditionListSerializer(serializers.HyperlinkedModelSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     organizers = serializers.SerializerMethodField()
     participations = serializers.SerializerMethodField()
+    edition_form = EditionFormSerializer()
 
     def get_organizers(self, obj: Edition) -> int:
         """Return the number of organizers."""
@@ -65,22 +86,10 @@ class EditionListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:  # noqa
         model = Edition
         fields = ('id', 'url', 'name', 'year', 'project', 'description',
-                  'organizers', 'participations')
+                  'organizers', 'participations', 'edition_form',)
         extra_kwargs = {
             'url': {'view_name': 'api:edition-detail'},
         }
-
-
-class EditionFormSerializer(serializers.ModelSerializer):
-    """Serializer for edition form objects."""
-
-    form = FormDetailSerializer()
-    edition = serializers.PrimaryKeyRelatedField(read_only=True)
-    recipient = TutorSerializer()
-
-    class Meta:  # noqa
-        model = EditionForm
-        fields = ('id', 'edition', 'deadline', 'recipient', 'form')
 
 
 class EditionDetailSerializer(EditionListSerializer):
@@ -88,13 +97,11 @@ class EditionDetailSerializer(EditionListSerializer):
 
     organizers = UserSerializer(many=True)
     participations = ParticipationSerializer(many=True)
-    edition_form = EditionFormSerializer()
-
-    class Meta(EditionListSerializer.Meta):  # noqa
-        fields = EditionListSerializer.Meta.fields + ('edition_form',)
+    edition_form = EditionFormDetailSerializer()
 
 
 class ProjectDetailSerializer(ProjectSerializer):
+    """Detail serializer for project objects."""
 
     editions = EditionListSerializer(many=True)
 
