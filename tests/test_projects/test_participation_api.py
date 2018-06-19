@@ -13,7 +13,7 @@ class ParticipationReadTest(SimpleAPITestCase):
 
     factory = ParticipationFactory
 
-    read_expected_fields = {'id', 'user', 'edition',
+    read_expected_fields = {'id', 'user', 'edition_id', 'edition_form_title',
                             'state', 'submitted'}
 
     def setUp(self):
@@ -66,7 +66,7 @@ class ParticipationCreateTest(SimpleAPITestCase):
         }
         payload = {
             'user': user.pk,
-            'edition': edition.pk,
+            'edition_id': edition.pk,
             'entry': entry,
         }
         return self.client.post('/api/project-participations/',
@@ -80,5 +80,7 @@ class ParticipationCreateTest(SimpleAPITestCase):
     def test_returns_expected_fields(self):
         response = self.perform_create()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        expected = {'id', 'user', 'edition', 'state', 'submitted'}
+        expected = {
+            'id', 'user', 'edition_id', 'edition_form_title',
+            'state', 'submitted'}
         self.assertSetEqual(expected, set(response.data))

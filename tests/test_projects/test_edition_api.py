@@ -3,7 +3,7 @@
 from rest_framework import status
 from tests.utils import SimpleAPITestCase, logged_in
 
-from projects.factory import EditionFactory
+from projects.factory import EditionFactory, EditionFormFactory
 
 
 class EditionEndpointsTest(SimpleAPITestCase):
@@ -13,7 +13,7 @@ class EditionEndpointsTest(SimpleAPITestCase):
 
     read_expected_fields = {'id', 'url', 'name', 'year', 'project',
                             'description', 'organizers', 'participations',
-                            'edition_form',}
+                            'edition_form', 'participates'}
 
     def setUp(self):
         self.factory.create_batch(3)
@@ -51,3 +51,12 @@ class EditionEndpointsTest(SimpleAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         fields = set(response.data)
         self.assertSetEqual(fields, self.read_expected_fields)
+
+    @logged_in
+    def test_list_open_registrations(self):
+        edition = self.factory.create()
+        EditionFormFactory.create(edition=edition)
+        url = '/api/editions/open_registrations/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)

@@ -1,6 +1,10 @@
 """Projects views."""
 
+from django.utils.timezone import now
 from rest_framework import mixins, permissions, viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django_filters.rest_framework.backends import DjangoFilterBackend
 
 from django_filters import rest_framework as filters
 
@@ -214,16 +218,50 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
         }
     """
 
-    queryset = Edition.objects.all()
+    queryset = Edition.objects.all().prefetch_related(
+        'participations', 'organizers'
+    )
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('project', 'year',)
 
     def get_serializer_class(self):
-        if self.action == 'list':
-            return EditionListSerializer
-        elif self.action == 'retrieve':
+        if self.action == 'retrieve':
             return EditionDetailSerializer
+        return EditionListSerializer
+
+    @action(methods=['get'], detail=False)
+    def open_registrations(self, request, **kwargs):
+        """Return a list of the editions with open registrations.
+
+        These are the editions that have an edition form set and whose
+        deadline is a future date.
+
+        ### Example response
+
+            [
+                {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/editions/1/",
+                    "name": "",
+                    "year": 2018,
+                    "project": 1,
+                    "description": "",
+                    "organizers": 0,
+                    "participations": 3,
+                    "edition_form": {
+                        "id": 1,
+                        "edition": 1,
+                        "deadline": "2018-06-30"
+                    }
+                }
+            ]
+        """
+        queryset = self.get_queryset().filter(
+            edition_form__isnull=False,
+            edition_form__deadline__gte=now().date())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ParticipationViewSet(mixins.CreateModelMixin,
@@ -251,7 +289,8 @@ class ParticipationViewSet(mixins.CreateModelMixin,
                     "date_of_birth": null,
                     "url": "http://localhost:8000/api/users/3/"
                 },
-                "edition": 1,
+                "edition_id": 1,
+                "edition_form_title": "Inscriptions à Oser la Prépa 2018"
                 "state": "valid"
             },
         ]
@@ -276,7 +315,8 @@ class ParticipationViewSet(mixins.CreateModelMixin,
                 "date_of_birth": null,
                 "url": "http://localhost:8000/api/users/3/"
             },
-            "edition": 1,
+            "edition_id": 1,
+            "edition_form_title": "Inscriptions à Oser la Prépa 2018"
             "state": "valid"
         }
     """
@@ -284,3 +324,5 @@ class ParticipationViewSet(mixins.CreateModelMixin,
     queryset = Participation.objects.all()
     serializer_class = ParticipationSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('user', 'state',)

@@ -4,7 +4,7 @@ import factory
 import factory.django
 
 from users.factory import UserFactory
-from .models import Project, Edition, Participation
+from .models import Project, Edition, Participation, EditionForm
 
 
 class ProjectFactory(factory.DjangoModelFactory):
@@ -35,6 +35,14 @@ class EditionFactory(factory.DjangoModelFactory):
         """Return an existing project or a new one if none exists."""
         project = Project.objects.first()
         return project and project or ProjectFactory.create()
+
+
+class EditionFormFactory(factory.DjangoModelFactory):
+
+    class Meta:  # noqa
+        model = EditionForm
+
+    deadline = factory.Faker('future_date')
 
 
 class ParticipationFactory(factory.DjangoModelFactory):
