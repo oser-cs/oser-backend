@@ -103,7 +103,7 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
                 "url": "http://localhost:8000/api/editions/1/",
                 "name": "",
                 "year": 2018,
-                "project": 1,
+                "project": "Oser la Prépa",
                 "description": "",
                 "organizers": 0,
                 "participations": 2,
@@ -245,7 +245,7 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
                     "url": "http://localhost:8000/api/editions/1/",
                     "name": "",
                     "year": 2018,
-                    "project": 1,
+                    "project": "Oser la Prépa",
                     "description": "",
                     "organizers": 0,
                     "participations": 3,
@@ -321,7 +321,7 @@ class ParticipationViewSet(mixins.CreateModelMixin,
         }
     """
 
-    queryset = Participation.objects.all()
+    queryset = Participation.objects.prefetch_related('edition').all()
     serializer_class = ParticipationSerializer
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (DjangoFilterBackend,)

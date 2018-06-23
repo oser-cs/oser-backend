@@ -182,7 +182,7 @@ class Participation(models.Model):
 
     entry = models.OneToOneField(
         'dynamicforms.FormEntry',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         related_name='project_participation',
         verbose_name='entrée',

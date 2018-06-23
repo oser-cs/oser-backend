@@ -55,7 +55,7 @@ class EditionListSerializer(serializers.HyperlinkedModelSerializer):
     """List serializer for Edition objects."""
 
     description = MarkdownField()
-    project = serializers.PrimaryKeyRelatedField(read_only=True)
+    project = serializers.StringRelatedField(read_only=True)
     organizers = serializers.SerializerMethodField()
     participations = serializers.SerializerMethodField()
     edition_form = EditionFormSerializer()
@@ -112,6 +112,8 @@ class ParticipationSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             entry_data = validated_data['entry']
             entry = FormEntrySerializer().create(entry_data)
+            for answer in entry.answers.all():
+                print(answer)
 
             participation = Participation.objects.create(
                 user=validated_data['user'],
