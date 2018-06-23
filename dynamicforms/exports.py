@@ -53,8 +53,8 @@ def _write_csv(form: Form, stream):
     return stream
 
 
-def write_zip(forms_queryset, stream=None, folder='forms'):
-    """Write form entries into a zip of CSV files."""
+def write_zip(forms, stream=None, folder='forms'):
+    """Write forms' entries into a zip of CSV files."""
     if stream is None:
         stream = BytesIO()
     # See https://stackoverflow.com/a/32075279
@@ -63,7 +63,7 @@ def write_zip(forms_queryset, stream=None, folder='forms'):
         'consider using BytesIO instead'
     )
     with zipfile.ZipFile(stream, 'w') as zip:
-        for form in forms_queryset:
+        for form in forms:
             csv_file = StringIO()
             _write_csv(form, csv_file)
             csv_filename = os.path.join(folder, f'{form.slug}.csv')

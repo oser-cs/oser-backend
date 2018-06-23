@@ -42,7 +42,7 @@ class FormAdmin(admin.ModelAdmin):
 
     def download_csv(self, request, queryset):
         """Download entries of selected forms under a ZIP file."""
-        return download_multiple_forms_entries(request, queryset)
+        return download_multiple_forms_entries(request, forms=queryset.all())
 
     download_csv.short_description = (
         'Télécharger les résponses des formulaires sélectionnés')

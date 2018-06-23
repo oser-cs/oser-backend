@@ -28,12 +28,13 @@ class FormEntryViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = FormEntry.objects.all()
 
 
-def download_multiple_forms_entries(request, queryset):
+def download_multiple_forms_entries(request, forms):
     """Download form entries in a ZIP file containing CSV files.
 
-    Note: this is not a proper Django view as it expects a queryset.
+    Note: this is not a proper Django view as it expects an iterable of
+    Form objects (typically a queryset).
     """
-    stream = write_zip(queryset, folder='reponses')
+    stream = write_zip(forms=forms, folder='reponses')
     stream.seek(0)
     contents = stream.read()
     filename = 'responses.zip'

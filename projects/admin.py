@@ -2,6 +2,8 @@
 
 from django.contrib import admin
 
+from dynamicforms.views import download_multiple_forms_entries
+from dynamicforms.models import Form
 from .models import Edition, Participation, Project, EditionForm
 
 
@@ -77,6 +79,17 @@ class EditionFormAdmin(admin.ModelAdmin):
 
     list_display = ('form', 'deadline', 'recipient',)
     list_filter = ('edition', 'deadline',)
+
+    actions = ['download_csv']
+
+    def download_csv(self, request, queryset):
+        """Download entries of selected edition forms under a ZIP file."""
+        form_ids = queryset.values_list('form__id', flat=True)
+        forms = Form.objects.filter(id__in=form_ids)
+        return download_multiple_forms_entries(request, forms=forms)
+
+    download_csv.short_description = (
+        'Télécharger les résponses des formulaires sélectionnés')
 
 
 @admin.register(Participation)
