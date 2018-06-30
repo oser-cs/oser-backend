@@ -362,10 +362,10 @@ class ParticipationViewSet(mixins.CreateModelMixin,
                 "submitted": "2018-06-30T09:43:28.779628+02:00",
                 "answers": [
                     {
-                    "id": 79,
-                    "question": 40,
-                    "entry": 20,
-                    "answer": "Florimond"
+                        "id": 79,
+                        "question": 40,
+                        "entry": 20,
+                        "answer": "Florimond"
                     }
                 ]
             }
