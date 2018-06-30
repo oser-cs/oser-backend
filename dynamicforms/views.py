@@ -1,9 +1,10 @@
 """Dynamic forms views and API endpoints."""
 
+from typing import Union
 from django.http import HttpResponse
 from rest_framework import mixins, viewsets
 
-from .exports import write_zip
+from .exports import write_zip, files_zip
 from .models import Form, FormEntry
 from .serializers import (FormDetailSerializer, FormEntrySerializer,
                           FormSerializer)
@@ -41,6 +42,24 @@ def download_multiple_forms_entries(request, forms):
 
     response = HttpResponse(contents,
                             content_type='application/x-zip-compressed')
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response['Content-Disposition'] = f'attachment; filename={filename}'
+
+    return response
+
+
+def download_files_zip(request, form: Union[Form, None], folder: str):
+    """Download form files in a ZIP archive."""
+    if form:
+        files_qs = form.files.all()
+        files = (f.file for f in files_qs)
+    else:
+        files = ()
+    filename = f'{folder}_files.zip'
+
+    stream = files_zip(files, folder=folder)
+
+    response = HttpResponse(content_type='application/zip')
+    response['Content-Disposition'] = f'attachment; filename={filename}'
+    response.write(stream.read())
 
     return response

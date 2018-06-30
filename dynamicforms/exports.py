@@ -7,6 +7,7 @@ import zipfile
 import csv
 from io import BytesIO, StringIO
 from .models import Form
+from django.db.models.fields.files import FieldFile
 
 
 def _get_rows(form: Form) -> List[List[str]]:
@@ -69,4 +70,19 @@ def write_zip(forms, stream=None, folder='forms'):
             csv_filename = os.path.join(folder, f'{form.slug}.csv')
             value = csv_file.getvalue()
             zip.writestr(csv_filename, value.encode())
+    return stream
+
+
+def files_zip(files: List[FieldFile], folder: str='') -> BytesIO:
+    """Write form's files into a ZIP."""
+    stream = BytesIO()
+    with zipfile.ZipFile(stream, 'w') as zip:
+        for file in files:
+            dest = os.path.join(folder, os.path.basename(file.name))
+            contents = file.read()
+            zip.writestr(dest, contents)
+        # fix for Linux zip files read in Windows
+        for file in zip.filelist:
+            file.create_system = 0
+    stream.seek(0)
     return stream

@@ -2,19 +2,20 @@
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django_filters import rest_framework as filters
-from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from dynamicforms.serializers import FormEntrySerializer
+from dynamicforms.views import download_files_zip
 
 from .models import Edition, Participation, Project
-from .serializers import (EditionDetailSerializer, EditionListSerializer,
-                          ParticipationSerializer, ProjectDetailSerializer,
-                          ProjectSerializer, EditionDocumentsSerializer)
+from .serializers import (EditionDetailSerializer, EditionDocumentsSerializer,
+                          EditionListSerializer, ParticipationSerializer,
+                          ProjectDetailSerializer, ProjectSerializer)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -225,7 +226,7 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
         'participations', 'organizers'
     )
     permission_classes = (permissions.IsAuthenticated,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.backends.DjangoFilterBackend,)
     filter_fields = ('project', 'year',)
 
     def get_serializer_class(self):
@@ -340,6 +341,22 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
         data = serializer.data
         return Response(data)
 
+    @action(methods=['get'], detail=True)
+    def documents_zip(self, request, pk=None):
+        """Download an edition form's documents as a ZIP archive.
+
+        If the edition does not have a form, an empty ZIP file is sent.
+        """
+        edition: Edition = self.get_object()
+        folder = slugify(edition.project.name)
+
+        try:
+            form = edition.edition_form.form
+        except ObjectDoesNotExist:
+            form = None
+
+        return download_files_zip(request, form=form, folder=folder)
+
 
 class ParticipationViewSet(mixins.CreateModelMixin,
                            viewsets.ReadOnlyModelViewSet):
@@ -401,7 +418,7 @@ class ParticipationViewSet(mixins.CreateModelMixin,
     queryset = Participation.objects.prefetch_related('edition').all()
     serializer_class = ParticipationSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (filters.backends.DjangoFilterBackend,)
     filter_fields = ('user', 'state',)
 
     @action(methods=['get'], detail=True)
