@@ -39,7 +39,7 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
                 "id": 1,
                 "url": "http://localhost:8000/api/projects/1/",
                 "name": "Oser la Prépa",
-                "description": "Oser la Prépa est un stage d'acclimatation aux Classes Préparatoires de deux semaines qui se déroule chaque été.",
+                "description": "Oser la Prépa est un stage d'acclimatation…",
                 "logo": null
             }
         ]
@@ -420,6 +420,19 @@ class ParticipationViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.backends.DjangoFilterBackend,)
     filter_fields = ('user', 'state',)
+
+    @action(methods=['post'], detail=True)
+    def cancel(self, request, pk=None):
+        """Cancel a participation.
+
+        Note: the participation is not removed from the database,
+        it is only marked as cancelled.
+        Use [destroy](#project-participation-destroy) to delete it.
+        """
+        participation = self.get_object()
+        participation.state = Participation.STATE_CANCELLED
+        participation.save()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['get'], detail=True)
     def form_entry(self, request, pk=None):
