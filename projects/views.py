@@ -434,6 +434,24 @@ class ParticipationViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
         participation.save()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
+    @action(methods=['post'], detail=True)
+    def reactivate(self, request, pk=None):
+        """Reactivate a participation if it is cancelled.
+
+        It is sent back to the "pending" state.
+
+        If the participation is not cancelled, a `400 Bad Request` error
+        response is returned.
+        """
+        participation = self.get_object()
+        if participation.state == Participation.STATE_CANCELLED:
+            participation.state = Participation.STATE_PENDING
+            participation.save()
+            return Response(None, status=status.HTTP_204_NO_CONTENT)
+        else:
+            error = {'detail': 'Participation must be in cancelled state'}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
     @action(methods=['get'], detail=True)
     def form_entry(self, request, pk=None):
         """Return the answers to the edition form for a participation.
