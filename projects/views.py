@@ -1,11 +1,11 @@
 """Projects views."""
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.utils.timezone import now
-from django.core.exceptions import ObjectDoesNotExist
 from django_filters import rest_framework as filters
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from rest_framework import mixins, permissions, viewsets, status
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -14,7 +14,7 @@ from dynamicforms.serializers import FormEntrySerializer
 from .models import Edition, Participation, Project
 from .serializers import (EditionDetailSerializer, EditionListSerializer,
                           ParticipationSerializer, ProjectDetailSerializer,
-                          ProjectSerializer)
+                          ProjectSerializer, EditionDocumentsSerializer)
 
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -268,7 +268,7 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(methods=['get'], detail=True)
     def form(self, request, pk=None):
-        """Return the edition's form.
+        """Return an edition's form.
 
         If the edition does not have a form,
         returns a `404 Not Found` error response.
@@ -282,9 +282,63 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
             form = edition.edition_form.form
         except ObjectDoesNotExist:
             return Response(
-                {'detail': 'No form set on this edition.'}, status=404)
+                {'detail': 'No form set on this edition.'},
+                status=status.HTTP_404_NOT_FOUND)
         else:
             return redirect('api:form-detail', str(form.pk))
+
+    @action(methods=['get'], detail=True)
+    def documents(self, request, pk=None):
+        """Return list of files attached an edition's form.
+
+        The recipient of the documents and the registration deadline
+        are returned as well.
+
+        ### Example response
+
+            {
+                "recipient": {
+                    "user": {
+                        "id": 3,
+                        "email": "john.doe@example.com",
+                        "profile_type": null,
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "gender": null,
+                        "phone_number": "+33 6 12 34 56 78",
+                        "date_of_birth": null,
+                        "url": "http://localhost:8000/api/users/3/"
+                    },
+                    "address": {
+                        "line1": "Rue de Rivoli",
+                        "line2": "",
+                        "post_code": "75001",
+                        "city": "Paris",
+                        "country": {
+                            "code": "FR",
+                            "name": "France"
+                        }
+                    },
+                    "promotion": 2020,
+                    "tutoring_groups": [1],
+                    "url": "http://localhost:8000/api/tutors/1/"
+                },
+                "deadline": "2018-07-29",
+                "files": [
+                    {
+                        "id": 3,
+                        "name": "Autorisation parentale",
+                        "file": "http://...",
+                        "form": 4
+                    }
+                ]
+            }
+        """
+        edition = self.get_object()
+        serializer = EditionDocumentsSerializer(
+            edition, context={'request': request})
+        data = serializer.data
+        return Response(data)
 
 
 class ParticipationViewSet(mixins.CreateModelMixin,
@@ -373,4 +427,4 @@ class ParticipationViewSet(mixins.CreateModelMixin,
         participation = self.get_object()
         serializer = FormEntrySerializer(participation.entry)
         data = serializer.data
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(data)

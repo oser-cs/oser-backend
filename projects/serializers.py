@@ -4,7 +4,8 @@ from django.db import transaction
 from rest_framework import serializers
 
 from core.fields import MarkdownField
-from dynamicforms.serializers import FormDetailSerializer, FormEntrySerializer
+from dynamicforms.serializers import (FileSerializer, FormDetailSerializer,
+                                      FormEntrySerializer)
 from profiles.serializers import TutorSerializer
 from users.fields import UserField
 from users.serializers import UserSerializer
@@ -142,6 +143,18 @@ class EditionDetailSerializer(EditionListSerializer):
     organizers = UserSerializer(many=True)
     participations = ParticipationSerializer(many=True)
     edition_form = EditionFormDetailSerializer()
+
+
+class EditionDocumentsSerializer(serializers.ModelSerializer):
+    """Serializer for information about an edition form's documents."""
+
+    recipient = TutorSerializer(source='edition_form.recipient')
+    deadline = serializers.DateField(source='edition_form.deadline')
+    files = FileSerializer(many=True, source='edition_form.form.files')
+
+    class Meta:  # noqa
+        model = Edition
+        fields = ('recipient', 'deadline', 'files')
 
 
 class ProjectDetailSerializer(ProjectSerializer):
