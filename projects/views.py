@@ -358,7 +358,7 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
         return download_files_zip(request, form=form, folder=folder)
 
 
-class ParticipationViewSet(mixins.CreateModelMixin,
+class ParticipationViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
                            viewsets.ReadOnlyModelViewSet):
     """Endpoints for manipulating participations to project editions.
 
