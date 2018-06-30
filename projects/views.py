@@ -1,12 +1,15 @@
 """Projects views."""
 
+from django.shortcuts import redirect
 from django.utils.timezone import now
-from rest_framework import mixins, permissions, viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from django_filters.rest_framework.backends import DjangoFilterBackend
-
+from django.core.exceptions import ObjectDoesNotExist
 from django_filters import rest_framework as filters
+from django_filters.rest_framework.backends import DjangoFilterBackend
+from rest_framework import mixins, permissions, viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from dynamicforms.serializers import FormEntrySerializer
 
 from .models import Edition, Participation, Project
 from .serializers import (EditionDetailSerializer, EditionListSerializer,
@@ -263,6 +266,26 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(methods=['get'], detail=True)
+    def form(self, request, pk=None):
+        """Return the edition's form.
+
+        If the edition does not have a form,
+        returns a `404 Not Found` error response.
+
+        ### Example response
+
+        See [forms: read](#forms-read).
+        """
+        edition = self.get_object()
+        try:
+            form = edition.edition_form.form
+        except ObjectDoesNotExist:
+            return Response(
+                {'detail': 'No form set on this edition.'}, status=404)
+        else:
+            return redirect('api:form-detail', str(form.pk))
+
 
 class ParticipationViewSet(mixins.CreateModelMixin,
                            viewsets.ReadOnlyModelViewSet):
@@ -326,3 +349,28 @@ class ParticipationViewSet(mixins.CreateModelMixin,
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('user', 'state',)
+
+    @action(methods=['get'], detail=True)
+    def form_entry(self, request, pk=None):
+        """Return the answers to the edition form for a participation.
+
+        ### Example response
+
+            {
+                "id": 20,
+                "form": 4,
+                "submitted": "2018-06-30T09:43:28.779628+02:00",
+                "answers": [
+                    {
+                    "id": 79,
+                    "question": 40,
+                    "entry": 20,
+                    "answer": "Florimond"
+                    }
+                ]
+            }
+        """
+        participation = self.get_object()
+        serializer = FormEntrySerializer(participation.entry)
+        data = serializer.data
+        return Response(data, status=status.HTTP_200_OK)
