@@ -135,7 +135,8 @@ class EditionForm(models.Model):
         verbose_name = 'formulaire projet'
         verbose_name_plural = 'formulaires projet'
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Represent by the form representation."""
         return str(self.form)
 
 
@@ -228,6 +229,10 @@ class EditionOrganizer(models.Model):
 
     user = models.ForeignKey(
         'users.User', on_delete=models.CASCADE, verbose_name='utilisateur')
+
+    role = models.CharField(
+        'rôle', max_length=100, blank=True, default='',
+        help_text='Exemple : responsable projet, responsable inscriptions…')
 
     edition = models.ForeignKey(
         'Edition', on_delete=models.CASCADE, verbose_name='édition')

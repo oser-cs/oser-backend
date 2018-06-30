@@ -10,7 +10,8 @@ from profiles.serializers import TutorSerializer
 from users.fields import UserField
 from users.serializers import UserSerializer
 
-from .models import Edition, EditionForm, Participation, Project
+from .models import (Edition, EditionForm, EditionOrganizer, Participation,
+                     Project)
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
@@ -137,10 +138,20 @@ class ParticipationSerializer(serializers.ModelSerializer):
         }
 
 
+class OrganizerSerializer(serializers.ModelSerializer):
+    """Serializer for edition organizers."""
+
+    user = UserSerializer()
+
+    class Meta:  # noqa
+        model = EditionOrganizer
+        fields = ('user', 'role')
+
+
 class EditionDetailSerializer(EditionListSerializer):
     """Detail serializer for Edition objects."""
 
-    organizers = UserSerializer(many=True)
+    organizers = OrganizerSerializer(source='editionorganizer_set', many=True)
     participations = ParticipationSerializer(many=True)
     edition_form = EditionFormDetailSerializer()
 
