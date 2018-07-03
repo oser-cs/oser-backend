@@ -53,10 +53,6 @@ class Project(models.Model):
 class Edition(models.Model):
     """Represents an instance of a project for a given year."""
 
-    name = models.CharField(
-        'nom', max_length=200, default='', blank=True,
-        help_text='Un nom optionnel pour cette édition (exemple : "Berlin").')
-
     year = models.IntegerField(
         'année', default=this_year,
         help_text="L'année où se déroule cette édition.")
@@ -65,6 +61,10 @@ class Edition(models.Model):
         'Project', on_delete=models.CASCADE,
         verbose_name='projet', related_name='editions',
         help_text='Le projet dont ceci est une édition.')
+
+    name = models.CharField(
+        'nom', max_length=200, default='', blank=True,
+        help_text='Un nom optionnel pour cette édition (exemple : "Berlin").')
 
     description = MarkdownxField(
         blank=True, default='',
