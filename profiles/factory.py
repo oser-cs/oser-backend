@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 
 from tutoring.factory import TutoringGroupFactory
 from tutoring.models import TutoringGroup
+from core.factory import AddressFactory
 from users.factory import UserFactory
 
 from . import models
@@ -49,6 +50,7 @@ class TutorFactory(factory.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     promotion = factory.Iterator([_this_year, _this_year + 1, _this_year + 2])
+    address = factory.SubFactory(AddressFactory)
 
 
 class TutorInGroupFactory(TutorFactory):

@@ -1,6 +1,7 @@
 """Projects models."""
 
 from django.db import models
+from django.contrib.sites.models import Site
 from django.core.validators import ValidationError
 
 from markdownx.models import MarkdownxField
@@ -81,6 +82,14 @@ class Edition(models.Model):
         ordering = ('-year',)
         verbose_name = 'édition'
         get_latest_by = 'year'
+
+    def get_projects_site_url(self) -> str:
+        site = Site.objects.get_current()
+        return f'http://{site.domain}/projets/'
+
+    def get_registration_url(self) -> str:
+        site = Site.objects.get_current()
+        return f'http://{site.domain}/projets/mes-inscriptions'
 
     def __str__(self) -> str:
         """Represent using the project name, the year and the edition name."""
@@ -218,6 +227,16 @@ class Participation(models.Model):
 
     class Meta:  # noqa
         ordering = ('-submitted',)
+
+    def __init__(self, *args, **kwargs):
+        """Store the initial value of `state` to detect changes."""
+        super().__init__(*args, **kwargs)
+        self.initial_state = self.state
+
+    @property
+    def state_changed(self) -> bool:
+        """Return whether the `state` field has changed."""
+        return self.initial_state != self.state
 
     def __str__(self):
         """Represent by its user."""

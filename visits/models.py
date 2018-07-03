@@ -1,5 +1,6 @@
 """Visits models."""
 from django.db import models
+from django.contrib.sites.models import Site
 from django.shortcuts import reverse
 from django.utils.timezone import now
 from dry_rest_permissions.generics import authenticated_users
@@ -214,7 +215,8 @@ class Visit(models.Model):
         return reverse('api:visit-detail', args=[str(self.pk)])
 
     def get_site_url(self):
-        return f'http://oser-cs.fr/visits/{self.pk}'
+        site = Site.objects.get_current()
+        return f'http://{site.domain}/visits/{self.pk}'
 
     def __str__(self):
         return str(self.title)

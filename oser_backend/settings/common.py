@@ -35,6 +35,7 @@ DJANGO_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.forms',
+    'django.contrib.sites',
 ]
 
 THIRD_PARTY_APPS = [
@@ -60,6 +61,7 @@ THIRD_PARTY_APPS = [
     # Easy filtering on the API
     'django_filters',
 ]
+
 PROJECT_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
@@ -72,7 +74,13 @@ PROJECT_APPS = [
     'dynamicforms.apps.DynamicformsConfig',
     'projects.apps.ProjectsConfig',
 ]
+
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
+
+# Activate the sites framework
+# It is used to define the domain of the frontend website in
+# the admin (via the 'Sites' section)
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

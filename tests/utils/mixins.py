@@ -52,7 +52,7 @@ class SignalTestMixin:
 
         Pass `sender` to check the signal's sender too.
         """
-        called = {'value': None}
+        called = {'value': False}
 
         def listen(sender, **kwargs):
             called['value'] = True
@@ -65,3 +65,17 @@ class SignalTestMixin:
         self.assertTrue(called['value'])
         if 'sender' in kwargs:
             self.assertEqual(called['sender'], kwargs['sender'])
+
+    @contextmanager
+    def assertNotCalled(self, signal):
+        """Verify that a signal is NOT called."""
+        called = {'value': False}
+
+        def listen(sender, **kwargs):
+            called['value'] = True
+
+        signal.connect(listen)
+        yield
+        signal.disconnect(listen)
+
+        self.assertFalse(called['value'])
