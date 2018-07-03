@@ -1,9 +1,11 @@
 """Projects notifications."""
 
+from django.shortcuts import reverse
+from django.utils.timezone import now
 
 from mails import Notification
-from django.utils.timezone import now
 from users.models import User
+
 from .models import Edition, Project
 
 
@@ -29,6 +31,16 @@ class _NotifyOrgnizers(_BaseParticipationNotification):
     def get_subject(self):
         return f'{self.title}: {self.edition}'
 
+    def _get_editionform_admin_url(self) -> str:
+        base = 'https://oser-backend.herokuapp.com'
+        view = reverse('admin:projects_editionform_changelist')
+        return base + view
+
+    def get_context(self) -> dict:
+        context = super().get_context()
+        context['editionform_admin_url'] = self._get_editionform_admin_url()
+        return context
+
     def get_recipients(self):
         """Return the email of each organizer."""
         edition = self.kwargs['edition']
@@ -42,7 +54,7 @@ class _NotifyUser(_BaseParticipationNotification):
     verb: str
 
     def get_subject(self):
-        return f'Dossier {self.verb}: {self.edition}'
+        return f'Participation {self.verb}: {self.edition}'
 
     def get_recipients(self):
         return [self.kwargs['user'].email]
@@ -65,35 +77,35 @@ class UserReceived(_NotifyUser):
 class UserValid(_NotifyUser):
     """Notify a user their participation was marked as valid."""
 
-    verb = 'validé'
+    verb = 'vérifiée'
     template_name = 'projects/participation_valid.md'
 
 
 class UserAccepted(_NotifyUser):
     """Notify a user their participation was marked as accepted."""
 
-    verb = 'accepté'
+    verb = 'acceptée'
     template_name = 'projects/participation_accepted.md'
 
 
 class UserRejected(_NotifyUser):
     """Notify a user their participation was marked as rejected."""
 
-    verb = 'rejeté'
+    verb = 'rejetée'
     template_name = 'projects/participation_rejected.md'
 
 
 class UserCancelled(_NotifyUser):
     """Notify a user their participation was correctly cancelled."""
 
-    verb = 'annulé'
+    verb = 'annulée'
     template_name = 'projects/participation_cancelled.md'
 
 
 class UserDeleted(_NotifyUser):
     """Notify a user their participation was correctly deleted."""
 
-    verb = 'supprimé'
+    verb = 'supprimée'
     template_name = 'projects/participation_deleted.md'
 
 
