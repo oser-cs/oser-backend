@@ -4,8 +4,6 @@ from django.test import TestCase
 from django.utils.timezone import now
 from tests.utils.mixins import SignalTestMixin
 
-from mails.signals import notification_sent
-
 from dynamicforms.models import Form
 from profiles.factory import TutorFactory
 from projects.factory import (EditionFactory, ParticipationFactory,

@@ -61,7 +61,6 @@ def send_participation_deleted_notifications(sender, instance: Participation,
 
 @receiver(pending)
 def notify_pending(sender, instance, **kwargs):
-    print('hello')
     _send(notifications.UserReceived, instance)
     _send(notifications.OrganizersReceived, instance)
 
