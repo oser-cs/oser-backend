@@ -85,11 +85,11 @@ class Edition(models.Model):
 
     def get_projects_site_url(self) -> str:
         site = Site.objects.get_current()
-        return f'http://{site.domain}/projets/'
+        return f'https://{site.domain}/projets/'
 
     def get_registration_url(self) -> str:
         site = Site.objects.get_current()
-        return f'http://{site.domain}/projets/mes-inscriptions'
+        return f'https://{site.domain}/projets/mes-inscriptions'
 
     def __str__(self) -> str:
         """Represent using the project name, the year and the edition name."""
