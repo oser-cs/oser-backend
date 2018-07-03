@@ -8,7 +8,7 @@ from dynamicforms.models import Form
 from profiles.factory import TutorFactory
 from projects.factory import (EditionFactory, ParticipationFactory,
                               ProjectFactory)
-from projects.models import EditionForm, Participation
+from projects.models import EditionForm, Participation, EditionOrganizer
 from projects.signals import (accepted, cancelled, deleted, pending, rejected,
                               valid)
 
@@ -19,8 +19,11 @@ class NotifyParticipationTest(SignalTestMixin, TestCase):
     def setUp(self):
         # Create all objects that need to exist for rendering emails
         project = ProjectFactory.create(name='Focus Europe')
-        self.edition = EditionFactory.create(project=project, year=2018)
         recipient = TutorFactory.create()
+        self.edition = EditionFactory.create(project=project, year=2018)
+        EditionOrganizer.objects.create(
+            user=recipient.user,
+            edition=self.edition)
         form = Form.objects.create(title=f'Inscriptions à {self.edition}')
         EditionForm.objects.create(
             edition=self.edition,

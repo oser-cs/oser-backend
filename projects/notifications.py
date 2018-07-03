@@ -29,11 +29,11 @@ class _NotifyOrgnizers(_BaseParticipationNotification):
     def get_subject(self):
         return f'{self.title}: {self.edition}'
 
-        def get_recipients(self):
-            """Return the email of each organizer."""
-            edition = self.kwargs['edition']
-            # TODO add the project team's email
-            return list(edition.values_list('organizers__email', flat=True))
+    def get_recipients(self):
+        """Return the email of each organizer."""
+        edition = self.kwargs['edition']
+        # TODO add the project team's email
+        return list(edition.organizers.values_list('email', flat=True))
 
 
 class _NotifyUser(_BaseParticipationNotification):
@@ -44,8 +44,8 @@ class _NotifyUser(_BaseParticipationNotification):
     def get_subject(self):
         return f'Dossier {self.verb}: {self.edition}'
 
-        def get_recipients(self):
-            return [self.kwargs['user'].email]
+    def get_recipients(self):
+        return [self.kwargs['user'].email]
 
 
 class OrganizersReceived(_NotifyOrgnizers):
