@@ -197,25 +197,9 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
                         "profile_type": null,
                         "first_name": "John",
                         "last_name": "Doe",
-                        "gender": null,
-                        "phone_number": "+33 6 12 34 56 78",
-                        "date_of_birth": null,
                         "url": "http://localhost:8000/api/users/3/"
                     },
-                    "address": {
-                        "line1": "Rue de Rivoli",
-                        "line2": "",
-                        "post_code": "75001",
-                        "city": "Paris",
-                        "country": {
-                            "code": "FR",
-                            "name": "France"
-                        }
-                    },
                     "promotion": 2020,
-                    "tutoring_groups": [
-                        1
-                    ],
                     "url": "http://localhost:8000/api/tutors/1/"
                 }
             }
@@ -305,23 +289,9 @@ class EditionViewSet(viewsets.ReadOnlyModelViewSet):
                         "profile_type": null,
                         "first_name": "John",
                         "last_name": "Doe",
-                        "gender": null,
-                        "phone_number": "+33 6 12 34 56 78",
-                        "date_of_birth": null,
                         "url": "http://localhost:8000/api/users/3/"
                     },
-                    "address": {
-                        "line1": "Rue de Rivoli",
-                        "line2": "",
-                        "post_code": "75001",
-                        "city": "Paris",
-                        "country": {
-                            "code": "FR",
-                            "name": "France"
-                        }
-                    },
                     "promotion": 2020,
-                    "tutoring_groups": [1],
                     "url": "http://localhost:8000/api/tutors/1/"
                 },
                 "deadline": "2018-07-29",

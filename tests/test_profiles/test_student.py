@@ -1,9 +1,8 @@
 """Student model tests."""
 
-from profiles.factory import StudentInTutoringGroupFactory
+from profiles.factory import StudentFactory
 from profiles.models import Student
 from tests.utils import ModelTestCase
-from tutoring.models import School, TutoringGroup
 from users.factory import UserFactory
 
 
@@ -14,16 +13,6 @@ class StudentTestCase(ModelTestCase):
     field_tests = {
         'user': {
             'verbose_name': 'utilisateur',
-        },
-        'tutoring_group': {
-            'verbose_name': 'groupe de tutorat',
-            'null': True,
-            'blank': True,
-        },
-        'school': {
-            'verbose_name': 'lycée',
-            'null': True,
-            'blank': True,
         },
         'registration': {
             'verbose_name': "dossier d'inscription",
@@ -37,18 +26,10 @@ class StudentTestCase(ModelTestCase):
 
     @classmethod
     def setUpTestData(self):
-        self.obj = StudentInTutoringGroupFactory.create()
+        self.obj = StudentFactory.create()
 
     def test_user_relationship(self):
         self.assertEqual(self.obj, self.obj.user.student)
-
-    def test_school_relationship(self):
-        self.assertEqual(School.objects.get(), self.obj.school)
-        self.assertIn(self.obj, School.objects.get().students.all())
-
-    def test_tutoring_group_relationship(self):
-        self.assertEqual(TutoringGroup.objects.get(), self.obj.tutoring_group)
-        self.assertIn(self.obj, TutoringGroup.objects.get().students.all())
 
     def test_get_absolute_url(self):
         self.client.force_login(UserFactory.create())

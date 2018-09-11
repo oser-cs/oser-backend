@@ -22,12 +22,9 @@ def create_user_and_student(sender, instance: Registration,
         password=password,
         first_name=instance.first_name,
         last_name=instance.last_name,
-        date_of_birth=instance.date_of_birth,
-        phone_number=instance.phone,
     )
 
     Student.objects.create(
         user=user,
-        school=instance.school,
         registration=instance,
     )

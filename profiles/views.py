@@ -6,7 +6,6 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from tutoring.serializers import TutoringGroupSerializer
 from visits.serializers import VisitSerializer
 
 from .models import Student, Tutor
@@ -22,15 +21,6 @@ class TutorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tutor.objects.all()
     serializer_class = TutorSerializer
     permission_classes = (DRYPermissions,)
-
-    @action(detail=True)
-    def tutoringgroups(self, request, pk=None):
-        """Retrieve the tutoring groups of a tutor."""
-        tutor = self.get_object()
-        tutoring_groups = tutor.tutoring_groups.all()
-        serializer = TutoringGroupSerializer(tutoring_groups, many=True,
-                                             context={'request': request})
-        return Response(serializer.data)
 
 
 class StudentViewSet(viewsets.ReadOnlyModelViewSet):
@@ -54,29 +44,7 @@ class StudentViewSet(viewsets.ReadOnlyModelViewSet):
                 "profile_type": null,
                 "first_name": "",
                 "last_name": "",
-                "gender": null,
-                "phone_number": null,
-                "date_of_birth": null,
                 "url": "http://localhost:8000/api/users/4/"
-            },
-            "address": {
-                "line1": "88 bis rue Jules Guesde",
-                "line2": "",
-                "post_code": "93100",
-                "city": "Montreuil",
-                "country": {
-                    "code": "FR",
-                    "name": "France"
-                }
-            },
-            "tutoring_group": 1,
-            "school": "0930965U",
-            "emergency_contact": {
-                "first_name": "Marie-Claude",
-                "last_name": "Perret",
-                "email": null,
-                "home_phone": "+33312344556",
-                "mobile_phone": null
             },
             "registration": {
                 "id": 3,
@@ -91,15 +59,6 @@ class StudentViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = (DRYPermissions,)
-
-    @action(detail=True)
-    def tutoringgroup(self, request, pk=None):
-        """Retrieve the tutoring group of a student."""
-        student = self.get_object()
-        tutoring_group = student.tutoring_group
-        serializer = TutoringGroupSerializer(tutoring_group,
-                                             context={'request': request})
-        return Response(serializer.data)
 
     @action(detail=True)
     def visits(self, request, pk=None):

@@ -66,7 +66,6 @@ PROJECT_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'profiles.apps.ProfilesConfig',
-    'tutoring.apps.TutoringConfig',
     'visits.apps.VisitsConfig',
     'register.apps.RegisterConfig',
     'api.apps.ApiConfig',
@@ -264,11 +263,3 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Celery settings
-
-CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-CELERY_ACCEPT_CONTENT = ('application/json',)
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'

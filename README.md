@@ -50,18 +50,6 @@ Le site utilise une base de données SQL. Plusieurs technologies existent mais o
 
 Après avoir installé PostgreSQL, démarrez le serveur en ouvrant pgAdmin, l'interface graphique qui sera installée en même temps que Postgres.
 
-#### Optionnel : Redis, supervisord
-
-Le backend Django est relié à [Celery](http://www.celeryproject.org), une librairie Python permet d'effectuer des traitements ou opérations en tâche de fond.
-
-> NOTE : Pour l'instant, Celery n'est utilisé que pour effectuer un nettoyage périodique des fichiers de médias inutilisés, opération qui peut de toute façon être déclenchée par `$ python manage.py cleanmedia`. Il n'est donc **pas obligatoire d'installer ce qui suit en développement.**
-
-Celery a besoin d'un système de *messaging* pour fonctionner, on utilise donc ici [Redis](https://redis.io).
-
-Enfin, [supervisord](http://supervisord.org) est un gestionnaire de processus qui nous permet de lancer Redis et Celery en une seule commande.
-
-Le plus simple est de se référer aux sites de chaque logiciel/librairie pour leur installation. :wink:
-
 ### Installation du projet
 
 - (Recommandé) Créez un environnement virtuel (ici appelé `env`) puis activez-le :
@@ -160,29 +148,6 @@ Nous voilà authentifiés ! On peut maintenant utiliser ce token pour effectuer 
 ```
 $ curl -X GET "localhost:8000/api/articles/" -H "Authorization: Token b6302cebe7817532987e7a8767611b2600414915"
 [{"id": 39, "content": ...}, ...]
-```
-
-### Tâches de fond
-
-Le daemon Celery gère le calendrier des tâches de fond (nettoyage des fichiers de médias non-utilisés ou autres tâches définies dans le `settings.py`). Pour fonctionner, Celery nécessite un serveur de messages, on utilise ici Redis.
-
-Les opérations nécessaires pour lancer Celery ainsi que la configuration avec Redis sont rassemblées dans le fichier `supervisord.conf`. Assurez-vous donc d'avoir installé Redis et Supervisor puis démarrez Supervisor au même niveau que le fichier `supervisord.conf` :
-
-```
-# Supervisor ne supporte toujours pas officiellement Python 3,
-# mais la dernière version de développement oui.
-$ pip install git+https://github.com/Supervisor/supervisor.git
-$ supervisord
-```
-
-Pour accéder aux derniers logs de Celery ou de Redis, utilisez `supervisorctl tail (celery|redis)`:
-
-```
-$ supervisorctl tail celery
-[2018-04-29 10:59:31,550: INFO/MainProcess] Connected to redis://localhost:6379//
-[2018-04-29 10:59:31,566: INFO/MainProcess] mingle: searching for neighbors
-[2018-04-29 10:59:32,601: INFO/MainProcess] mingle: all alone
-[2018-04-29 10:59:32,657: INFO/MainProcess] celery@MacBook-Pro-de-Florimond-2.local ready.
 ```
 
 ### Envoi de mails
