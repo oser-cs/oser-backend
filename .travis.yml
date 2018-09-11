@@ -6,6 +6,9 @@ cache: pip
 python:
   - '3.6'
 
+services:
+  - postgresql
+
 addons:
   # Django 2.1+ requires PostgreSQL 9.4+
   postgresql: '9.4'
