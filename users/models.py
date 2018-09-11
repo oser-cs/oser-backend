@@ -65,22 +65,6 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    date_of_birth = models.DateField(blank=True, null=True,
-                                     verbose_name='date de naissance')
-
-    MALE = 'M'
-    FEMALE = 'F'
-    GENDER_CHOICES = (
-        (MALE, 'Homme'),
-        (FEMALE, 'Femme'),
-    )
-    gender = models.CharField('sexe', blank=True, null=True,
-                              max_length=1, choices=GENDER_CHOICES)
-
-    # TODO add a proper phone number validator
-    phone_number = models.CharField('téléphone',
-                                    max_length=20, null=True, blank=True)
-
     # type of profile of the user
     PROFILE_STUDENT = 0
     PROFILE_TUTOR = 1

@@ -12,9 +12,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:  # noqa
         model = User
         fields = ('id', 'email', 'profile_type',
-                  'first_name', 'last_name',
-                  'gender',
-                  'phone_number', 'date_of_birth', 'url',)
+                  'first_name', 'last_name', 'url',)
         extra_kwargs = {
             'email': {'read_only': True},
             'url': {'view_name': 'api:user-detail'},
