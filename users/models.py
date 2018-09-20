@@ -77,6 +77,9 @@ class User(AbstractUser):
                                     choices=PROFILE_CHOICES,
                                     verbose_name='type de profil')
 
+    phone_number = models.CharField('téléphone',
+                                    max_length=20, null=True, blank=True)
+
     @property
     def student(self):
         return getattr(self, 'student', None)

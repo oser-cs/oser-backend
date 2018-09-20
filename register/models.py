@@ -20,6 +20,11 @@ class Registration(models.Model):
             'Adresse email personnelle du lycéen. '
             'Note : doit être une adresse mail valide.'
         ))
+    phone_number = models.CharField(
+        max_length=20, verbose_name='téléphone',
+        help_text='Numéro de téléphone du lycéen (20 caractères max)',
+        blank=False, default='',
+    )
     submitted = models.DateTimeField(
         auto_now_add=True, verbose_name='envoyé le',
         help_text="Date d'envoi du dossier d'inscription")

@@ -64,6 +64,10 @@ class UserModelTest(ModelTestCase):
                 (User.PROFILE_STUDENT, 'Lycéen'),
                 (User.PROFILE_TUTOR, 'Tuteur'),
             )
+        },
+        'phone_number': {
+            'blank': True,
+            'null': True,
         }
     }
     model_tests = {

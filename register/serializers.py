@@ -23,7 +23,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Registration
         fields = ('id', 'email', 'password',
-                  'first_name', 'last_name',
+                  'first_name', 'last_name', 'phone_number',
                   'submitted', 'validated',)
 
         extra_kwargs = {

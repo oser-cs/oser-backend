@@ -23,3 +23,5 @@ class RegistrationFactory(factory.DjangoModelFactory):
         return '{}.{}@example.net'.format(
             printable_only(self.first_name.lower()),
             printable_only(self.last_name.lower()))
+
+    phone_number = factory.Faker('phone_number', locale='fr')
