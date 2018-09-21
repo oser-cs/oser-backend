@@ -18,17 +18,6 @@ class RegistrationTest(ModelTestCase):
             'max_length': 50,
             'verbose_name': 'nom',
         },
-        'date_of_birth': {
-            'blank': True,
-            'null': True,
-            'verbose_name': 'date de naissance',
-        },
-        'phone': {
-            'max_length': 30,
-            'blank': True,
-            'null': True,
-            'verbose_name': 'téléphone',
-        },
         'email': {
             'verbose_name': 'adresse email',
         },
@@ -39,16 +28,6 @@ class RegistrationTest(ModelTestCase):
         'validated': {
             'verbose_name': 'validé',
             'default': False,
-        },
-        'address': {
-            'blank': True,
-            'null': True,
-            'verbose_name': 'adresse',
-        },
-        'emergency_contact': {
-            'blank': True,
-            'null': True,
-            'verbose_name': "contact d'urgence",
         },
     }
     model_tests = {

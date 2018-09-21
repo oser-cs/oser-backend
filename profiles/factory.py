@@ -1,41 +1,24 @@
 """Profile factories."""
 
-import random
 from datetime import datetime
 
 import factory
 import factory.django
 from django.contrib.auth.models import Group
 
-from tutoring.factory import TutoringGroupFactory
-from tutoring.models import TutoringGroup
+from core.factory import AddressFactory
 from users.factory import UserFactory
 
 from . import models
 
 
 class StudentFactory(factory.DjangoModelFactory):
-    """Student object factory. Not assigned to a tutoring group."""
+    """Student object factory."""
 
     class Meta:  # noqa
         model = models.Student
 
     user = factory.SubFactory(UserFactory)
-
-
-class StudentInTutoringGroupFactory(StudentFactory):
-    """Student object factory, member of a tutoring group."""
-
-    @factory.lazy_attribute
-    def tutoring_group(self):
-        """Return an existing tutoring group in 70% of cases."""
-        groups = TutoringGroup.objects.all()
-        if groups and random.random() > .3:
-            return random.choice(groups)
-        return TutoringGroupFactory.create()
-
-    # student's school is the same as the student's tutoring group's
-    school = factory.SelfAttribute('tutoring_group.school')
 
 
 _this_year = datetime.today().year
@@ -49,6 +32,7 @@ class TutorFactory(factory.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     promotion = factory.Iterator([_this_year, _this_year + 1, _this_year + 2])
+    address = factory.SubFactory(AddressFactory)
 
 
 class TutorInGroupFactory(TutorFactory):

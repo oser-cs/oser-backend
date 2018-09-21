@@ -1,7 +1,7 @@
 """Student API tests."""
 from rest_framework import status
 
-from profiles.factory import StudentInTutoringGroupFactory
+from profiles.factory import StudentFactory
 from profiles.serializers import StudentSerializer
 from tests.utils.api import HyperlinkedAPITestCase
 
@@ -9,7 +9,7 @@ from tests.utils.api import HyperlinkedAPITestCase
 class StudentEndpointsTest(HyperlinkedAPITestCase):
     """Test access to the students endpoints."""
 
-    factory = StudentInTutoringGroupFactory
+    factory = StudentFactory
     serializer_class = StudentSerializer
 
     def perform_list(self):
@@ -30,15 +30,4 @@ class StudentEndpointsTest(HyperlinkedAPITestCase):
     def test_retrieve(self):
         self.assertRequiresAuth(
             self.perform_retrieve,
-            expected_status_code=status.HTTP_200_OK)
-
-    def test_retrieve_tutoring_group(self):
-        def perform_retrieve_tutoring_group():
-            obj = self.factory.create()
-            response = self.client.get(
-                '/api/students/{}/tutoringgroup/'.format(obj.pk))
-            return response
-
-        self.assertRequiresAuth(
-            perform_retrieve_tutoring_group,
             expected_status_code=status.HTTP_200_OK)

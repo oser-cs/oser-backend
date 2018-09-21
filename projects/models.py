@@ -1,6 +1,7 @@
 """Projects models."""
 
 from django.db import models
+from django.contrib.sites.models import Site
 from django.core.validators import ValidationError
 
 from markdownx.models import MarkdownxField
@@ -53,10 +54,6 @@ class Project(models.Model):
 class Edition(models.Model):
     """Represents an instance of a project for a given year."""
 
-    name = models.CharField(
-        'nom', max_length=200, default='', blank=True,
-        help_text='Un nom optionnel pour cette édition (exemple : "Berlin").')
-
     year = models.IntegerField(
         'année', default=this_year,
         help_text="L'année où se déroule cette édition.")
@@ -65,6 +62,10 @@ class Edition(models.Model):
         'Project', on_delete=models.CASCADE,
         verbose_name='projet', related_name='editions',
         help_text='Le projet dont ceci est une édition.')
+
+    name = models.CharField(
+        'nom', max_length=200, default='', blank=True,
+        help_text='Un nom optionnel pour cette édition (exemple : "Berlin").')
 
     description = MarkdownxField(
         blank=True, default='',
@@ -81,6 +82,14 @@ class Edition(models.Model):
         ordering = ('-year',)
         verbose_name = 'édition'
         get_latest_by = 'year'
+
+    def get_projects_site_url(self) -> str:
+        site = Site.objects.get_current()
+        return f'https://{site.domain}/projets/'
+
+    def get_registration_url(self) -> str:
+        site = Site.objects.get_current()
+        return f'https://{site.domain}/projets/mes-inscriptions'
 
     def __str__(self) -> str:
         """Represent using the project name, the year and the edition name."""
@@ -218,6 +227,16 @@ class Participation(models.Model):
 
     class Meta:  # noqa
         ordering = ('-submitted',)
+
+    def __init__(self, *args, **kwargs):
+        """Store the initial value of `state` to detect changes."""
+        super().__init__(*args, **kwargs)
+        self.initial_state = self.state
+
+    @property
+    def state_changed(self) -> bool:
+        """Return whether the `state` field has changed."""
+        return self.initial_state != self.state
 
     def __str__(self):
         """Represent by its user."""

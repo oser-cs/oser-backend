@@ -56,22 +56,6 @@ class UserModelTest(ModelTestCase):
             'blank': False,
             'null': False,
         },
-        'date_of_birth': {
-            'verbose_name': 'date de naissance',
-            'blank': True,
-            'null': True,
-        },
-        'gender': {
-            'verbose_name': 'sexe',
-            'max_length': 1,
-            'choices': (('M', 'Homme'), ('F', 'Femme')),
-            'blank': True,
-        },
-        'phone_number': {
-            'verbose_name': 'téléphone',
-            'blank': True,
-            'null': True,
-        },
         'profile_type': {
             'verbose_name': 'type de profil',
             'blank': False,
@@ -80,6 +64,10 @@ class UserModelTest(ModelTestCase):
                 (User.PROFILE_STUDENT, 'Lycéen'),
                 (User.PROFILE_TUTOR, 'Tuteur'),
             )
+        },
+        'phone_number': {
+            'blank': True,
+            'null': True,
         }
     }
     model_tests = {

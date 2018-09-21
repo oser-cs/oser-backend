@@ -6,7 +6,6 @@ from api.auth import obtain_auth_token
 from core import views as core_views
 from profiles import views as profiles_views
 from register import views as register_views
-from tutoring import views as tutoring_views
 from users import views as users_views
 from visits import views as visits_views
 import projects.views
@@ -28,13 +27,6 @@ router.register('users', users_views.UserViewSet)
 # Profiles views
 router.register('tutors', profiles_views.TutorViewSet)
 router.register('students', profiles_views.StudentViewSet)
-
-# Tutoring views
-router.register('schools', tutoring_views.SchoolViewSet)
-router.register('groups', tutoring_views.TutoringGroupViewSet,
-                base_name='tutoring_group')
-router.register('sessions', tutoring_views.TutoringSessionViewSet,
-                base_name='tutoring_session')
 
 # Register views
 router.register('registrations', register_views.RegistrationViewSet)

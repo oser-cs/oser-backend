@@ -34,11 +34,6 @@ class UserFactory(factory.DjangoModelFactory):
 
     # this is a default, override by passing `profile_type='...'` in create()
     profile_type = None
-    date_of_birth = factory.Faker('date_this_century',
-                                  before_today=True, after_today=False,
-                                  locale='fr')
-    phone_number = factory.Faker('phone_number', locale='fr')
-    gender = factory.Iterator([User.MALE, User.FEMALE])
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

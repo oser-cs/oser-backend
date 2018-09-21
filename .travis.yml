@@ -8,7 +8,10 @@ python:
 
 services:
   - postgresql
-  - redis-server
+
+addons:
+  # Django 2.1+ requires PostgreSQL 9.4+
+  postgresql: '9.4'
 
 install:
   - pip install -r requirements.txt
@@ -17,9 +20,6 @@ install:
   - pip install git+https://github.com/Supervisor/supervisor.git
 
 before_script:
-  # Start Celery using the supervisor config
-  - supervisord
-
   # Create local PostgreSQL database
   # NOTE: the database name (here 'oser_backend_db') must match the name
   # in one of these DATABASE_URL setting:

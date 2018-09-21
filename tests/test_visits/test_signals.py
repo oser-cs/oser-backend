@@ -4,7 +4,6 @@ from django.test import TestCase
 from tests.utils.mixins import SignalTestMixin
 
 from mails.signals import notification_sent
-from users.factory import UserFactory
 from visits.factory import ParticipationFactory, VisitFactory
 from visits.notifications import ConfirmParticipation
 from visits.signals import accepted_changed

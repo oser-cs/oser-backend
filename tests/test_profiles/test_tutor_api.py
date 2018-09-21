@@ -4,7 +4,6 @@ from rest_framework import status
 from profiles.factory import TutorFactory
 from profiles.serializers import TutorSerializer
 from tests.utils.api import HyperlinkedAPITestCase
-from tutoring.factory import TutorTutoringGroupFactory
 
 
 class TutorEndpointsTest(HyperlinkedAPITestCase):
@@ -31,17 +30,4 @@ class TutorEndpointsTest(HyperlinkedAPITestCase):
     def test_retrieve(self):
         self.assertRequiresAuth(
             self.perform_retrieve,
-            expected_status_code=status.HTTP_200_OK)
-
-    def test_list_tutoring_groups(self):
-        def perform_list_tutoring_groups():
-            obj = self.factory.create()
-            # add tutor to several tutoring groups
-            TutorTutoringGroupFactory.create_batch(3, tutor=obj)
-            url = '/api/tutors/{}/tutoringgroups/'.format(obj.pk)
-            response = self.client.get(url)
-            return response
-
-        self.assertRequiresAuth(
-            perform_list_tutoring_groups,
             expected_status_code=status.HTTP_200_OK)

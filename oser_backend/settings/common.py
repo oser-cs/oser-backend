@@ -35,6 +35,7 @@ DJANGO_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.forms',
+    'django.contrib.sites',
 ]
 
 THIRD_PARTY_APPS = [
@@ -60,11 +61,11 @@ THIRD_PARTY_APPS = [
     # Easy filtering on the API
     'django_filters',
 ]
+
 PROJECT_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'profiles.apps.ProfilesConfig',
-    'tutoring.apps.TutoringConfig',
     'visits.apps.VisitsConfig',
     'register.apps.RegisterConfig',
     'api.apps.ApiConfig',
@@ -72,7 +73,13 @@ PROJECT_APPS = [
     'dynamicforms.apps.DynamicformsConfig',
     'projects.apps.ProjectsConfig',
 ]
+
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
+
+# Activate the sites framework
+# It is used to define the domain of the frontend website in
+# the admin (via the 'Sites' section)
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -256,11 +263,3 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Celery settings
-
-CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-CELERY_ACCEPT_CONTENT = ('application/json',)
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
