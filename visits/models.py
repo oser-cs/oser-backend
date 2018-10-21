@@ -216,7 +216,7 @@ class Visit(models.Model):
 
     def get_site_url(self):
         site = Site.objects.get_current()
-        return f'https://{site.domain}/visits/{self.pk}'
+        return f'https://{site.domain}/membres/sorties/{self.pk}'
 
     def __str__(self):
         return str(self.title)
