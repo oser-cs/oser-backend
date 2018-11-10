@@ -3,6 +3,7 @@
 from django import forms
 from django.contrib import admin, messages
 from django.template.defaultfilters import pluralize
+from django.core import urlresolvers
 
 from .models import Participation, Place, Visit
 
