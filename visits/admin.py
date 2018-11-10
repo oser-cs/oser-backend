@@ -112,14 +112,14 @@ reject_selected_participations.short_description = (
 class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
-    list_display = ('submitted', 'visit', 'link_to_user',
+    list_display = ('submitted', 'visit', 'user_link',
                     'accepted', 'present')
     list_filter = ('submitted', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
-    def link_to_user (self,obj):
-        link=reverse("admin:visits_user_change", args=[obj.user.id]) 
-        return u'<a href="%s">%s</a>' % (link,obj.user.email)
-    link_to_user.allow_tags=True
+    def user_link (self,book):
+        url=reverse("admin:visits_user_change", args=[book.user.id]) 
+        return mark_safe(link)
+    user_link.short_description = 'Utilisateur'
 
 
 @admin.register(Visit.organizers.through)
