@@ -6,7 +6,12 @@ from aws.conf import *
 
 from .common import *
 
-DEBUG = os.environ.get('DEBUG', False)
+# NOTE: `or False` ensures the value is  `False` (the boolean)
+# if the value given in environment is false-y (e.g. empty string)
+# Otherwise may lead to unexpected bugs.
+# For example, SendGrid could send an empty string as the sandbox mode,
+# leading to strange 400 Bad Request errors.
+DEBUG = os.environ.get('DEBUG', False) or False
 
 ALLOWED_HOSTS = [
     'localhost',

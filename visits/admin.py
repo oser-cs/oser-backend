@@ -17,7 +17,7 @@ class RegistrationsOpenFilter(admin.SimpleListFilter):
     https://docs.djangoproject.com/fr/2.0/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
     """
 
-    title = "état des inscriptions"
+    title = 'état des inscriptions'
     parameter_name = 'registrations_open'
 
     def lookups(self, request, model_admin):
@@ -48,23 +48,27 @@ class VisitForm(forms.ModelForm):
 
         - Deadline must be before the date
         - End time must be after start time
+
+        Keep in mind that values may be `None` if not provided in the form.
         """
         cleaned_data = super().clean()
         date = cleaned_data.get('date')
         deadline = cleaned_data.get('deadline')
         start_time = cleaned_data.get('start_time')
         end_time = cleaned_data.get('end_time')
-        if deadline.date() >= date:
-            error = forms.ValidationError(
-                "La date limite d'inscription doit être avant la "
-                "date de la sortie."
-            )
-            self.add_error('deadline', error)
-        if end_time <= start_time:
-            error = forms.ValidationError(
-                "L'heure de fin doit être après l'heure de début.")
-            self.add_error('start_time', error)
-            self.add_error('end_time', error)
+        if deadline is not None:
+            if deadline.date() >= date:
+                error = forms.ValidationError(
+                    "La date limite d'inscription doit être avant la "
+                    "date de la sortie."
+                )
+                self.add_error('deadline', error)
+        if end_time is not None and start_time is not None:
+            if end_time <= start_time:
+                error = forms.ValidationError(
+                    "L'heure de fin doit être après l'heure de début.")
+                self.add_error('start_time', error)
+                self.add_error('end_time', error)
 
 
 class ParticipationInline(admin.StackedInline):
