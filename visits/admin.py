@@ -117,7 +117,7 @@ class ParticipationAdmin(admin.ModelAdmin):
     list_filter = ('submitted', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
     def user_link (self,book):
-        url=reverse("admin:visits_user_change", args=[book.user.id]) 
+        url=reverse("admin:users_user_change", args=[book.user.id]) 
         return mark_safe(link)
     user_link.short_description = 'Utilisateur'
 
