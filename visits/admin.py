@@ -4,6 +4,7 @@ from django import forms
 from django.contrib import admin, messages
 from django.template.defaultfilters import pluralize
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from .models import Participation, Place, Visit
 
