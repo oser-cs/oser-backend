@@ -119,6 +119,7 @@ class ParticipationAdmin(admin.ModelAdmin):
     actions = [accept_selected_participations, reject_selected_participations]
     def user_link (self,book):
         url=reverse("admin:users_user_change", args=[book.user.id]) 
+        link = '<a href="%s">%s</a>' % (url, book.user.email)
         return mark_safe(link)
     user_link.short_description = 'Utilisateur'
 
