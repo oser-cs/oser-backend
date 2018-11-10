@@ -3,7 +3,7 @@
 from django import forms
 from django.contrib import admin, messages
 from django.template.defaultfilters import pluralize
-from django.core import urlresolvers
+from django.urls import reverse
 
 from .models import Participation, Place, Visit
 
@@ -113,7 +113,7 @@ class ParticipationAdmin(admin.ModelAdmin):
     list_filter = ('submitted', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
     def link_to_user (self,obj):
-        link=urlresolvers.reverse("admin:visits_user_change", args=[obj.user.id]) 
+        link=reverse("admin:visits_user_change", args=[obj.user.id]) 
         return u'<a href="%s">%s</a>' % (link,obj.user.email)
     link_to_user.allow_tags=True
 
