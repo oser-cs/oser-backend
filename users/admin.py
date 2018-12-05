@@ -8,6 +8,12 @@ from visits.admin import ParticipationInline
 
 from .models import User
 
+actions = ["export_as_csv"]
+
+def export_as_csv(self, request, queryset):
+    pass
+
+export_as_csv.short_description = "Export Selected"
 
 class UserParticipationInline(ParticipationInline):
     """Inline for Participation on the User admin panel.
