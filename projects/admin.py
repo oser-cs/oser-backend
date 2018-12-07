@@ -5,8 +5,6 @@ from django.contrib import admin
 from dynamicforms.views import download_multiple_forms_entries
 from dynamicforms.models import Form
 from .models import Edition, Participation, Project, EditionForm
-from django.http import HttpResponse
-import csv
 
 
 @admin.register(Project)
@@ -30,23 +28,6 @@ class ProjectAdmin(admin.ModelAdmin):
         """Return total number of accepted participations."""
         return obj.total_participations(state=Participation.STATE_ACCEPTED)
     total_accepted_participations.short_description = 'Participations totales'
-
-    actions = ["export_as_csv"]
-
-    def export_as_csv(self, request, queryset):
-        meta = self.model._meta
-        field_names = [field.name for field in meta.fields]
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
-            meta)
-        writer = csv.writer(response)
-        writer.writerow(field_names)
-        for obj in queryset:
-            row = writer.writerow([getattr(obj, field)
-                                   for field in field_names])
-        return response
-    export_as_csv.short_description = "Exporter au format CSV"
 
 
 class OrganizersInline(admin.TabularInline):
@@ -91,23 +72,6 @@ class EditionAdmin(admin.ModelAdmin):
         return obj.participations.cancelled().count()
     num_cancelled.short_description = 'Annulés'
 
-    actions = ["export_as_csv"]
-
-    def export_as_csv(self, request, queryset):
-        meta = self.model._meta
-        field_names = [field.name for field in meta.fields]
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
-            meta)
-        writer = csv.writer(response)
-        writer.writerow(field_names)
-        for obj in queryset:
-            row = writer.writerow([getattr(obj, field)
-                                   for field in field_names])
-        return response
-    export_as_csv.short_description = "Exporter au format CSV"
-
 
 @admin.register(EditionForm)
 class EditionFormAdmin(admin.ModelAdmin):
@@ -115,23 +79,6 @@ class EditionFormAdmin(admin.ModelAdmin):
 
     list_display = ('form', 'deadline', 'recipient',)
     list_filter = ('edition', 'deadline',)
-
-    actions = ["export_as_csv"]
-
-    def export_as_csv(self, request, queryset):
-        meta = self.model._meta
-        field_names = [field.name for field in meta.fields]
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
-            meta)
-        writer = csv.writer(response)
-        writer.writerow(field_names)
-        for obj in queryset:
-            row = writer.writerow([getattr(obj, field)
-                                   for field in field_names])
-        return response
-    export_as_csv.short_description = "Exporter au format CSV"
 
 
 @admin.register(Participation)
@@ -142,20 +89,3 @@ class ParticipationAdmin(admin.ModelAdmin):
     list_filter = ('edition', 'submitted', 'state',)
     readonly_fields = ('submitted',)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',)
-
-    actions = ["export_as_csv"]
-
-    def export_as_csv(self, request, queryset):
-        meta = self.model._meta
-        field_names = [field.name for field in meta.fields]
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
-            meta)
-        writer = csv.writer(response)
-        writer.writerow(field_names)
-        for obj in queryset:
-            row = writer.writerow([getattr(obj, field)
-                                   for field in field_names])
-        return response
-    export_as_csv.short_description = "Exporter au format CSV"
