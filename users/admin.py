@@ -8,7 +8,6 @@ from visits.admin import ParticipationInline
 
 from .models import User
 
-
 class UserParticipationInline(ParticipationInline):
     """Inline for Participation on the User admin panel.
 
@@ -55,5 +54,4 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'password1', 'password2')}
          ),
     )
-
     inlines = (UserParticipationInline, )
