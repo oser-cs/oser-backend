@@ -114,15 +114,16 @@ reject_selected_participations.short_description = (
 class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
-    list_display = ('submitted', 'visit', 'user_link',
-                    'accepted', 'present')
+    list_display = ('submitted', 'visit', 'user_link', 'accepted', 'present')
     list_filter = ('submitted', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
 
-    def user_link(self, book):
-        url = reverse("admin:users_user_change", args=[book.user.id])
-        link = '<a href="%s">%s</a>' % (url, book.user.email)
+    def user_link(self, participation: Participation):
+        """Return a link to the participation's user."""
+        url = reverse("admin:users_user_change", args=[participation.user.id])
+        link = f'<a href="{url}">{participation.user}</a>'
         return mark_safe(link)
+
     user_link.short_description = 'Utilisateur'
 
     actions = ["export_as_csv"]
