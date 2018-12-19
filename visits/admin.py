@@ -5,7 +5,8 @@ from django.contrib import admin, messages
 from django.template.defaultfilters import pluralize
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-
+from django.http import HttpResponse
+import csv
 from .models import Participation, Place, Visit
 
 # Register your models here.
@@ -124,6 +125,23 @@ class ParticipationAdmin(admin.ModelAdmin):
         return mark_safe(link)
 
     user_link.short_description = 'Utilisateur'
+
+    actions = ["export_as_csv"]
+
+    def export_as_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
+            meta)
+        writer = csv.writer(response)
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = writer.writerow([getattr(obj, field)
+                                   for field in field_names])
+        return response
+    export_as_csv.short_description = "Exporter au format CSV"
 
 
 @admin.register(Visit.organizers.through)
