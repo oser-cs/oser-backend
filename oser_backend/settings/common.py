@@ -60,6 +60,7 @@ THIRD_PARTY_APPS = [
     'django_countries',
     # Easy filtering on the API
     'django_filters',
+    'rest_auth',
 ]
 
 PROJECT_APPS = [
@@ -233,7 +234,7 @@ LOGGING = {
 # Email configuration
 
 EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+SENDGRID_API_KEY = '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'
 
 # Mails app config
 
