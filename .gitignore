@@ -19,6 +19,9 @@ __pycache__/
 *.sqlite3
 *.rdb
 
+# Type checking
+.mypy_cache
+
 # private
 .env
 
