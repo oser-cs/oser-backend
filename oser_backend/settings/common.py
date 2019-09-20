@@ -172,7 +172,7 @@ MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS = {
 DATABASES = {
     'default': dj_database_url.config(
         # Provide a default for dev environment
-        default='postgres://postgres:postgres@localhost:5432/oser_backend_db'),
+        default='postgres://postgres:postgres@127.0.0.1:5432/oser_backend_db'),
 }
 
 

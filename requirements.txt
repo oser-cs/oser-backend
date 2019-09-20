@@ -1,21 +1,38 @@
-Django>2.0
-djangorestframework>=3.8
-factory-boy
-coreapi-cli
-django-cors-headers
-Pillow
-django-markdownx
-dry_rest_permissions
-django-guardian
-django-admin-sortable2
-pymdown-extensions
-psycopg2
-dj-database-url
-django-heroku
-gunicorn
+# Core packages
+django==2.2
+djangorestframework==3.8
+
+# Admin enhancements
+django-admin-sortable2  # Sorting items in the admin panel
+django-countries
+django-guardian  # Permissions
+
+# Email via SendGrid
+django-sendgrid-v5
+
+# Storage of files in AWS S3
 django-storages
 boto3
-whitenoise
-django-countries
-django-sendgrid-v5
-django-filter
+
+# PostgreSQL integration
+dj-database-url
+psycopg2
+
+# Django REST Framework extensions
+coreapi-cli  # Required for automatic API docs
+django-cors-headers  # CORS (security headers sent by browsers)
+django-filter  # Filtering helpers for API endpoints
+dry_rest_permissions
+
+# Markdown rendering
+django-markdownx
+pymdown-extensions
+Pillow
+
+# Testing
+factory-boy
+
+# Deployment
+django-heroku  # Heroku integration
+whitenoise  # Static files serving
+gunicorn  # Web server
