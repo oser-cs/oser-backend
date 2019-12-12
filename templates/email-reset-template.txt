@@ -1,0 +1,15 @@
+{% load i18n %}{% autoescape off %}
+{% blocktrans %}Vous recevez ce courriel car vous avez demander à 
+réinitialiser le mot de passe de votre compte Oser.{% endblocktrans %}
+
+{% trans "Please go to the following page and choose a new password:" %}
+{% block reset_link %}
+http://localhost:4200{% url 'password_reset_confirm' uidb64=uid token=token %}
+{% endblock %}
+{% trans "Your username, in case you've forgotten:" %} {{ user.get_username }}
+
+{% trans "Thanks for using our site!" %}
+
+{% blocktrans %}The Oser team{% endblocktrans %}
+
+{% endautoescape %}

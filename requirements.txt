@@ -9,6 +9,8 @@ django-guardian  # Permissions
 
 # Email via SendGrid
 django-sendgrid-v5
+django-filter
+django-rest-auth
 
 # Storage of files in AWS S3
 django-storages
@@ -22,6 +24,7 @@ psycopg2
 coreapi-cli  # Required for automatic API docs
 django-cors-headers  # CORS (security headers sent by browsers)
 django-filter  # Filtering helpers for API endpoints
+django-rest-auth  # Password reset views
 dry_rest_permissions
 
 # Markdown rendering

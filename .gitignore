@@ -31,3 +31,4 @@ static/
 
 # Supervisor
 supervisord.pid
+sendgrid.env
