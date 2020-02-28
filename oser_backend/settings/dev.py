@@ -5,7 +5,7 @@ from .common import *
 from .common import BASE_DIR
 
 DEBUG = True
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 # Static files (CSS, JavaScript, Images) and media files (user-uploaded)
 
