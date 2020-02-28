@@ -5,9 +5,12 @@ Common settings suitable for all environmebts.
 """
 
 import os
+from dotenv import load_dotenv
 
 import dj_database_url
 import pymdownx.emoji
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 dn = os.path.dirname
