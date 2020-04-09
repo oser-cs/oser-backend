@@ -35,6 +35,9 @@ Pillow
 # Testing
 factory-boy
 
+# Miscellanneous
+python-dotenv==0.11
+
 # Deployment
 django-heroku  # Heroku integration
 whitenoise  # Static files serving
