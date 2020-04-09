@@ -10,7 +10,7 @@ Bonjour{% if participation.user.first_name %} {{ participation.user.first_name }
 {% if participation.accepted %}
 Bonne nouvelle : nous avons validé ta participation à la sortie. ✅
 
-En te rendant sur [l'espace sorties]({{ participation.visit.get_site_url }}), tu peux dès à présent:
+Avant la sortie, tu pourras, en te rendant sur [l'espace sorties]({{ participation.visit.get_site_url }}) :
 
 - Consulter les informations pratiques ;
 - Télécharger la fiche sortie ;
