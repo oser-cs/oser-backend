@@ -28,7 +28,7 @@ class PasswordResetSerializer(serializers.Serializer):
 
             ###### USE YOUR TEXT FILE ######
             'email_template_name': 'email-reset-template.txt',
-
+            'subject_template_name': 'subject-reset-template.txt',
             'request': request,
         }
         self.reset_form.save(**opts)
