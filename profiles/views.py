@@ -23,40 +23,13 @@ class TutorViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (DRYPermissions,)
 
 
-class StudentViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint that allows students to be viewed.
+class StudentViewSet(viewsets.ModelViewSet):
+    """API endpoint that allows students to be viewed, and profiles to be updated."""
+    def get_queryset(self):
+        user = self.request.user
+        student = Student.objects.filter(user=user)
+        return student
 
-    list:
-
-    ### Example response
-
-    List of results from `retrieve` (see the example response for `retrieve`).
-
-    retrieve:
-
-    ### Example response
-
-        {
-            "user_id": 4,
-            "user": {
-                "id": 4,
-                "email": "charles.dumont@example.net",
-                "profile_type": null,
-                "first_name": "",
-                "last_name": "",
-                "url": "http://localhost:8000/api/users/4/"
-            },
-            "registration": {
-                "id": 3,
-                "submitted": "2018-05-05T14:15:10.998206+02:00",
-                "validated": false
-            },
-            "visits": [],
-            "url": "http://localhost:8000/api/students/2/"
-        }
-    """
-
-    queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = (DRYPermissions,)
 

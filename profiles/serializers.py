@@ -21,7 +21,7 @@ class TutorSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
-class StudentSerializer(serializers.HyperlinkedModelSerializer):
+class StudentSerializer(serializers.ModelSerializer):
     """Hyperlinked serializer for Student."""
 
     user = UserSerializer()
@@ -34,8 +34,7 @@ class StudentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:  # noqa
         model = Student
         fields = (
-            'user_id', 'user', 'registration', 'visits', 'url',
-        )
+            'user_id', 'user', 'registration', 'visits', 'url', 'gender', 'addressNumber', 'street', 'city', 'personnalPhone', 'parentsPhone', 'parentsEmail', 'school', 'grade', 'scholarship', 'fatherActivity', 'motherActivity', 'parentsStatus', 'dependantsNumber')
         extra_kwargs = {
             'url': {'view_name': 'api:student-detail'},
         }

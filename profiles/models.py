@@ -52,6 +52,103 @@ class Student(ProfileMixin, models.Model):
         related_name='student',
     )
 
+    gender = models.CharField(max_length=20,
+        null=True,
+        blank=True,
+        verbose_name="genre",
+    )
+
+    addressNumber = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name="numéro de rue"
+    )
+
+    street = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="nom de rue"
+    )
+
+    city = models.CharField(max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="nom de ville"
+    )
+
+    personnalPhone = models.CharField(max_length=12,
+        null=True,
+        blank=True,
+        verbose_name="numéro de téléphone personnel"
+    )
+
+    parentsPhone = models.CharField(max_length=12,
+        null=True,
+        blank=True,
+        verbose_name="numéro de téléphone parental"
+    )
+
+    parentsEmail = models.EmailField(max_length=20,
+        null=True,
+        blank=True,
+        verbose_name="adresse mail parentale"
+    )
+
+
+    school = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="nom de l'école"
+    )
+
+
+    grade = models.CharField(max_length=20,
+        null=True,
+        blank=True,
+        verbose_name="niveau de la classe"
+    )
+
+
+    scholarship = models.NullBooleanField(
+        null=True,
+        blank=True,
+        verbose_name="boursier"
+    )
+
+
+    fatherActivity = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="métier du père"
+    )
+
+
+    motherActivity = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="métier de la mère"
+    )
+
+
+    parentsStatus = models.CharField(max_length=30,
+        null=True,
+        blank=True,
+        verbose_name="statut des parents"
+    )
+
+
+    dependantsNumber = models.CharField(max_length=12,
+        null=True,
+        blank=True,
+        verbose_name="numéro d'urgence"
+    )
+
+    @staticmethod
+    @authenticated_users
+    def has_write_permission(request):
+        return True
+
+
     class Meta:  # noqa
         verbose_name = 'lycéen'
 
