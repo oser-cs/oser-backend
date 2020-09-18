@@ -34,7 +34,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:  # noqa
         model = Student
         fields = (
-            'user_id', 'user', 'registration', 'visits', 'url', 'gender', 'addressNumber', 'street', 'city', 'personnalPhone', 'parentsPhone', 'parentsEmail', 'school', 'grade', 'scholarship', 'fatherActivity', 'motherActivity', 'parentsStatus', 'dependantsNumber')
+            'user_id', 'url', 'gender', 'addressNumber', 'street', 'city', 'personnalPhone', 'parentsPhone', 'parentsEmail', 'school', 'grade', 'scholarship', 'fatherActivity', 'motherActivity', 'parentsStatus', 'dependantsNumber')
         extra_kwargs = {
             'url': {'view_name': 'api:student-detail'},
         }
