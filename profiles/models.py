@@ -52,13 +52,13 @@ class Student(ProfileMixin, models.Model):
         related_name='student',
     )
 
-    nationality = models.CharField(max_length=30,
+    nationality = models.CharField(max_length=50,
         null=True,
         blank=True,
         verbose_name="nationalité",
     )
 
-    specialTeaching = models.CharField(max_length=30,
+    specialTeaching = models.CharField(max_length=50,
         null=True,
         blank=True,
         verbose_name="enseignement de spécialité",
@@ -107,7 +107,7 @@ class Student(ProfileMixin, models.Model):
         verbose_name="numéro de téléphone parental"
     )
 
-    parentsEmail = models.EmailField(max_length=20,
+    parentsEmail = models.EmailField(max_length=70,
         null=True,
         blank=True,
         verbose_name="adresse mail parentale"
@@ -128,7 +128,7 @@ class Student(ProfileMixin, models.Model):
     )
 
 
-    scholarship = models.CharField(max_length=10,
+    scholarship = models.CharField(max_length=50,
         null=True,
         blank=True,
         verbose_name="boursier"
@@ -149,7 +149,7 @@ class Student(ProfileMixin, models.Model):
     )
 
 
-    parentsStatus = models.CharField(max_length=30,
+    parentsStatus = models.CharField(max_length=70,
         null=True,
         blank=True,
         verbose_name="statut des parents"
