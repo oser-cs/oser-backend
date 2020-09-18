@@ -166,9 +166,8 @@ class Student(ProfileMixin, models.Model):
     def has_write_permission(request):
         return True
 
-    @staticmethod
-    def has_object_write_permission(request):
-        return request.user.id==user.id
+    def has_object_write_permission(self, request):
+        return request.user.id==self.user.id
 
     class Meta:  # noqa
         verbose_name = 'lycéen'
