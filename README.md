@@ -49,11 +49,12 @@ Le site utilise une base de données SQL. Plusieurs technologies existent mais o
 [Télécharger PostgreSQL](https://www.postgresql.org/download/)
 
 Après avoir installé PostgreSQL, démarrez le serveur en ouvrant pgAdmin, l'interface graphique qui sera installée en même temps que Postgres.
-
+Créez aussitôt une base de données appelée `oser_backend_db`.
 ### Installation du projet
 
-- (Recommandé) Créez un environnement virtuel (ici appelé `env`) puis activez-le :
 
+- (Recommandé) Créez un environnement virtuel (ici appelé `env`) puis activez-le :
+*NB: Vous pouvez aussi utiliser conda si vous êtes plus à l'aise avec.*
 ```bash
 $ python -m venv env
 $ source env/bin/activate
