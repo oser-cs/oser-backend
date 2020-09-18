@@ -163,10 +163,12 @@ class Student(ProfileMixin, models.Model):
     )
 
     @staticmethod
-    @authenticated_users
     def has_write_permission(request):
         return True
 
+    @staticmethod
+    def has_object_write_permission(request):
+        return request.user.id==user.id
 
     class Meta:  # noqa
         verbose_name = 'lycéen'
