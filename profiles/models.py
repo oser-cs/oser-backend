@@ -52,6 +52,25 @@ class Student(ProfileMixin, models.Model):
         related_name='student',
     )
 
+    nationality = models.CharField(max_length=30,
+        null=True,
+        blank=True,
+        verbose_name="nationalité",
+    )
+
+    specialTeaching = models.CharField(max_length=30,
+        null=True,
+        blank=True,
+        verbose_name="enseignement de spécialité",
+    )
+
+    zipCode = models.CharField(max_length=10,
+        null=True,
+        blank=True,
+        verbose_name="code postal",
+    )
+
+
     gender = models.CharField(max_length=20,
         null=True,
         blank=True,
@@ -109,7 +128,7 @@ class Student(ProfileMixin, models.Model):
     )
 
 
-    scholarship = models.NullBooleanField(
+    scholarship = models.CharField(max_length=10,
         null=True,
         blank=True,
         verbose_name="boursier"

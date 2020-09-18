@@ -5,6 +5,7 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from visits.serializers import VisitSerializer
 
@@ -25,12 +26,11 @@ class TutorViewSet(viewsets.ReadOnlyModelViewSet):
 
 class StudentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows students to be viewed, and profiles to be updated."""
-    def get_queryset(self):
-        user = self.request.user
-        student = Student.objects.filter(user=user)
-        return student
 
+    queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('user_id',)
     permission_classes = (DRYPermissions,)
 
     @action(detail=True)
