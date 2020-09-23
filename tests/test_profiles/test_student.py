@@ -3,7 +3,7 @@
 from profiles.factory import StudentFactory
 from profiles.models import Student
 from tests.utils import ModelTestCase
-from users.factory import UserFactory
+from users.factory import UserFactory, StaffUserFactory
 
 
 class StudentTestCase(ModelTestCase):
@@ -32,7 +32,7 @@ class StudentTestCase(ModelTestCase):
         self.assertEqual(self.obj, self.obj.user.student)
 
     def test_get_absolute_url(self):
-        UserFactory.create(is_staff = True)
+        staff_user = StaffUserFactory.create()
         self.client.force_login(staff_user)
         url = self.obj.get_absolute_url()
         response = self.client.get(url)
