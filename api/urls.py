@@ -26,7 +26,7 @@ router.register('users', users_views.UserViewSet)
 
 # Profiles views
 router.register('tutors', profiles_views.TutorViewSet)
-router.register('students', profiles_views.StudentViewSet)
+router.register('students', profiles_views.StudentViewSet, base_name='student')
 
 # Register views
 router.register('registrations', register_views.RegistrationViewSet)

@@ -31,10 +31,14 @@ class StudentViewSet(viewsets.ModelViewSet):
             kwargs['partial'] = True
             return super(StudentViewSet, self).get_serializer(*args, **kwargs)
 
-    queryset = Student.objects.all()
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return Student.objects.all()
+        else:
+            return Student.objects.filter(user_id = user.id)
+
     serializer_class = StudentSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('user_id',)
     permission_classes = (DRYPermissions,)
 
     @action(detail=True)
