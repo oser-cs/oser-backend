@@ -156,10 +156,10 @@ class Student(ProfileMixin, models.Model):
     )
 
 
-    dependantsNumber = models.CharField(max_length=12,
+    dependantsNumber = models.IntegerField(
         null=True,
         blank=True,
-        verbose_name="numéro d'urgence"
+        verbose_name="nombre de personnes à charge"
     )
 
     @staticmethod
