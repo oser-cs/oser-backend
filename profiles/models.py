@@ -95,7 +95,7 @@ class Student(ProfileMixin, models.Model):
         verbose_name="nom de ville"
     )
 
-    personnalPhone = models.CharField(max_length=12,
+    personalPhone = models.CharField(max_length=12,
         null=True,
         blank=True,
         verbose_name="numéro de téléphone personnel"
@@ -169,6 +169,12 @@ class Student(ProfileMixin, models.Model):
     def has_object_write_permission(self, request):
         return request.user == self.user
 
+    @staticmethod
+    @authenticated_users
+    def has_read_permission(request):
+        return True
+
+    @authenticated_users
     def has_object_read_permission(self, request):
         return request.user == self.user
 
