@@ -9,7 +9,7 @@ from utils import printable_only
 User = get_user_model()
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     """User object factory."""
 
     class Meta:  # noqa
