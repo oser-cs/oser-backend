@@ -27,6 +27,10 @@ class TutorViewSet(viewsets.ReadOnlyModelViewSet):
 class StudentViewSet(viewsets.ModelViewSet):
     """API endpoint that allows students to be viewed, and profiles to be updated."""
 
+    def get_serializer(self, *args, **kwargs):
+            kwargs['partial'] = True
+            return super(StudentViewSet, self).get_serializer(*args, **kwargs)
+
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     filter_backends = (DjangoFilterBackend,)
