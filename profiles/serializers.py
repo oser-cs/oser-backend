@@ -34,7 +34,7 @@ class StudentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:  # noqa
         model = Student
         fields = (
-            'user_id', 'user', 'url', 'registration', 'visits', 'gender', 'addressNumber', 'street', 'city', 'personnalPhone', 'parentsPhone', 'parentsEmail', 'school', 'grade', 'scholarship', 'fatherActivity', 'motherActivity', 'parentsStatus', 'dependantsNumber', 'specialTeaching', 'nationality')
+            'user_id', 'user', 'url', 'registration', 'visits', 'gender', 'addressNumber', 'street', 'city', 'personnalPhone', 'parentsPhone', 'parentsEmail', 'school', 'grade', 'scholarship', 'fatherActivity', 'motherActivity', 'parentsStatus', 'dependantsNumber', 'specialTeaching', 'nationality', 'zipCode')
         extra_kwargs = {
             'url': {'view_name': 'api:student-detail'},
         }
