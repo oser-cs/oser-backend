@@ -32,7 +32,8 @@ class StudentTestCase(ModelTestCase):
         self.assertEqual(self.obj, self.obj.user.student)
 
     def test_get_absolute_url(self):
-        self.client.force_login(UserFactory.create())
+        UserFactory.create(is_staff = True)
+        self.client.force_login(staff_user)
         url = self.obj.get_absolute_url()
         response = self.client.get(url)
         self.assertEqual(200, response.status_code)

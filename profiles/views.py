@@ -33,10 +33,11 @@ class StudentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser:
+        if user.is_staff:
             return Student.objects.all()
         else:
             return Student.objects.filter(user_id = user.id)
+
 
     serializer_class = StudentSerializer
     permission_classes = (DRYPermissions,)

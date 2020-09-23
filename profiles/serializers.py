@@ -31,6 +31,7 @@ class StudentSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True)
     registration = StudentRegistrationSerializer()
 
+
     class Meta:  # noqa
         model = Student
         fields = (

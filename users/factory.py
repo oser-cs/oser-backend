@@ -9,14 +9,14 @@ from utils import printable_only
 User = get_user_model()
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory, is_staff = False):
     """User object factory."""
 
     class Meta:  # noqa
         model = User
         exclude = ('uid',)
 
-    is_staff = False
+    is_staff = is_staff
     # random but realistic first_name
     first_name = factory.Faker('first_name', locale='fr')
     # random but realistic last_name
