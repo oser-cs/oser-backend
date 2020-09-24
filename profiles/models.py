@@ -52,6 +52,12 @@ class Student(ProfileMixin, models.Model):
         related_name='student',
     )
 
+    classType = models.CharField(max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="général/techno",
+    )
+
     nationality = models.CharField(max_length=50,
         null=True,
         blank=True,
