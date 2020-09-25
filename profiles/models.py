@@ -4,7 +4,7 @@ from django.db import models
 from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
 from .utils import get_promotion_range
-
+from datetime import datetime
 
 class ProfileMixin:
     """Mixin with common functionnality for profiles."""
@@ -123,7 +123,7 @@ class Student(ProfileMixin, models.Model):
     school = models.CharField(max_length=70,
         null=True,
         blank=True,
-        verbose_name="nom de l'école"
+        verbose_name="établissement"
     )
 
 
@@ -168,6 +168,12 @@ class Student(ProfileMixin, models.Model):
         verbose_name="nombre de personnes à charge"
     )
 
+    year = models.CharField(max_length=10,
+        null=True,
+        blank=True,
+        verbose_name="année"
+    )
+
     @staticmethod
     def has_write_permission(request):
         return True
@@ -175,6 +181,14 @@ class Student(ProfileMixin, models.Model):
     def has_object_write_permission(self, request):
         return request.user == self.user
 
+    def save(self, *args, **kwargs):
+        """Updates the year field based on the last modified date"""
+        date_now = datetime.now()
+        if date_now.month>=9:
+            self.year = f"{date_now.year}/{date_now.year+1}"
+        else:
+            self.year = f"{date_now.year-1}/{date_now.year}"
+        return super(Student,self).save(*args, **kwargs)
 
     class Meta:  # noqa
         verbose_name = 'lycéen'
