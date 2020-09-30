@@ -15,7 +15,7 @@ from . import models
 User = get_user_model()
 
 
-class PlaceFactory(factory.DjangoModelFactory):
+class PlaceFactory(factory.django.DjangoModelFactory):
     """Place object factory."""
 
     class Meta:  # noqa
@@ -28,7 +28,7 @@ class PlaceFactory(factory.DjangoModelFactory):
     description = factory.LazyAttribute(lambda o: '\n'.join(o._description))
 
 
-class VisitFactory(factory.DjangoModelFactory):
+class VisitFactory(factory.django.DjangoModelFactory):
     """Visit object factory."""
 
     deadline_random_range = (-5, -1)
@@ -81,7 +81,7 @@ class VisitWithClosedRegistrationsFactory(VisitFactory):
     deadline_random_range = (-10, -6)  # guaranteed to be before today
 
 
-class ParticipationFactory(factory.DjangoModelFactory):
+class ParticipationFactory(factory.django.DjangoModelFactory):
     """Visit participant object factory.
 
     Users and visit are picked from pre-existing objects,

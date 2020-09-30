@@ -43,7 +43,7 @@ class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin,ExportCsvMixin):
 @admin.register(Student)
 class StudentAdmin(ProfileAdminMixin, admin.ModelAdmin,ExportCsvMixin):
     """Student admin panel."""
-
+    list_filter = ('school', 'year')
     class Meta:  # noqa
         model = Student
     actions = ["export_as_csv"]

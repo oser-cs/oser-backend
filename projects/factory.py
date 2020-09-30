@@ -7,7 +7,7 @@ from users.factory import UserFactory
 from .models import Project, Edition, Participation, EditionForm
 
 
-class ProjectFactory(factory.DjangoModelFactory):
+class ProjectFactory(factory.django.DjangoModelFactory):
     """Project object factory."""
 
     class Meta:  # noqa
@@ -20,7 +20,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     logo = factory.django.ImageField(color='green')
 
 
-class EditionFactory(factory.DjangoModelFactory):
+class EditionFactory(factory.django.DjangoModelFactory):
     """Edition object factory."""
 
     class Meta:  # noqa
@@ -37,7 +37,7 @@ class EditionFactory(factory.DjangoModelFactory):
         return project and project or ProjectFactory.create()
 
 
-class EditionFormFactory(factory.DjangoModelFactory):
+class EditionFormFactory(factory.django.DjangoModelFactory):
 
     class Meta:  # noqa
         model = EditionForm
@@ -45,7 +45,7 @@ class EditionFormFactory(factory.DjangoModelFactory):
     deadline = factory.Faker('future_date')
 
 
-class ParticipationFactory(factory.DjangoModelFactory):
+class ParticipationFactory(factory.django.DjangoModelFactory):
     """Participation object factory."""
 
     class Meta:  # noqa

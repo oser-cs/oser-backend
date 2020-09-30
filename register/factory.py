@@ -8,7 +8,7 @@ from utils import printable_only
 from . import models
 
 
-class RegistrationFactory(factory.DjangoModelFactory):
+class RegistrationFactory(factory.django.DjangoModelFactory):
     """Registration object factory."""
 
     class Meta:  # noqa
