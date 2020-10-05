@@ -5,7 +5,9 @@ from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
 from .utils import get_promotion_range
 from datetime import datetime
+
 from .notifications import SendDocs
+
 
 class ProfileMixin:
     """Mixin with common functionnality for profiles."""
@@ -189,7 +191,9 @@ class Student(ProfileMixin, models.Model):
             self.year = f"{date_now.year}/{date_now.year+1}"
         else:
             self.year = f"{date_now.year-1}/{date_now.year}"
+
         SendDocs().send() # send email with link to registration docs
+
         return super(Student,self).save(*args, **kwargs)
 
     class Meta:  # noqa
