@@ -5,7 +5,6 @@ from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
 from .utils import get_promotion_range
 from datetime import datetime
-
 from .notifications import SendDocs
 
 
@@ -192,7 +191,7 @@ class Student(ProfileMixin, models.Model):
         else:
             self.year = f"{date_now.year-1}/{date_now.year}"
 
-        SendDocs().send() # send email with link to registration docs
+        SendDocs(user=self.user).send() # send email with link to registration docs
 
         return super(Student,self).save(*args, **kwargs)
 
