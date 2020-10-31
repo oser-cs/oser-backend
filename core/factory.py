@@ -5,7 +5,7 @@ import factory.django
 from . import models
 
 
-class DocumentFactory(factory.DjangoModelFactory):
+class DocumentFactory(factory.django.DjangoModelFactory):
     """Document object factory."""
 
     class Meta:  # noqa
@@ -15,7 +15,7 @@ class DocumentFactory(factory.DjangoModelFactory):
     content = factory.Faker('text', max_nb_chars=1000, locale='fr')
 
 
-class AddressFactory(factory.DjangoModelFactory):
+class AddressFactory(factory.django.DjangoModelFactory):
     """Address object factory."""
 
     class Meta:  # noqa

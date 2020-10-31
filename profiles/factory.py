@@ -12,7 +12,7 @@ from users.factory import UserFactory
 from . import models
 
 
-class StudentFactory(factory.DjangoModelFactory):
+class StudentFactory(factory.django.DjangoModelFactory):
     """Student object factory."""
 
     class Meta:  # noqa
@@ -24,7 +24,7 @@ class StudentFactory(factory.DjangoModelFactory):
 _this_year = datetime.today().year
 
 
-class TutorFactory(factory.DjangoModelFactory):
+class TutorFactory(factory.django.DjangoModelFactory):
     """Tutor object factory."""
 
     class Meta:  # noqa

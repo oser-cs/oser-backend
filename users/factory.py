@@ -9,7 +9,7 @@ from utils import printable_only
 User = get_user_model()
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     """User object factory."""
 
     class Meta:  # noqa
@@ -41,3 +41,7 @@ class UserFactory(factory.DjangoModelFactory):
         manager = cls._get_manager(model_class)
         # The default would use ``manager.create(*args, **kwargs)``
         return manager.create_user(*args, **kwargs)
+
+class StaffUserFactory(UserFactory):
+    """Staff user object factory."""
+    is_staff = True

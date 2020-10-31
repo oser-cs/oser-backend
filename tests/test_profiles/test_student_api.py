@@ -19,7 +19,7 @@ class StudentEndpointsTest(HyperlinkedAPITestCase):
     def perform_retrieve(self, obj=None):
         if obj is None:
             obj = self.factory.create()
-        response = self.client.get('/api/students/{obj.pk}/'.format(obj=obj))
+        response = self.client.get('/api/students/')
         return response
 
     def test_list(self):

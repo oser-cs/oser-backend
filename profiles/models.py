@@ -4,6 +4,8 @@ from django.db import models
 from django.shortcuts import reverse
 from dry_rest_permissions.generics import authenticated_users
 from .utils import get_promotion_range
+from datetime import datetime
+from .notifications import SendDocs
 
 
 class ProfileMixin:
@@ -51,6 +53,147 @@ class Student(ProfileMixin, models.Model):
         verbose_name="dossier d'inscription",
         related_name='student',
     )
+
+    classType = models.CharField(max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="général/techno",
+    )
+
+    nationality = models.CharField(max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="nationalité",
+    )
+
+    specialTeaching = models.CharField(max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="enseignement de spécialité",
+    )
+
+    zipCode = models.CharField(max_length=10,
+        null=True,
+        blank=True,
+        verbose_name="code postal",
+    )
+
+
+    gender = models.CharField(max_length=20,
+        null=True,
+        blank=True,
+        verbose_name="genre",
+    )
+
+    addressNumber = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name="numéro de rue"
+    )
+
+    street = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="nom de rue"
+    )
+
+    city = models.CharField(max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="nom de ville"
+    )
+
+    personalPhone = models.CharField(max_length=12,
+        null=True,
+        blank=True,
+        verbose_name="numéro de téléphone personnel"
+    )
+
+    parentsPhone = models.CharField(max_length=12,
+        null=True,
+        blank=True,
+        verbose_name="numéro de téléphone parental"
+    )
+
+    parentsEmail = models.EmailField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="adresse mail parentale"
+    )
+
+
+    school = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="établissement"
+    )
+
+
+    grade = models.CharField(max_length=20,
+        null=True,
+        blank=True,
+        verbose_name="niveau de la classe"
+    )
+
+
+    scholarship = models.CharField(max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="boursier"
+    )
+
+
+    fatherActivity = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="métier du père"
+    )
+
+
+    motherActivity = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="métier de la mère"
+    )
+
+
+    parentsStatus = models.CharField(max_length=70,
+        null=True,
+        blank=True,
+        verbose_name="statut des parents"
+    )
+
+
+    dependantsNumber = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name="nombre de personnes à charge"
+    )
+
+    year = models.CharField(max_length=10,
+        null=True,
+        blank=True,
+        verbose_name="année"
+    )
+
+    @staticmethod
+    def has_write_permission(request):
+        return True
+
+    def has_object_write_permission(self, request):
+        return request.user == self.user
+
+    def save(self, *args, **kwargs):
+        """Updates the year field based on the last modified date"""
+        date_now = datetime.now()
+        if date_now.month>=9:
+            self.year = f"{date_now.year}/{date_now.year+1}"
+        else:
+            self.year = f"{date_now.year-1}/{date_now.year}"
+
+        SendDocs(user=self.user).send() # send email with link to registration docs
+
+        return super(Student,self).save(*args, **kwargs)
 
     class Meta:  # noqa
         verbose_name = 'lycéen'

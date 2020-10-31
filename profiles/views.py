@@ -5,6 +5,7 @@ from dry_rest_permissions.generics import DRYPermissions
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from visits.serializers import VisitSerializer
 
@@ -23,40 +24,21 @@ class TutorViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (DRYPermissions,)
 
 
-class StudentViewSet(viewsets.ReadOnlyModelViewSet):
-    """API endpoint that allows students to be viewed.
+class StudentViewSet(viewsets.ModelViewSet):
+    """API endpoint that allows students to be viewed, and profiles to be updated."""
 
-    list:
+    def get_serializer(self, *args, **kwargs):
+            kwargs['partial'] = True
+            return super(StudentViewSet, self).get_serializer(*args, **kwargs)
 
-    ### Example response
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return Student.objects.all()
+        else:
+            return Student.objects.filter(user_id = user.id)
 
-    List of results from `retrieve` (see the example response for `retrieve`).
 
-    retrieve:
-
-    ### Example response
-
-        {
-            "user_id": 4,
-            "user": {
-                "id": 4,
-                "email": "charles.dumont@example.net",
-                "profile_type": null,
-                "first_name": "",
-                "last_name": "",
-                "url": "http://localhost:8000/api/users/4/"
-            },
-            "registration": {
-                "id": 3,
-                "submitted": "2018-05-05T14:15:10.998206+02:00",
-                "validated": false
-            },
-            "visits": [],
-            "url": "http://localhost:8000/api/students/2/"
-        }
-    """
-
-    queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = (DRYPermissions,)
 

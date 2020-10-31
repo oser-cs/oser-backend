@@ -50,13 +50,17 @@ Le site utilise une base de données SQL. Plusieurs technologies existent mais o
 
 Après avoir installé PostgreSQL, démarrez le serveur en ouvrant pgAdmin, l'interface graphique qui sera installée en même temps que Postgres.
 
+- Créez une nouvelle base de données :
+
+Dans le menu de gauche, dépliez `Servers (1)`, puis votre serveur (nommé `PostgreSQL XX` par défaut), puis faites un clic droit sur l'onglet `Databases` et créez une base de données nommée `oser_backend_db`.
+
 ### Installation du projet
 
-- (Recommandé) Créez un environnement virtuel (ici appelé `env`) puis activez-le :
+- (Recommandé) Créez un environnement virtuel (appelé ici oser-back) à l'aide de conda et activez-le :
 
 ```bash
-$ python -m venv env
-$ source env/bin/activate
+$ conda create -n oser-back
+$ conda activate oser-back
 ```
 
 - Installez les dépendances :
@@ -70,6 +74,7 @@ $ pip install -r requirements.txt
 ```bash
 $ python manage.py migrate
 ```
+(En cas d'erreur, les logs du serveur PostgreSQL sont disponibles dans : %PROGRAMFILES%\PostgreSQL\POSTGRESQL_VERSION_NUM\data\log)
 
 Il ne vous reste plus qu'à lancer le serveur de développement :
 

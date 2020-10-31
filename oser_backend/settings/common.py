@@ -5,9 +5,12 @@ Common settings suitable for all environmebts.
 """
 
 import os
+from dotenv import load_dotenv
 
 import dj_database_url
 import pymdownx.emoji
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 dn = os.path.dirname
@@ -35,7 +38,7 @@ DJANGO_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.forms',
-    'django.contrib.sites',
+    'django.contrib.sites'
 ]
 
 THIRD_PARTY_APPS = [
@@ -233,7 +236,7 @@ LOGGING = {
 # Connect custom PasswordResetSerializer to override default
 
 REST_AUTH_SERIALIZERS = {
-    'PASSWORD_RESET_SERIALIZER': 
+    'PASSWORD_RESET_SERIALIZER':
         'oser_backend.serializers.PasswordResetSerializer',
 }
 
@@ -243,7 +246,7 @@ DEFAULT_FROM_EMAIL = "admin@oser-cs.fr"
 EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
-# Sendgrid configuration 
+# Sendgrid configuration
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
