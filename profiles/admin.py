@@ -2,6 +2,7 @@
 
 from django.contrib import admin
 from .models import Student, Tutor
+from .MultiSelectFieldListFilter import MultiSelectFieldListFilter
 import codecs
 
 import csv
@@ -42,10 +43,11 @@ class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin,ExportCsvMixin):
         model = Tutor
     actions = ["export_as_csv"]
 
+
 @admin.register(Student)
 class StudentAdmin(ProfileAdminMixin, admin.ModelAdmin,ExportCsvMixin):
     """Student admin panel."""
-    list_filter = ('school', 'year')
+    list_filter = (('school',MultiSelectFieldListFilter), 'year')
     class Meta:  # noqa
         model = Student
     actions = ["export_as_csv"]
