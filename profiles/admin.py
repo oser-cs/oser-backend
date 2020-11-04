@@ -2,6 +2,8 @@
 
 from django.contrib import admin
 from .models import Student, Tutor
+from .MultiSelectFieldListFilter import MultiSelectFieldListFilter
+import codecs
 
 import csv
 from django.http import HttpResponse
@@ -13,7 +15,8 @@ class ExportCsvMixin:
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
-        writer = csv.writer(response)
+        response.write(codecs.BOM_UTF8) #force response to be UTF-8
+        writer = csv.writer(response, delimiter=';')
 
         writer.writerow(field_names)
         for obj in queryset:
@@ -21,7 +24,7 @@ class ExportCsvMixin:
 
         return response
 
-    export_as_csv.short_description = "Export Selected"
+    export_as_csv.short_description = "Exporter sélection (en .csv)"
 
 
 class ProfileAdminMixin:
@@ -40,10 +43,11 @@ class TutorAdmin(ProfileAdminMixin, admin.ModelAdmin,ExportCsvMixin):
         model = Tutor
     actions = ["export_as_csv"]
 
+
 @admin.register(Student)
 class StudentAdmin(ProfileAdminMixin, admin.ModelAdmin,ExportCsvMixin):
     """Student admin panel."""
-    list_filter = ('school', 'year')
+    list_filter = (('school',MultiSelectFieldListFilter), 'year')
     class Meta:  # noqa
         model = Student
     actions = ["export_as_csv"]
