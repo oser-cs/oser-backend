@@ -76,6 +76,8 @@ $ python manage.py migrate
 ```
 (En cas d'erreur, les logs du serveur PostgreSQL sont disponibles dans : %PROGRAMFILES%\PostgreSQL\POSTGRESQL_VERSION_NUM\data\log)
 
+Créez un fichier `.env` dans le dossier, et y mettre `DATABASE_URL=postgres://postgres:mdp@127.0.0.1:5432/oser_backend_db` en replaçant `mdp` par le mot de passe choisi en installant postgresql.
+
 Il ne vous reste plus qu'à lancer le serveur de développement :
 
 ```bash
