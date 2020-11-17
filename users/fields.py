@@ -4,7 +4,6 @@ from rest_framework import serializers
 from .serializers import UserSerializer
 from .models import User
 
-
 class UserField(serializers.Field):
     """A field for representing a user.
 
