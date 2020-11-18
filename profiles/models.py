@@ -185,13 +185,14 @@ class Student(ProfileMixin, models.Model):
 
     def save(self, *args, **kwargs):
         """Updates the year field based on the last modified date"""
-        date_now = datetime.now()
-        if date_now.month>=9:
-            self.year = f"{date_now.year}/{date_now.year+1}"
-        else:
-            self.year = f"{date_now.year-1}/{date_now.year}"
+        if self.city != None: # Ne mettre à jour que quand les données personnelles sont remplies
+            date_now = datetime.now()
+            if date_now.month>=9:
+                self.year = f"{date_now.year}/{date_now.year+1}"
+            else:
+                self.year = f"{date_now.year-1}/{date_now.year}"
 
-        SendDocs(user=self.user).send() # send email with link to registration docs
+            SendDocs(user=self.user).send() # send email with link to registration docs
 
         return super(Student,self).save(*args, **kwargs)
 
