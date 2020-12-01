@@ -12,4 +12,4 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     list_display = ('last_name', 'first_name', 'submitted')
     readonly_fields = ('submitted',)
-    list_filter = ('submitted',)
+    list_filter = ('submitted', 'validated')
