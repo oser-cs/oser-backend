@@ -8,6 +8,7 @@ from django.utils.safestring import mark_safe
 from django.http import HttpResponse
 import csv
 from .models import Participation, Place, Visit
+from profiles.models import Student
 
 # Register your models here.
 
@@ -114,8 +115,8 @@ reject_selected_participations.short_description = (
 class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
-    list_display = ('submitted', 'visit', 'user_link', 'accepted', 'present')
-    list_filter = ('submitted', 'accepted', 'present')
+    list_display = ('submitted', 'visit', 'user_link', 'school', 'accepted', 'present')
+    list_filter = ('submitted', 'SchoolFilter', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
 
     def user_link(self, participation: Participation):
@@ -127,6 +128,14 @@ class ParticipationAdmin(admin.ModelAdmin):
     user_link.short_description = 'Utilisateur'
 
     actions = ["export_as_csv"]
+
+
+    def school(self, participation: Participation):
+        """Return a link to the participation's user's school."""
+        school = Student.objects.get(user = participation.user).school
+        return school
+    school.short_description = "Établissement"
+
 
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
@@ -142,6 +151,7 @@ class ParticipationAdmin(admin.ModelAdmin):
                                    for field in field_names])
         return response
     export_as_csv.short_description = "Exporter au format CSV"
+
 
 
 @admin.register(Visit.organizers.through)
@@ -176,7 +186,6 @@ class VisitAdmin(admin.ModelAdmin):
     def num_participants(self, obj):
         return obj.participants.count()
     num_participants.short_description = 'Participants'
-
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
