@@ -116,7 +116,7 @@ class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
     list_display = ('submitted', 'visit', 'user_link', 'school', 'accepted', 'present')
-    list_filter = ('submitted', 'SchoolFilter', 'accepted', 'present')
+    list_filter = ('submitted', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
 
     def user_link(self, participation: Participation):
