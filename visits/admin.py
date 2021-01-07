@@ -74,12 +74,15 @@ class VisitForm(forms.ModelForm):
                 self.add_error('end_time', error)
 
 
-class ParticipationInline(admin.StackedInline):
+class ParticipationInline(admin.TabularInline):
     """Inline for Participation."""
 
     model = Visit.participants.through
     extra = 0
-
+    fields = ('user', 'submitted', 'present')
+    readonly_fields = ('user', 'submitted')
+    class Media:
+        css = { "all" : ("css/hide_admin_original.css",) }
 
 def accept_selected_participations(modeladmin, request, queryset):
     """Accept selected participations in list view."""
