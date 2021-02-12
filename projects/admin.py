@@ -5,6 +5,8 @@ from django.contrib import admin
 from dynamicforms.views import download_multiple_forms_entries
 from dynamicforms.models import Form
 from .models import Edition, Participation, Project, EditionForm
+from django.contrib.admin import SimpleListFilter
+from profiles.models import Student
 
 
 @admin.register(Project)
@@ -37,7 +39,26 @@ class OrganizersInline(admin.TabularInline):
     extra = 0
 
 
-@admin.register(Edition)
+class SchoolFilter(admin.SimpleListFilter):
+    title = 'établissement'
+    parameter_name = 'profiles__school'
+
+    def lookups(self, request, model_admin):
+        list_of_school = []
+        query = Student.objects.values_list(
+            "school", flat=True).distinct()
+        for school in query:
+            list_of_school.append((school, school))
+        return list_of_school
+
+    def queryset(self, request, queryset):
+        if self.value():
+            emails = Student.objects.filter(
+                school=self.value()).values_list("user__email", flat=True)
+            return queryset.filter(user__email__in=emails)
+
+
+@ admin.register(Edition)
 class EditionAdmin(admin.ModelAdmin):
     """Admin panel for editions."""
 
@@ -73,7 +94,7 @@ class EditionAdmin(admin.ModelAdmin):
     num_cancelled.short_description = 'Annulés'
 
 
-@admin.register(EditionForm)
+@ admin.register(EditionForm)
 class EditionFormAdmin(admin.ModelAdmin):
     """Admin panel for edition forms."""
 
@@ -81,11 +102,12 @@ class EditionFormAdmin(admin.ModelAdmin):
     list_filter = ('edition', 'deadline',)
 
 
-@admin.register(Participation)
+@ admin.register(Participation)
 class ParticipationAdmin(admin.ModelAdmin):
     """Participation admin panel."""
 
     list_display = ('user', 'edition', 'submitted', 'state')
-    list_filter = ('edition', 'submitted', 'state',)
+    list_filter = (SchoolFilter,
+                   'edition', 'submitted', 'state',)
     readonly_fields = ('submitted',)
     search_fields = ('user__first_name', 'user__last_name', 'user__email',)

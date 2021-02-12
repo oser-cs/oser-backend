@@ -13,6 +13,25 @@ from profiles.models import Student
 # Register your models here.
 
 
+class SchoolFilter(admin.SimpleListFilter):
+    title = 'établissement'
+    parameter_name = 'profiles__school'
+
+    def lookups(self, request, model_admin):
+        list_of_school = []
+        query = Student.objects.values_list(
+            "school", flat=True).distinct()
+        for school in query:
+            list_of_school.append((school, school))
+        return list_of_school
+
+    def queryset(self, request, queryset):
+        if self.value():
+            emails = Student.objects.filter(
+                school=self.value()).values_list("user__email", flat=True)
+            return queryset.filter(user__email__in=emails)
+
+
 class RegistrationsOpenFilter(admin.SimpleListFilter):
     """Custom filter to filter visits by their registration openness.
 
@@ -133,8 +152,10 @@ reject_selected_participations.short_description = (
 class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
-    list_display = ('submitted', 'visit', 'user_link', 'school', 'accepted', 'present')
-    list_filter = ('submitted', 'accepted', 'present')
+    list_display = ('submitted', 'visit', 'user_link', 'accepted', 'present')
+    list_filter = (SchoolFilter, 'submitted', 'accepted', 'present')
+
+
     actions = [accept_selected_participations, reject_selected_participations]
 
     def user_link(self, participation: Participation):
