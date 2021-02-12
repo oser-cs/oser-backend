@@ -4,8 +4,6 @@ from django.contrib import admin
 from .models import Registration
 from profiles.models import Student
 
-# Register your models here.
-
 
 class SchoolFilter(admin.SimpleListFilter):
     title = 'établissement'
