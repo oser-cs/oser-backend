@@ -9,6 +9,8 @@ from django.http import HttpResponse
 import csv
 from .models import Participation, Place, Visit
 from profiles.models import Student
+from users.models import User
+import codecs
 
 # Register your models here.
 
@@ -151,20 +153,33 @@ class ParticipationAdmin(admin.ModelAdmin):
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
-
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
             meta)
-        writer = csv.writer(response)
-        writer.writerow(field_names)
+        response.write(codecs.BOM_UTF8)  # force response to be UTF-8
+        writer = csv.writer(response, delimiter=';')
+
+        writer.writerow(['first_name', 'last_name', 'school',
+                         'phone_number', 'scholarship'] + field_names)
+
+        list_email = queryset.values_list("user__email", flat=True)
+        nb_user = 0
         for obj in queryset:
-            row = writer.writerow([getattr(obj, field)
-                                   for field in field_names])
+
+            name = User.objects.filter(
+                email=str(list_email[nb_user])).values('first_name', 'last_name', 'phone_number')
+            school = Student.objects.filter(
+                user__email=str(list_email[nb_user])).values('school', 'scholarship')
+
+            row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
+                                                                                                                                                           for field in field_names])
+            nb_user += 1
         return response
-    export_as_csv.short_description = "Exporter au format CSV"
+
+    export_as_csv.short_description = "Exporter sélection (en .csv)"
 
 
-@admin.register(Visit.organizers.through)
+@ admin.register(Visit.organizers.through)
 class VisitOrganizersAdmin(admin.ModelAdmin):
     """Admin panel for visit organizers."""
 
@@ -178,7 +193,7 @@ class OrganizersInline(admin.TabularInline):
     extra = 0
 
 
-@admin.register(Visit)
+@ admin.register(Visit)
 class VisitAdmin(admin.ModelAdmin):
     """Admin panel for visits."""
 
@@ -198,7 +213,7 @@ class VisitAdmin(admin.ModelAdmin):
     num_participants.short_description = 'Participants'
 
 
-@admin.register(Place)
+@ admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
     """Admin panel for places."""
 
