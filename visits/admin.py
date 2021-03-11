@@ -63,6 +63,7 @@ class RegistrationsOpenFilter(admin.SimpleListFilter):
 class VisitForm(forms.ModelForm):
     """Custom admin form for Visit."""
 
+
     class Meta:  # noqa
         model = Visit
         fields = '__all__'
@@ -95,12 +96,29 @@ class VisitForm(forms.ModelForm):
                 self.add_error('end_time', error)
 
 
-class ParticipationInline(admin.StackedInline):
+class ParticipationInline(admin.TabularInline):
     """Inline for Participation."""
-
+    # template = "visits/visit_tabular.md"
+    actions = ["export_as_csv"]
     model = Visit.participants.through
     extra = 0
+    fields = ('name', 'school', 'user', 'submitted', 'present')
+    readonly_fields = ('name', 'school', 'user', 'submitted')
 
+    def school(self, participation: Participation):
+        """Return a link to the participation's user's school."""
+        school = Student.objects.get(user = participation.user).school
+        return school
+    school.short_description = "Établissement"
+
+    def name(self, participation: Participation):
+        """Returns the participation's user's name"""
+        return participation.user.first_name + " " + participation.user.last_name
+    name.short_description = "Nom"
+
+
+    class Media:
+        css = { "all" : ("css/hide_admin_original.css",) }
 
 def accept_selected_participations(modeladmin, request, queryset):
     """Accept selected participations in list view."""
@@ -150,6 +168,14 @@ class ParticipationAdmin(admin.ModelAdmin):
 
     actions = ["export_as_csv"]
 
+
+    def school(self, participation: Participation):
+        """Return a link to the participation's user's school."""
+        school = Student.objects.get(user = participation.user).school
+        return school
+    school.short_description = "Établissement"
+
+
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
@@ -179,7 +205,8 @@ class ParticipationAdmin(admin.ModelAdmin):
     export_as_csv.short_description = "Exporter sélection (en .csv)"
 
 
-@ admin.register(Visit.organizers.through)
+
+@admin.register(Visit.organizers.through)
 class VisitOrganizersAdmin(admin.ModelAdmin):
     """Admin panel for visit organizers."""
 
@@ -193,7 +220,7 @@ class OrganizersInline(admin.TabularInline):
     extra = 0
 
 
-@ admin.register(Visit)
+@admin.register(Visit)
 class VisitAdmin(admin.ModelAdmin):
     """Admin panel for visits."""
 
@@ -212,8 +239,8 @@ class VisitAdmin(admin.ModelAdmin):
         return obj.participants.count()
     num_participants.short_description = 'Participants'
 
-
-@ admin.register(Place)
+    
+@admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
     """Admin panel for places."""
 
