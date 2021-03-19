@@ -95,11 +95,28 @@ class VisitForm(forms.ModelForm):
                 self.add_error('end_time', error)
 
 
-class ParticipationInline(admin.StackedInline):
+class ParticipationInline(admin.TabularInline):
     """Inline for Participation."""
-
+    # template = "visits/visit_tabular.md"
+    actions = ["export_as_csv"]
     model = Visit.participants.through
     extra = 0
+    fields = ('name', 'school', 'user', 'submitted', 'present')
+    readonly_fields = ('name', 'school', 'user', 'submitted')
+
+    def school(self, participation: Participation):
+        """Return a link to the participation's user's school."""
+        school = Student.objects.get(user=participation.user).school
+        return school
+    school.short_description = "Établissement"
+
+    def name(self, participation: Participation):
+        """Returns the participation's user's name"""
+        return participation.user.first_name + " " + participation.user.last_name
+    name.short_description = "Nom"
+
+    class Media:
+        css = {"all": ("css/hide_admin_original.css",)}
 
 
 def accept_selected_participations(modeladmin, request, queryset):
@@ -150,6 +167,12 @@ class ParticipationAdmin(admin.ModelAdmin):
 
     actions = ["export_as_csv"]
 
+    def school(self, participation: Participation):
+        """Return a link to the participation's user's school."""
+        school = Student.objects.get(user=participation.user).school
+        return school
+    school.short_description = "Établissement"
+
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
@@ -177,6 +200,12 @@ class ParticipationAdmin(admin.ModelAdmin):
         return response
 
     export_as_csv.short_description = "Exporter sélection (en .csv)"
+
+
+<< << << < HEAD
+== == == =
+
+>>>>>> > f3728719809bca5d0418070e56327751d8f7a3aa
 
 
 @ admin.register(Visit.organizers.through)

@@ -38,6 +38,8 @@ class Student(ProfileMixin, models.Model):
 
     detail_view_name = 'api:student-detail'
 
+    updated_date = models.DateTimeField(auto_now=True)
+
     user = models.OneToOneField(
         'users.User',
         on_delete=models.CASCADE,
