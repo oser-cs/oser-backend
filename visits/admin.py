@@ -202,12 +202,6 @@ class ParticipationAdmin(admin.ModelAdmin):
     export_as_csv.short_description = "Exporter sélection (en .csv)"
 
 
-<< << << < HEAD
-== == == =
-
->>>>>> > f3728719809bca5d0418070e56327751d8f7a3aa
-
-
 @ admin.register(Visit.organizers.through)
 class VisitOrganizersAdmin(admin.ModelAdmin):
     """Admin panel for visit organizers."""

@@ -57,35 +57,34 @@ class Student(ProfileMixin, models.Model):
     )
 
     classType = models.CharField(max_length=50,
-        null=True,
-        blank=True,
-        verbose_name="général/techno",
-    )
+                                 null=True,
+                                 blank=True,
+                                 verbose_name="général/techno",
+                                 )
 
     nationality = models.CharField(max_length=50,
-        null=True,
-        blank=True,
-        verbose_name="nationalité",
-    )
+                                   null=True,
+                                   blank=True,
+                                   verbose_name="nationalité",
+                                   )
 
     specialTeaching = models.CharField(max_length=50,
-        null=True,
-        blank=True,
-        verbose_name="enseignement de spécialité",
-    )
+                                       null=True,
+                                       blank=True,
+                                       verbose_name="enseignement de spécialité",
+                                       )
 
     zipCode = models.CharField(max_length=10,
-        null=True,
-        blank=True,
-        verbose_name="code postal",
-    )
-
+                               null=True,
+                               blank=True,
+                               verbose_name="code postal",
+                               )
 
     gender = models.CharField(max_length=20,
-        null=True,
-        blank=True,
-        verbose_name="genre",
-    )
+                              null=True,
+                              blank=True,
+                              verbose_name="genre",
+                              )
 
     addressNumber = models.IntegerField(
         null=True,
@@ -94,77 +93,70 @@ class Student(ProfileMixin, models.Model):
     )
 
     street = models.CharField(max_length=70,
-        null=True,
-        blank=True,
-        verbose_name="nom de rue"
-    )
+                              null=True,
+                              blank=True,
+                              verbose_name="nom de rue"
+                              )
 
     city = models.CharField(max_length=50,
-        null=True,
-        blank=True,
-        verbose_name="nom de ville"
-    )
+                            null=True,
+                            blank=True,
+                            verbose_name="nom de ville"
+                            )
 
     personalPhone = models.CharField(max_length=12,
-        null=True,
-        blank=True,
-        verbose_name="numéro de téléphone personnel"
-    )
+                                     null=True,
+                                     blank=True,
+                                     verbose_name="numéro de téléphone personnel"
+                                     )
 
     parentsPhone = models.CharField(max_length=12,
-        null=True,
-        blank=True,
-        verbose_name="numéro de téléphone parental"
-    )
+                                    null=True,
+                                    blank=True,
+                                    verbose_name="numéro de téléphone parental"
+                                    )
 
     parentsEmail = models.EmailField(max_length=70,
-        null=True,
-        blank=True,
-        verbose_name="adresse mail parentale"
-    )
-
+                                     null=True,
+                                     blank=True,
+                                     verbose_name="adresse mail parentale"
+                                     )
 
     school = models.CharField(max_length=70,
-        null=True,
-        blank=True,
-        verbose_name="établissement"
-    )
-
+                              null=True,
+                              blank=True,
+                              verbose_name="établissement"
+                              )
 
     grade = models.CharField(max_length=20,
-        null=True,
-        blank=True,
-        verbose_name="niveau de la classe"
-    )
-
+                             null=True,
+                             blank=True,
+                             verbose_name="niveau de la classe"
+                             )
 
     scholarship = models.CharField(max_length=50,
-        null=True,
-        blank=True,
-        verbose_name="boursier"
-    )
-
+                                   null=True,
+                                   blank=True,
+                                   verbose_name="boursier"
+                                   )
 
     fatherActivity = models.CharField(max_length=70,
-        null=True,
-        blank=True,
-        verbose_name="métier du père"
-    )
-
+                                      null=True,
+                                      blank=True,
+                                      verbose_name="métier du père"
+                                      )
 
     motherActivity = models.CharField(max_length=70,
-        null=True,
-        blank=True,
-        verbose_name="métier de la mère"
-    )
-
+                                      null=True,
+                                      blank=True,
+                                      verbose_name="métier de la mère"
+                                      )
 
     parentsStatus = models.CharField(max_length=70,
-        null=True,
-        blank=True,
-        verbose_name="statut des parents"
-    )
-
+                                     null=True,
+                                     blank=True,
+                                     verbose_name="statut des parents"
+                                     )
 
     dependantsNumber = models.IntegerField(
         null=True,
@@ -173,10 +165,10 @@ class Student(ProfileMixin, models.Model):
     )
 
     year = models.CharField(max_length=10,
-        null=True,
-        blank=True,
-        verbose_name="année"
-    )
+                            null=True,
+                            blank=True,
+                            verbose_name="année"
+                            )
 
     @staticmethod
     def has_write_permission(request):
@@ -187,16 +179,17 @@ class Student(ProfileMixin, models.Model):
 
     def save(self, *args, **kwargs):
         """Updates the year field based on the last modified date"""
-        if self.city != None: # Ne mettre à jour que quand les données personnelles sont remplies
+        if self.city != None:  # Ne mettre à jour que quand les données personnelles sont remplies
             date_now = datetime.now()
-            if date_now.month>=9:
+            if date_now.month >= 9:
                 self.year = f"{date_now.year}/{date_now.year+1}"
             else:
                 self.year = f"{date_now.year-1}/{date_now.year}"
 
-            SendDocs(user=self.user).send() # send email with link to registration docs
+            # send email with link to registration docs
+            SendDocs(user=self.user).send()
 
-        return super(Student,self).save(*args, **kwargs)
+        return super(Student, self).save(*args, **kwargs)
 
     class Meta:  # noqa
         verbose_name = 'lycéen'
