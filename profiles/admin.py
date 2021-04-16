@@ -50,5 +50,5 @@ class StudentAdmin(ProfileAdminMixin, admin.ModelAdmin,ExportCsvMixin):
     list_filter = (('school',MultiSelectFieldListFilter), 'year', 'registration__validated')
     class Meta:  # noqa
         model = Student
-        ordering = ['updated_date']
+    ordering = ['-updated_date']
     actions = ["export_as_csv"]
