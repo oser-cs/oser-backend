@@ -8,8 +8,30 @@ from django.utils.safestring import mark_safe
 from django.http import HttpResponse
 import csv
 from .models import Participation, Place, Visit
+from profiles.models import Student
+from users.models import User
+import codecs
 
 # Register your models here.
+
+
+class SchoolFilter(admin.SimpleListFilter):
+    title = 'établissement'
+    parameter_name = 'profiles__school'
+
+    def lookups(self, request, model_admin):
+        list_of_school = []
+        query = Student.objects.values_list(
+            "school", flat=True).distinct()
+        for school in query:
+            list_of_school.append((school, school))
+        return list_of_school
+
+    def queryset(self, request, queryset):
+        if self.value():
+            emails = Student.objects.filter(
+                school=self.value()).values_list("user__email", flat=True)
+            return queryset.filter(user__email__in=emails)
 
 
 class RegistrationsOpenFilter(admin.SimpleListFilter):
@@ -40,6 +62,7 @@ class RegistrationsOpenFilter(admin.SimpleListFilter):
 
 class VisitForm(forms.ModelForm):
     """Custom admin form for Visit."""
+
 
     class Meta:  # noqa
         model = Visit
@@ -73,12 +96,29 @@ class VisitForm(forms.ModelForm):
                 self.add_error('end_time', error)
 
 
-class ParticipationInline(admin.StackedInline):
+class ParticipationInline(admin.TabularInline):
     """Inline for Participation."""
-
+    # template = "visits/visit_tabular.md"
+    actions = ["export_as_csv"]
     model = Visit.participants.through
     extra = 0
+    fields = ('name', 'school', 'user', 'submitted', 'present')
+    readonly_fields = ('name', 'school', 'user', 'submitted')
 
+    def school(self, participation: Participation):
+        """Return a link to the participation's user's school."""
+        school = Student.objects.get(user = participation.user).school
+        return school
+    school.short_description = "Établissement"
+
+    def name(self, participation: Participation):
+        """Returns the participation's user's name"""
+        return participation.user.first_name + " " + participation.user.last_name
+    name.short_description = "Nom"
+
+
+    class Media:
+        css = { "all" : ("css/hide_admin_original.css",) }
 
 def accept_selected_participations(modeladmin, request, queryset):
     """Accept selected participations in list view."""
@@ -115,7 +155,7 @@ class ParticipationAdmin(admin.ModelAdmin):
     """Admin panel for visit participations."""
 
     list_display = ('submitted', 'visit', 'user_link', 'accepted', 'present')
-    list_filter = ('submitted', 'accepted', 'present')
+    list_filter = (SchoolFilter, 'submitted', 'accepted', 'present')
     actions = [accept_selected_participations, reject_selected_participations]
 
     def user_link(self, participation: Participation):
@@ -128,20 +168,42 @@ class ParticipationAdmin(admin.ModelAdmin):
 
     actions = ["export_as_csv"]
 
+
+    def school(self, participation: Participation):
+        """Return a link to the participation's user's school."""
+        school = Student.objects.get(user = participation.user).school
+        return school
+    school.short_description = "Établissement"
+
+
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
-
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
             meta)
-        writer = csv.writer(response)
-        writer.writerow(field_names)
+        response.write(codecs.BOM_UTF8)  # force response to be UTF-8
+        writer = csv.writer(response, delimiter=';')
+
+        writer.writerow(['first_name', 'last_name', 'school',
+                         'phone_number', 'scholarship'] + field_names)
+
+        list_email = queryset.values_list("user__email", flat=True)
+        nb_user = 0
         for obj in queryset:
-            row = writer.writerow([getattr(obj, field)
-                                   for field in field_names])
+
+            name = User.objects.filter(
+                email=str(list_email[nb_user])).values('first_name', 'last_name', 'phone_number')
+            school = Student.objects.filter(
+                user__email=str(list_email[nb_user])).values('school', 'scholarship')
+
+            row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
+                                                                                                                                                           for field in field_names])
+            nb_user += 1
         return response
-    export_as_csv.short_description = "Exporter au format CSV"
+
+    export_as_csv.short_description = "Exporter sélection (en .csv)"
+
 
 
 @admin.register(Visit.organizers.through)
@@ -177,7 +239,7 @@ class VisitAdmin(admin.ModelAdmin):
         return obj.participants.count()
     num_participants.short_description = 'Participants'
 
-
+    
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
     """Admin panel for places."""

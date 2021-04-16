@@ -255,16 +255,16 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # Toggle sandbox mode (when running in DEBUG mode)
-SENDGRID_SANDBOX_MODE_IN_DEBUG=False
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 # echo to stdout or any other file-like object that is passed to the backend via the stream kwarg.
-SENDGRID_ECHO_TO_STDOUT=True
+SENDGRID_ECHO_TO_STDOUT = True
 
 # Mails app config
 
 MAILS_ENABLED = True
 MAILS_NOTIFICATIONS_ADDRESS = 'notifications@oser-cs.fr'
-MAILS_RAISE_EXCEPTIONS = True
+MAILS_RAISE_EXCEPTIONS = False
 
 # Visits app config
 VISITS_TEAM_EMAIL = os.environ.get('VISITS_TEAM_EMAIL',
