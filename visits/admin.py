@@ -110,12 +110,10 @@ class ParticipationInline(admin.TabularInline):
         school = Student.objects.get(user = participation.user).school
         return school
     school.short_description = "Établissement"
-
     def name(self, participation: Participation):
         """Returns the participation's user's name"""
         return participation.user.first_name + " " + participation.user.last_name
     name.short_description = "Nom"
-
 
     class Media:
         css = { "all" : ("css/hide_admin_original.css",) }
@@ -167,6 +165,7 @@ class ParticipationAdmin(admin.ModelAdmin):
     user_link.short_description = 'Utilisateur'
 
     actions = ["export_as_csv"]
+
 
     def school(self, participation: Participation):
         """Return a link to the participation's user's school."""
@@ -235,7 +234,6 @@ class VisitAdmin(admin.ModelAdmin):
     def num_participants(self, obj):
         return obj.participants.count()
     num_participants.short_description = 'Participants'
-
 
 @ admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
