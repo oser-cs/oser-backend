@@ -288,3 +288,12 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Telegram bot
+TELEGRAM_BOT_TOKEN = os.getenv(
+    "TELEGRAM_BOT_TOKEN")
+TELEGRAM = {
+    'bot_token': TELEGRAM_BOT_TOKEN,
+    'channel_name': 'oserSECGEN',
+    'production': False,
+}
