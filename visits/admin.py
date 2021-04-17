@@ -168,13 +168,11 @@ class ParticipationAdmin(admin.ModelAdmin):
 
     actions = ["export_as_csv"]
 
-
     def school(self, participation: Participation):
         """Return a link to the participation's user's school."""
-        school = Student.objects.get(user = participation.user).school
+        school = Student.objects.get(user=participation.user).school
         return school
     school.short_description = "Établissement"
-
 
     def export_as_csv(self, request, queryset):
         meta = self.model._meta
@@ -205,8 +203,7 @@ class ParticipationAdmin(admin.ModelAdmin):
     export_as_csv.short_description = "Exporter sélection (en .csv)"
 
 
-
-@admin.register(Visit.organizers.through)
+@ admin.register(Visit.organizers.through)
 class VisitOrganizersAdmin(admin.ModelAdmin):
     """Admin panel for visit organizers."""
 
@@ -220,7 +217,7 @@ class OrganizersInline(admin.TabularInline):
     extra = 0
 
 
-@admin.register(Visit)
+@ admin.register(Visit)
 class VisitAdmin(admin.ModelAdmin):
     """Admin panel for visits."""
 
@@ -239,8 +236,8 @@ class VisitAdmin(admin.ModelAdmin):
         return obj.participants.count()
     num_participants.short_description = 'Participants'
 
-    
-@admin.register(Place)
+
+@ admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
     """Admin panel for places."""
 
