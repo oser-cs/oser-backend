@@ -7,6 +7,10 @@ from .utils import get_promotion_range
 from datetime import datetime
 from .notifications import SendDocs
 
+import telegram
+from django.conf import settings
+from django.template.loader import render_to_string
+
 
 class ProfileMixin:
     """Mixin with common functionnality for profiles."""
@@ -188,6 +192,14 @@ class Student(ProfileMixin, models.Model):
 
             # send email with link to registration docs
             SendDocs(user=self.user).send()
+
+            # send a telegram message to oserSECGEN
+            telegram_settings = settings.TELEGRAM
+            if telegram_settings['bot_token'] != None:
+                message_telegram = "Un tutoré a renseigné ses données personnelles, il attend ta validation !"
+                bot = telegram.Bot(token=telegram_settings['bot_token'])
+                bot.send_message(
+                    chat_id="@%s" % telegram_settings['channel_name'], text=message_telegram, parse_mode=telegram.ParseMode.HTML)
 
         return super(Student, self).save(*args, **kwargs)
 

@@ -12,6 +12,10 @@ django-sendgrid-v5
 django-filter
 django-rest-auth
 
+# Telegram messages via python-telegram-bot
+tornado==5.1.1 
+python-telegram-bot==12.2.0
+
 # Storage of files in AWS S3
 django-storages
 boto3
