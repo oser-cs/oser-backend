@@ -63,6 +63,7 @@ class RegistrationsOpenFilter(admin.SimpleListFilter):
 class VisitForm(forms.ModelForm):
     """Custom admin form for Visit."""
 
+
     class Meta:  # noqa
         model = Visit
         fields = '__all__'
@@ -106,7 +107,7 @@ class ParticipationInline(admin.TabularInline):
 
     def school(self, participation: Participation):
         """Return a link to the participation's user's school."""
-        school = Student.objects.get(user=participation.user).school
+        school = Student.objects.get(user = participation.user).school
         return school
     school.short_description = "Établissement"
 
@@ -115,9 +116,9 @@ class ParticipationInline(admin.TabularInline):
         return participation.user.first_name + " " + participation.user.last_name
     name.short_description = "Nom"
 
-    class Media:
-        css = {"all": ("css/hide_admin_original.css",)}
 
+    class Media:
+        css = { "all" : ("css/hide_admin_original.css",) }
 
 def accept_selected_participations(modeladmin, request, queryset):
     """Accept selected participations in list view."""
