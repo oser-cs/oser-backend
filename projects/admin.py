@@ -7,6 +7,10 @@ from dynamicforms.models import Form
 from .models import Edition, Participation, Project, EditionForm
 from django.contrib.admin import SimpleListFilter
 from profiles.models import Student
+from django.http import HttpResponse
+import csv
+from users.models import User
+import codecs
 
 
 @admin.register(Project)
@@ -105,6 +109,36 @@ class EditionFormAdmin(admin.ModelAdmin):
 @ admin.register(Participation)
 class ParticipationAdmin(admin.ModelAdmin):
     """Participation admin panel."""
+
+    def export_as_csv(self, request, queryset):
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
+            meta)
+        response.write(codecs.BOM_UTF8)  # force response to be UTF-8
+        writer = csv.writer(response, delimiter=';')
+
+        writer.writerow(['first_name', 'last_name', 'school', 'grade',
+                         'phone_number', 'scholarship'] + field_names)
+
+        list_email = queryset.values_list("user__email", flat=True)
+        nb_user = 0
+        for obj in queryset:
+
+            name = User.objects.filter(
+                email=str(list_email[nb_user])).values('first_name', 'last_name', 'phone_number')
+            school = Student.objects.filter(
+                user__email=str(list_email[nb_user])).values('school', 'grade', 'scholarship')
+
+            row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], school[0]['grade'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
+                                                                                                                                                                               for field in field_names])
+            nb_user += 1
+        return response
+
+    export_as_csv.short_description = "Exporter sélection (en .csv)"
+
+    actions = ["export_as_csv"]
 
     list_display = ('user', 'edition', 'submitted', 'state')
     list_filter = (SchoolFilter,

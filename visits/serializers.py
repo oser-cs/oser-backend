@@ -94,7 +94,7 @@ class VisitSerializer(VisitListSerializer):
             'place', 'date', 'start_time', 'end_time', 'meeting',
             'deadline', 'passed', 'registrations_open',
             'participants', 'organizers',
-            'image', 'fact_sheet', 'permission',
+            'image', 'fact_sheet', 'context_sheet', 'permission',
             'url',)
 
 
