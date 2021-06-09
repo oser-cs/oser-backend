@@ -54,6 +54,11 @@ class VisitTest(ModelTestCase):
             'blank': True,
             'null': True,
         },
+        'context_sheet': {
+            'verbose_name': 'fiche contexte',
+            'blank': True,
+            'null': True,
+        },
         'permission': {
             'verbose_name': 'autorisation de sortie',
             'blank': True,

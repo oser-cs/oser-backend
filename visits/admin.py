@@ -110,6 +110,7 @@ class ParticipationInline(admin.TabularInline):
         school = Student.objects.get(user = participation.user).school
         return school
     school.short_description = "Établissement"
+    
     def name(self, participation: Participation):
         """Returns the participation's user's name"""
         return participation.user.first_name + " " + participation.user.last_name
@@ -166,7 +167,6 @@ class ParticipationAdmin(admin.ModelAdmin):
 
     actions = ["export_as_csv"]
 
-
     def school(self, participation: Participation):
         """Return a link to the participation's user's school."""
         school = Student.objects.get(user=participation.user).school
@@ -182,7 +182,8 @@ class ParticipationAdmin(admin.ModelAdmin):
         response.write(codecs.BOM_UTF8)  # force response to be UTF-8
         writer = csv.writer(response, delimiter=';')
 
-        writer.writerow(['first_name', 'last_name', 'school',
+
+        writer.writerow(['first_name', 'last_name', 'school', 'grade',
                          'phone_number', 'scholarship'] + field_names)
 
         list_email = queryset.values_list("user__email", flat=True)
@@ -196,6 +197,7 @@ class ParticipationAdmin(admin.ModelAdmin):
 
             row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
                                                                                                                                                            for field in field_names])
+
             nb_user += 1
         return response
 
@@ -234,6 +236,7 @@ class VisitAdmin(admin.ModelAdmin):
     def num_participants(self, obj):
         return obj.participants.count()
     num_participants.short_description = 'Participants'
+
 
 @ admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
