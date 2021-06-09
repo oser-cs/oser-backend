@@ -13,6 +13,7 @@ from users.models import User
 import codecs
 
 
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     """Admin panel for projects."""

@@ -63,6 +63,7 @@ class RegistrationsOpenFilter(admin.SimpleListFilter):
 class VisitForm(forms.ModelForm):
     """Custom admin form for Visit."""
 
+
     class Meta:  # noqa
         model = Visit
         fields = '__all__'
@@ -106,18 +107,17 @@ class ParticipationInline(admin.TabularInline):
 
     def school(self, participation: Participation):
         """Return a link to the participation's user's school."""
-        school = Student.objects.get(user=participation.user).school
+        school = Student.objects.get(user = participation.user).school
         return school
     school.short_description = "Établissement"
-
+    
     def name(self, participation: Participation):
         """Returns the participation's user's name"""
         return participation.user.first_name + " " + participation.user.last_name
     name.short_description = "Nom"
 
     class Media:
-        css = {"all": ("css/hide_admin_original.css",)}
-
+        css = { "all" : ("css/hide_admin_original.css",) }
 
 def accept_selected_participations(modeladmin, request, queryset):
     """Accept selected participations in list view."""
@@ -182,6 +182,7 @@ class ParticipationAdmin(admin.ModelAdmin):
         response.write(codecs.BOM_UTF8)  # force response to be UTF-8
         writer = csv.writer(response, delimiter=';')
 
+
         writer.writerow(['first_name', 'last_name', 'school', 'grade',
                          'phone_number', 'scholarship'] + field_names)
 
@@ -192,10 +193,11 @@ class ParticipationAdmin(admin.ModelAdmin):
             name = User.objects.filter(
                 email=str(list_email[nb_user])).values('first_name', 'last_name', 'phone_number')
             school = Student.objects.filter(
-                user__email=str(list_email[nb_user])).values('school', 'grade', 'scholarship')
+                user__email=str(list_email[nb_user])).values('school', 'scholarship')
 
-            row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], school[0]['grade'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
-                                                                                                                                                                               for field in field_names])
+            row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
+                                                                                                                                                           for field in field_names])
+
             nb_user += 1
         return response
 
