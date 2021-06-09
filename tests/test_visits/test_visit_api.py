@@ -63,5 +63,5 @@ class VisitSerializerTestCase(SerializerTestCaseMixin, TestCase):
         'place', 'date', 'start_time', 'end_time', 'meeting',
         'passed', 'deadline', 'registrations_open',
         'participants', 'organizers',
-        'image', 'fact_sheet', 'permission',
+        'image', 'fact_sheet', 'context_sheet', 'permission',
     )
