@@ -55,7 +55,7 @@ class VisitTest(ModelTestCase):
             'null': True,
         },
         'context_sheet': {
-            'verbose_name': 'fiche sortie',
+            'verbose_name': 'fiche contexte',
             'blank': True,
             'null': True,
         },
