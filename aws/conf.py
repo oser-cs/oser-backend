@@ -51,3 +51,6 @@ MEDIA_URL = 'https://' + AWS_S3_CUSTOM_DOMAIN + 'media/'
 
 # Direct the MEDIA_ROOT to the media/ directory inside the bucket
 MEDIA_ROOT = 'media'
+
+# ACL for public read
+ACL = 'public-read'
