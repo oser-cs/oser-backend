@@ -13,7 +13,7 @@ django-filter
 django-rest-auth
 
 # Telegram messages via python-telegram-bot
-tornado==5.1.1 
+tornado==6.1 
 python-telegram-bot==12.2.0
 
 # Storage of files in AWS S3
@@ -22,7 +22,7 @@ boto3
 
 # PostgreSQL integration
 dj-database-url
-psycopg2
+psycopg2==2.8.6
 
 # Django REST Framework extensions
 coreapi-cli  # Required for automatic API docs
