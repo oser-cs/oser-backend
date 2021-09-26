@@ -53,4 +53,5 @@ MEDIA_URL = 'https://' + AWS_S3_CUSTOM_DOMAIN + 'media/'
 MEDIA_ROOT = 'media'
 
 # ACL for public read
+AWS_DEFAULT_ACL = "public-read"
 ACL = 'public-read'
