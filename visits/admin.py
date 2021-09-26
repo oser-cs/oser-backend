@@ -110,6 +110,7 @@ class ParticipationInline(admin.TabularInline):
         school = Student.objects.get(user = participation.user).school
         return school
     school.short_description = "Établissement"
+
     
     def name(self, participation: Participation):
         """Returns the participation's user's name"""
