@@ -169,11 +169,17 @@ class Visit(models.Model):
         upload_to='visits/fact_sheets/',
         help_text=('Informe le lycéen de détails sur la sortie. '
                    'Tous formats supportés, PDF recommandé.'))
+    context_sheet = models.FileField(
+        'fiche contexte', blank=True, null=True,
+        upload_to='visits/context_sheets/',
+        help_text=('Informe le lycéen de détails sur le contexte. '
+                   'Tout format supporté, PDF recommandé.'))
     permission = models.FileField(
         'autorisation de sortie', blank=True, null=True,
         upload_to='visits/visit_permissions/',
         help_text=('À mettre à disposition pour que le lycéen la remplisse. '
                    'Tout format supporté, PDF recommandé.'))
+
     participants = models.ManyToManyField('users.User',
                                           through='Participation')
     organizers = models.ManyToManyField('profiles.Tutor',
