@@ -110,6 +110,7 @@ class ParticipationInline(admin.TabularInline):
         return school
     school.short_description = "Établissement"
 
+
     def name(self, participation: Participation):
         """Returns the participation's user's name"""
         return participation.user.first_name + " " + participation.user.last_name
