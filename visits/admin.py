@@ -110,7 +110,6 @@ class ParticipationInline(admin.TabularInline):
         return school
     school.short_description = "Établissement"
 
-
     def name(self, participation: Participation):
         """Returns the participation's user's name"""
         return participation.user.first_name + " " + participation.user.last_name
@@ -143,12 +142,25 @@ def reject_selected_participations(modeladmin, request, queryset):
     count = queryset.count()
     s = pluralize(count)
     messages.add_message(request, messages.SUCCESS,
-                         f'{count} participation{s} acceptée{s} avec succès.')
+                         f'{count} participation{s} rejetée{s} avec succès.') ## rejeté place accepté
 
 
 reject_selected_participations.short_description = (
     'Rejeter les participations sélectionnées')
 
+def wait_selected_participations(modeladmin, request, queryset):
+    """Reject selected participations in list view."""
+    for obj in queryset:
+        obj.accepted = 2 #in wait
+        obj.save()
+    count = queryset.count()
+    s = pluralize(count)
+    messages.add_message(request, messages.SUCCESS,
+                         f'{count} participation{s} en attente{s} avec succès.')
+
+
+wait_selected_participations.short_description = (
+    'Mettre en attentes les participations sélectionnées')
 
 @admin.register(Participation)
 class ParticipationAdmin(admin.ModelAdmin):
@@ -183,6 +195,7 @@ class ParticipationAdmin(admin.ModelAdmin):
         response.write(codecs.BOM_UTF8)  # force response to be UTF-8
         writer = csv.writer(response, delimiter=';')
 
+
         writer.writerow(['first_name', 'last_name', 'school', 'grade',
                          'phone_number', 'scholarship'] + field_names)
 
@@ -197,6 +210,7 @@ class ParticipationAdmin(admin.ModelAdmin):
 
             row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], school[0]['grade'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
                                                                                                                                                                                for field in field_names])
+
 
             nb_user += 1
         return response
