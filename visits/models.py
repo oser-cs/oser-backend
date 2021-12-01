@@ -58,6 +58,7 @@ class Participation(models.Model):
         verbose_name='soumis le',
         help_text='Date de soumission de la participation')
     accepted = models.IntegerField(
+        default=0,
         choices=STATUS_CHOICES,
         help_text=(
             "Cocher pour confirmer au tutoré sa participation à la sortie."))
