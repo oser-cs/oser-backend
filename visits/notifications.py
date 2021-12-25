@@ -46,23 +46,3 @@ class ConfirmParticipation(Notification):
         participation = Participation(
             user=user, visit=visit, accepted=True, submitted=now())
         return cls(participation=participation)
-        
-class WaitParticipation(Notification):
-    """Put a participation in wait state."""
-
-    template_name = 'visits/wait_participation.md'
-    args = ('participation',)
-
-    def get_subject(self):
-        return f'Participation à la sortie : {self.participation.visit}'
-
-    def get_recipients(self):
-        return [self.participation.user.email]
-
-    @classmethod
-    def example(cls):
-        user = User(email='john.doe@example.com', first_name='John')
-        visit = Visit(title='Visite du Palais de la Découverte', date=now())
-        participation = Participation(
-            user=user, visit=visit, accepted=True, submitted=now())
-        return cls(participation=participation)
