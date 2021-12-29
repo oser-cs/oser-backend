@@ -194,10 +194,11 @@ class ParticipationAdmin(admin.ModelAdmin):
             name = User.objects.filter(
                 email=str(list_email[nb_user])).values('first_name', 'last_name', 'phone_number')
             school = Student.objects.filter(
-                user__email=str(list_email[nb_user])).values('school', 'scholarship')
+                user__email=str(list_email[nb_user])).values('school', 'grade', 'scholarship')
 
-            row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
-                                                                                                                                                           for field in field_names])
+            row = writer.writerow([name[0]['first_name'], name[0]['last_name'], school[0]['school'], school[0]['grade'], name[0]['phone_number'], school[0]['scholarship']] + [getattr(obj, field)
+                                                                                                                                                                               for field in field_names])
+
 
             nb_user += 1
         return response
