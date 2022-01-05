@@ -15,7 +15,7 @@ Avant la sortie, tu pourras, en te rendant sur [l'espace sorties]({{ participati
 - Consulter les informations pratiques ;
 - Télécharger la fiche sortie ;
 - Télécharger l'autorisation de sortie, à faire remplir par tes parents.
-{% elif 2 %}
+{% elif == 2 %}
 Malheureusement, en raison du nombre de places limité, tu es sur liste d'attente pour participer à cette sortie. 😔
 
 Nous te recontacterons si des places se libèrent suite à des désistements.
