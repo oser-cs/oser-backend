@@ -7,7 +7,7 @@ Bonjour{% if participation.user.first_name %} {{ participation.user.first_name }
 {% block body %}
 {% if participation.submitted %}Le {{ participation.submitted|date }}, tu{% else %}Tu{% endif%} as demandé à t'inscrire à la sortie **{{ participation.visit }}** organisée le **{{ participation.visit.date|date }}**.
 
-{% if participation.accepted 1 %}
+{% if participation.accepted == 1 %}
 Bonne nouvelle : nous avons validé ta participation à la sortie. ✅
 
 Avant la sortie, tu pourras, en te rendant sur [l'espace sorties]({{ participation.visit.get_site_url }}) :
