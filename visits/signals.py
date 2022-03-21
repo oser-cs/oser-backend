@@ -5,6 +5,7 @@ from django.dispatch import Signal, receiver
 
 from .models import Participation
 from .notifications import ConfirmParticipation
+from .notifications import ConfirmParticipationWait
 
 accepted_changed = Signal()
 
@@ -24,4 +25,7 @@ def notify_participation(sender, instance: Participation, **kwargs):
     """
     if instance.accepted is None:
         return
-    ConfirmParticipation(participation=instance).send()
+    if instance.accepted == 2 :
+        ConfirmParticipationWait(participation=instance).send()    
+    else : 
+      ConfirmParticipation(participation=instance).send()
