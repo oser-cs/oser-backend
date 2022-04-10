@@ -32,28 +32,7 @@ class ConfirmParticipation(Notification):
 
     template_name = 'visits/confirm_participation.md'
     args = ('participation',)
-    
-    def get_subject(self):
-        return f'Participation à la sortie : {self.participation.visit}'
 
-    def get_recipients(self):
-        return [self.participation.user.email]
-
-    @classmethod
-    def example(cls):
-        user = User(email='john.doe@example.com', first_name='John')
-        visit = Visit(title='Visite du Palais de la Découverte', date=now())
-        participation = Participation(
-            user=user, visit=visit, accepted=True, submitted=now())
-        return cls(participation=participation)
-
- 
-class ConfirmParticipationWait(Notification):
-    """ConfirmParticipation whether a user can participate to a visit."""
-
-    template_name = 'visits/confirm_participation_wait.md'
-    args = ('participation',)
-    
     def get_subject(self):
         return f'Participation à la sortie : {self.participation.visit}'
 
