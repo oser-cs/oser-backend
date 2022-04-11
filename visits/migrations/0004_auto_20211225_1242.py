@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('visits', '0002_visit_context_sheet'),
+        ('visits', '0003_fix_db_trouble'),
     ]
 
     operations = [
