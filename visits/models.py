@@ -42,10 +42,10 @@ class Participation(models.Model):
     Allows to store whether the user was present to the visit,
     and whether their files were validated.
     """
-    STATUS_CHOICES  =  ( 
-    ( 0 ,  'refusé' ), 
-    ( 1 ,  'accepté' ), 
-    ( 2 ,  'en attente' ), 
+    STATUS_CHOICES = (
+        (0,  'refusé'),
+        (1,  'accepté'),
+        (2,  'en attente'),
     )
     user = models.ForeignKey('users.User', verbose_name='utilisateur',
                              related_name='participations',
@@ -58,7 +58,6 @@ class Participation(models.Model):
         verbose_name='soumis le',
         help_text='Date de soumission de la participation')
     accepted = models.IntegerField(
-        default=0,
         choices=STATUS_CHOICES,
         help_text=(
             "Cocher pour confirmer au tutoré sa participation à la sortie."))
