@@ -46,6 +46,7 @@ class Participation(models.Model):
         (0,  'refusé'),
         (1,  'accepté'),
         (2,  'en attente'),
+        (3,  'inconnue'),
     )
     user = models.ForeignKey('users.User', verbose_name='utilisateur',
                              related_name='participations',
@@ -58,6 +59,7 @@ class Participation(models.Model):
         verbose_name='soumis le',
         help_text='Date de soumission de la participation')
     accepted = models.IntegerField(
+        default=3,
         choices=STATUS_CHOICES,
         help_text=(
             "Cocher pour confirmer au tutoré sa participation à la sortie."))
