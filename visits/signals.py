@@ -23,7 +23,7 @@ def notify_participation(sender, instance: Participation, **kwargs):
 
     The notification is only sent if the participation status has changed.
     """
-    if instance.accepted is None:
+    if instance.accepted is 3:
         return
     if instance.accepted == 2 :
         ConfirmParticipationWait(participation=instance).send()    
