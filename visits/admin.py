@@ -143,12 +143,25 @@ def reject_selected_participations(modeladmin, request, queryset):
     count = queryset.count()
     s = pluralize(count)
     messages.add_message(request, messages.SUCCESS,
-                         f'{count} participation{s} rejetée{s} avec succès.')  # rejeté place accepté
+    f'{count} participation{s} rejetée{s} avec succès.')  # rejeté place accepté
 
 
 reject_selected_participations.short_description = (
     'Rejeter les participations sélectionnées')
 
+def wait_selected_participations(modeladmin, request, queryset):
+    """Reject selected participations in list view."""
+    for obj in queryset:
+        obj.accepted = 2 #in wait
+        obj.save()
+    count = queryset.count()
+    s = pluralize(count)
+    messages.add_message(request, messages.SUCCESS,
+                         f'{count} participation{s} en attente{s} avec succès.')
+
+
+wait_selected_participations.short_description = (
+    'Mettre en attentes les participations sélectionnées')
 
 def wait_selected_participations(modeladmin, request, queryset):
     """Reject selected participations in list view."""
